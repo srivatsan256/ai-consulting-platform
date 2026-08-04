@@ -44,6 +44,7 @@ export default function ReportsPage({ projectId, onSelectProject }) {
 
   const report = project?.verification_report;
   const reportData = report?.report_data;
+  const reportDocuments = report?.results || reportData?.documents || [];
 
   return (
     <div className="space-y-6">
@@ -95,7 +96,7 @@ export default function ReportsPage({ projectId, onSelectProject }) {
                   <span className="material-symbols-outlined text-emerald-600 text-[22px]">check_circle</span>
                 </div>
                 <div>
-                  <p className="text-xl font-bold text-on-surface">{reportData?.documents?.filter(d => d.passed).length || 0}</p>
+                  <p className="text-xl font-bold text-on-surface">{reportDocuments?.filter(d => d.passed).length || 0}</p>
                   <p className="text-xs text-on-surface-variant">Passed</p>
                 </div>
               </div>
@@ -106,7 +107,7 @@ export default function ReportsPage({ projectId, onSelectProject }) {
                   <span className="material-symbols-outlined text-red-600 text-[22px]">cancel</span>
                 </div>
                 <div>
-                  <p className="text-xl font-bold text-on-surface">{reportData?.documents?.filter(d => !d.passed).length || 0}</p>
+                  <p className="text-xl font-bold text-on-surface">{reportDocuments?.filter(d => !d.passed).length || 0}</p>
                   <p className="text-xs text-on-surface-variant">Failed</p>
                 </div>
               </div>
@@ -114,12 +115,12 @@ export default function ReportsPage({ projectId, onSelectProject }) {
           </div>
 
           {/* Verification Report */}
-          {reportData && reportData.documents ? (
+          {reportDocuments.length > 0 ? (
             <div className="bg-white rounded-xl soft-shadow border border-outline-variant/20 p-6">
               <h3 className="font-headline-sm text-base font-semibold text-on-surface mb-4">Verification Report</h3>
               <p className="text-xs text-on-surface-variant mb-4">Generated: {report?.generated_at ? new Date(report.generated_at).toLocaleString() : "N/A"}</p>
               <div className="space-y-4">
-                {reportData.documents.map((doc, idx) => (
+                {reportDocuments.map((doc, idx) => (
                   <div key={idx} className="p-4 rounded-xl border border-outline-variant/20">
                     <div className="flex items-center gap-3 mb-3">
                       <span className={`w-3 h-3 rounded-full ${doc.passed ? "bg-emerald-500" : "bg-red-500"}`} />

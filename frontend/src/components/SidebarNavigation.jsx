@@ -18,6 +18,7 @@ const roleBasedNavItems = {
     { id: "projects", label: "Projects", icon: "folder_open" },
     { id: "upload", label: "Upload Documents", icon: "upload_file" },
     { id: "verification", label: "Verification", icon: "verified" },
+    { id: "deliverables", label: "Deliverables", icon: "assignment_turned_in" },
   ],
   // Business Analyst
   business_analyst: [
@@ -129,13 +130,13 @@ const defaultClientNav = [
 
 export default function SidebarNavigation({ activeView, setActiveView, role, user, onLogout }) {
   const assignedRole = user?.assigned_role;
-  const roleKey = assignedRole
+  const roleKey = user?.role_key || (assignedRole
     ? assignedRole
         .toLowerCase()
         .replace(/[^a-z0-9]/g, "_")
         .replace(/_+/g, "_")
         .replace(/^_|_$/g, "")
-    : null;
+    : null);
 
   let navItems = role === "admin" ? defaultAdminNav : defaultClientNav;
   if (roleKey && roleBasedNavItems[roleKey]) {

@@ -38,7 +38,10 @@ export default function VerificationPage({ projectId, onSelectProject }) {
         setResult({
           readiness_score: res.data.readiness_score,
           status: res.data.status,
-          results: res.data.verification_report.report_data?.documents || [],
+          results:
+            res.data.verification_report.results ||
+            res.data.verification_report.report_data?.documents ||
+            [],
         });
       }
     } catch (err) {

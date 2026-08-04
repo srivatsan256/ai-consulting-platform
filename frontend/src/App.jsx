@@ -2,16 +2,23 @@ import React, { useState, useCallback } from "react";
 import { useAuth } from "./context/AuthContext.jsx";
 import SidebarNavigation from "./components/SidebarNavigation";
 import LoginPage from "./pages/LoginPage";
+import SignupPage from "./pages/SignupPage";
+import ForgotPassword from "./pages/ForgotPassword";
+import VerifyOTP from "./pages/VerifyOTP";
+import ResetPassword from "./pages/ResetPassword";
+import ResetSuccess from "./pages/ResetSuccess";
 import DashboardPage from "./pages/DashboardPage";
 import ProjectsPage from "./pages/ProjectsPage";
-import ProjectDetailPage from "./pages/ProjectDetailPage.jsx";
+import ProjectDetailPage from "./pages/ProjectDetailPage";
 import UploadPage from "./pages/UploadPage";
 import VerificationPage from "./pages/VerificationPage";
 import AIChatPage from "./pages/AIChatPage";
+import DeliverablesPage from "./pages/DeliverablesPage";
 import ReportsPage from "./pages/ReportsPage";
-import UseCaseLevel1 from "./pages/projectdetail/UseCaseLevel1";
-import UseCaseEvaluationSheetLevel1 from "./pages/projectdetail/UseCaseEvaluationSheetLevel1";
-import UseCaseShortlistingReportLevel1 from "./pages/projectdetail/UseCaseShortlistingReportLevel1";
+import ClientDashboard from "./pages/ClientDashboard";
+import ClientProjectsPage from "./pages/ClientProjectsPage";
+import ClientChatPage from "./pages/ClientChatPage";
+import ClientDownloads from "./pages/ClientDownloads";
 import { getPageTitle } from "./constants/navigation";
 
 const roleToDashboard = {
@@ -28,6 +35,12 @@ const roleToDashboard = {
   security_consultant: "dashboard",
   devops_engineer: "dashboard",
   document_reviewer: "dashboard",
+  // Client roles
+  client_admin: "client-dashboard",
+  client_sme: "client-dashboard",
+  client_reviewer: "client-dashboard",
+  business_sponsor: "client-dashboard",
+  viewer: "client-dashboard",
 };
 
 const adminRoles = [
@@ -46,11 +59,17 @@ const adminRoles = [
 ];
 
 export default function App() {
-  const { user, login, logout, isAdmin, isClient } = useAuth();
+  const { user, authReady, login, register, logout, isAdmin, isClient } = useAuth();
   const [activeView, setActiveView] = useState("dashboard");
   const [selectedProjectId, setSelectedProjectId] = useState(null);
 
+  // OTP-based password-reset flow
+  const [authView, setAuthView] = useState("login");
+  const [forgotEmail, setForgotEmail] = useState("");
+  const [resetCredentials, setResetCredentials] = useState({ uid: "", token: "" });
+
   const getRoleKey = useCallback((user) => {
+    if (user?.role_key) return user.role_key;
     if (!user?.assigned_role) return null;
     return user.assigned_role
       .toLowerCase()
@@ -60,13 +79,26 @@ export default function App() {
   }, []);
 
   const handleLogin = useCallback(
-    (email, password, role) => {
-      const loggedInUser = login(email, password, role);
+    async (email, password, role) => {
+      const loggedInUser = await login(email, password, role);
       const roleKey = getRoleKey(loggedInUser);
-      const defaultView = roleToDashboard[roleKey] || "dashboard";
+      const defaultView = roleToDashboard[roleKey] || (role === "admin" ? "dashboard" : "client-dashboard");
       setActiveView(defaultView);
     },
     [login, getRoleKey]
+  );
+
+  const handleRegister = useCallback(
+    async (data) => {
+      const newUser = await register(data);
+      const roleKey = getRoleKey(newUser);
+      const defaultView =
+        roleToDashboard[roleKey] ||
+        (data.account_type === "client" ? "client-dashboard" : "dashboard");
+      setActiveView(defaultView);
+      setAuthView("login");
+    },
+    [register, getRoleKey]
   );
 
   const handleLogout = useCallback(() => {
@@ -78,20 +110,91 @@ export default function App() {
   const openProject = useCallback(
     (projectId) => {
       setSelectedProjectId(projectId);
-      setActiveView("project-detail");
+      const roleKey = getRoleKey(user);
+      if (roleKey && adminRoles.includes(roleKey)) {
+        setActiveView("project-detail");
+      } else {
+        setActiveView("client-projects");
+      }
     },
-    []
+    [user, getRoleKey]
   );
 
   const goBack = useCallback(() => {
     setSelectedProjectId(null);
-    setActiveView("projects");
-  }, []);
+    const roleKey = getRoleKey(user);
+    if (roleKey && adminRoles.includes(roleKey)) {
+      setActiveView("projects");
+    } else {
+      setActiveView("client-projects");
+    }
+  }, [user, getRoleKey]);
 
-  if (!user) {
-    return <LoginPage onLogin={handleLogin} />;
+  if (!authReady) {
+    return null;
   }
 
+  // ── Unauthenticated screens (login / signup / password-reset flow) ──
+  if (!user) {
+    switch (authView) {
+      case "forgot-password":
+        return (
+          <ForgotPassword
+            onBackToLogin={() => setAuthView("login")}
+            onSent={(email) => {
+              setForgotEmail(email);
+              setAuthView("verify-otp");
+            }}
+          />
+        );
+
+      case "verify-otp":
+        return (
+          <VerifyOTP
+            email={forgotEmail}
+            onBackToLogin={() => setAuthView("login")}
+            onBackToEmail={() => setAuthView("forgot-password")}
+            onVerified={(credentials) => {
+              setResetCredentials(credentials); // expects { uid, token }
+              setAuthView("reset-password");
+            }}
+          />
+        );
+
+      case "reset-password":
+        return (
+          <ResetPassword
+            uid={resetCredentials.uid}
+            token={resetCredentials.token}
+            onBackToLogin={() => setAuthView("login")}
+            onSuccess={() => setAuthView("reset-success")}
+          />
+        );
+
+      case "reset-success":
+        return <ResetSuccess onBackToLogin={() => setAuthView("login")} />;
+
+      case "signup":
+        return (
+          <SignupPage
+            onRegister={handleRegister}
+            onShowLogin={() => setAuthView("login")}
+          />
+        );
+
+      case "login":
+      default:
+        return (
+          <LoginPage
+            onLogin={handleLogin}
+            onShowSignup={() => setAuthView("signup")}
+            onForgotPassword={() => setAuthView("forgot-password")}
+          />
+        );
+    }
+  }
+
+  // ── Authenticated screens ──
   const renderPage = () => {
     switch (activeView) {
       case "dashboard":
@@ -104,54 +207,95 @@ export default function App() {
           />
         );
       case "projects":
-        return <ProjectsPage onSelectProject={openProject} onNewProject={() => setActiveView("projects")} />;
+        return (
+          <ProjectsPage
+            onSelectProject={openProject}
+            onNewProject={() => setActiveView("projects")}
+          />
+        );
       case "project-detail":
         return (
           <ProjectDetailPage
             projectId={selectedProjectId}
             onBack={goBack}
-            onNavigate={(view) => setActiveView(view)}
           />
         );
       case "upload":
-        return <UploadPage projectId={selectedProjectId} onSelectProject={openProject} />;
+        return (
+          <UploadPage
+            projectId={selectedProjectId}
+            onSelectProject={openProject}
+          />
+        );
       case "verification":
-        return <VerificationPage projectId={selectedProjectId} onSelectProject={openProject} />;
+        return (
+          <VerificationPage
+            projectId={selectedProjectId}
+            onSelectProject={openProject}
+          />
+        );
       case "ai-chat":
-        return <AIChatPage projectId={selectedProjectId} onSelectProject={openProject} />;
+        return (
+          <AIChatPage
+            projectId={selectedProjectId}
+            onSelectProject={openProject}
+          />
+        );
+      case "deliverables":
+        return (
+          <DeliverablesPage
+            projectId={selectedProjectId}
+            onSelectProject={openProject}
+          />
+        );
       case "reports":
-        return <ReportsPage projectId={selectedProjectId} onSelectProject={openProject} />;
-      case "use-case-level1":
         return (
-          <UseCaseLevel1
+          <ReportsPage
             projectId={selectedProjectId}
-            onBack={goBack}
-            onNavigate={(view) => setActiveView(view)}
+            onSelectProject={openProject}
           />
         );
-      case "use-case-evaluation-sheet-level1":
+      case "client-dashboard":
         return (
-          <UseCaseEvaluationSheetLevel1
-            projectId={selectedProjectId}
-            onBack={goBack}
-            onNavigate={(view) => setActiveView(view)}
+          <ClientDashboard
+            user={user}
+            onSelectProject={openProject}
           />
         );
-      case "use-case-shortlisting-report-level1":
+      case "client-projects":
         return (
-          <UseCaseShortlistingReportLevel1
+          <ClientProjectsPage
             projectId={selectedProjectId}
-            onBack={goBack}
-            onNavigate={(view) => setActiveView(view)}
+            onSelectProject={openProject}
+            onBack={selectedProjectId ? goBack : null}
+          />
+        );
+      case "client-chat":
+        return (
+          <ClientChatPage
+            projectId={selectedProjectId}
+            onSelectProject={openProject}
+          />
+        );
+      case "client-downloads":
+        return (
+          <ClientDownloads
+            projectId={selectedProjectId}
+            onSelectProject={openProject}
           />
         );
       default:
-        return (
+        return isAdmin ? (
           <DashboardPage
             user={user}
             onNewProject={() => setActiveView("projects")}
             onOpenProject={openProject}
             onViewAllProjects={() => setActiveView("projects")}
+          />
+        ) : (
+          <ClientDashboard
+            user={user}
+            onSelectProject={openProject}
           />
         );
     }

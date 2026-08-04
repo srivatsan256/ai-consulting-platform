@@ -1,0 +1,36 @@
+from rest_framework import viewsets
+from rest_framework.permissions import IsAuthenticated
+
+from .models import Department
+from .serializers import DepartmentDetailSerializer
+from .filters import DepartmentFilter
+
+
+class DepartmentViewSet(viewsets.ModelViewSet):
+
+    serializer_class = DepartmentDetailSerializer
+
+    queryset = Department.objects.select_related(
+        "company",
+        "head",
+        "created_by",
+    )
+
+    filterset_class = DepartmentFilter
+
+    search_fields = [
+        "name",
+        "code",
+        "description",
+    ]
+
+    ordering_fields = [
+        "name",
+        "code",
+        "created_at",
+        "updated_at",
+    ]
+
+    ordering = ["-created_at"]
+
+    permission_classes = [IsAuthenticated]

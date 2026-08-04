@@ -1,19 +1,33 @@
 import React, { useState } from "react";
 import { ROLES_DATA } from "../constants/roles";
 
-export default function LoginPage({ onLogin }) {
+export default function LoginPage({ onLogin, onShowSignup, onForgotPassword }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("admin");
   const [showRoleSelector, setShowRoleSelector] = useState(false);
   const [selectedUserRole, setSelectedUserRole] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const adminRoles = Object.entries(ROLES_DATA).filter(([_, data]) => data.role === "admin");
   const clientRoles = Object.entries(ROLES_DATA).filter(([_, data]) => data.role === "client");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    onLogin(email, password, role);
+    setError(null);
+    setLoading(true);
+    try {
+      await onLogin(email, password, role);
+    } catch (err) {
+      const message =
+        err?.response?.data?.detail ||
+        err?.response?.data?.message ||
+        "Invalid email or password. Try a demo account from the list below.";
+      setError(message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleRoleSelect = (roleKey) => {
@@ -24,9 +38,20 @@ export default function LoginPage({ onLogin }) {
     setShowRoleSelector(false);
   };
 
-  const handleSSOLogin = (provider) => {
-    // Simulate SSO login with a default admin role
-    onLogin("admin@requirementai.com", "password123", "admin");
+  const handleSSOLogin = async () => {
+    // Simulate SSO login using a seeded demo account
+    const ssoEmail = role === "client" ? "client_admin@acmecorp.com" : "companyadmin@requirementai.com";
+    setEmail(ssoEmail);
+    setPassword("password123");
+    setError(null);
+    setLoading(true);
+    try {
+      await onLogin(ssoEmail, "password123", role);
+    } catch (err) {
+      setError(err?.response?.data?.detail || "SSO login failed. Try a demo account below.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -162,21 +187,38 @@ export default function LoginPage({ onLogin }) {
                   <input type="checkbox" defaultChecked className="rounded border-outline-variant text-primary focus:ring-primary" />
                   Remember me
                 </label>
-                <button type="button" className="text-primary font-medium hover:underline">
+                <button type="button" onClick={onForgotPassword} className="text-primary font-medium hover:underline">
                   Forgot password?
                 </button>
               </div>
 
+              {error && (
+                <div className="flex items-center gap-2 px-4 py-3 rounded-xl bg-error/10 border border-error/30 text-on-surface text-sm">
+                  <span className="material-symbols-outlined text-[18px] text-error">error</span>
+                  <span>{error}</span>
+                </div>
+              )}
+
               <button
                 type="submit"
-                className="w-full py-3.5 bg-primary text-on-primary rounded-xl font-bold text-sm hover:opacity-90 transition-all shadow-lg shadow-primary/20 flex items-center justify-center gap-2"
+                disabled={loading}
+                className="w-full py-3.5 bg-primary text-on-primary rounded-xl font-bold text-sm hover:opacity-90 transition-all shadow-lg shadow-primary/20 flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
               >
-                {selectedUserRole
-                  ? `Sign In as ${selectedUserRole.assigned_role}`
-                  : role === "admin"
-                  ? "Sign In as Consultant"
-                  : "Sign In as Client"}
-                <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
+                {loading ? (
+                  <>
+                    <span className="w-4 h-4 border-2 border-on-primary border-t-transparent rounded-full animate-spin" />
+                    Signing in...
+                  </>
+                ) : (
+                  <>
+                    {selectedUserRole
+                      ? `Sign In as ${selectedUserRole.assigned_role}`
+                      : role === "admin"
+                      ? "Sign In as Consultant"
+                      : "Sign In as Client"}
+                    <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
+                  </>
+                )}
               </button>
             </form>
 
@@ -191,8 +233,9 @@ export default function LoginPage({ onLogin }) {
             <div className="space-y-3">
               <button
                 type="button"
-                onClick={() => handleSSOLogin("microsoft")}
-                className="w-full py-3 bg-[#2F2F2F] text-white rounded-xl font-bold text-sm hover:bg-[#1a1a1a] transition-all flex items-center justify-center gap-3"
+                onClick={handleSSOLogin}
+                disabled={loading}
+                className="w-full py-3 bg-[#2F2F2F] text-white rounded-xl font-bold text-sm hover:bg-[#1a1a1a] transition-all flex items-center justify-center gap-3 disabled:opacity-60 disabled:cursor-not-allowed"
               >
                 <svg className="w-5 h-5" viewBox="0 0 23 23" fill="none">
                   <rect x="1" y="1" width="10" height="10" fill="#F25022"/>
@@ -204,8 +247,9 @@ export default function LoginPage({ onLogin }) {
               </button>
               <button
                 type="button"
-                onClick={() => handleSSOLogin("google")}
-                className="w-full py-3 bg-white border border-outline-variant/40 text-on-surface rounded-xl font-bold text-sm hover:bg-surface-container-low transition-all flex items-center justify-center gap-3"
+                onClick={handleSSOLogin}
+                disabled={loading}
+                className="w-full py-3 bg-white border border-outline-variant/40 text-on-surface rounded-xl font-bold text-sm hover:bg-surface-container-low transition-all flex items-center justify-center gap-3 disabled:opacity-60 disabled:cursor-not-allowed"
               >
                 <svg className="w-5 h-5" viewBox="0 0 24 24">
                   <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
@@ -219,6 +263,16 @@ export default function LoginPage({ onLogin }) {
 
             <p className="text-center text-xs text-on-surface-variant mt-6">
               Enterprise SSO available · Contact IT for provisioning
+            </p>
+            <p className="text-center text-xs text-on-surface-variant mt-6">
+              New to RequirementAI?{" "}
+              <button
+                type="button"
+                onClick={onShowSignup}
+                className="text-primary font-medium hover:underline"
+              >
+                Create an account
+              </button>
             </p>
           </div>
 
