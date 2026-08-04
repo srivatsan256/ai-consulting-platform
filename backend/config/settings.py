@@ -6,6 +6,8 @@ from pathlib import Path
 from datetime import timedelta
 import os
 
+import dj_database_url  # type: ignore
+
 from dotenv import load_dotenv  # type: ignore
 
 
@@ -178,14 +180,14 @@ WSGI_APPLICATION = "config.wsgi.application"
 # ==========================
 
 DATABASES = {
-
-    "default": {
-
-        "ENGINE": "django.db.backends.sqlite3",
-
-        "NAME": BASE_DIR / "db.sqlite3",
-    }
+    "default": dj_database_url.config(
+        default="sqlite:///db.sqlite3",
+        conn_max_age=600,
+    )
 }
+
+if DATABASES["default"]["ENGINE"] == "django.db.backends.postgresql":
+    DATABASES["default"]["OPTIONS"] = {"connect_timeout": 10}
 
 
 # ==========================
