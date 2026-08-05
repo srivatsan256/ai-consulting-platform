@@ -1,0 +1,1442 @@
+[
+  {
+    "module": "Authentication",
+    "method": "POST",
+    "endpoint": "/auth/login/",
+    "expected": 200,
+    "status": 200,
+    "ok": true,
+    "notes": ""
+  },
+  {
+    "module": "Authentication",
+    "method": "POST",
+    "endpoint": "/auth/register/",
+    "expected": 201,
+    "status": 201,
+    "ok": true,
+    "notes": ""
+  },
+  {
+    "module": "Authentication",
+    "method": "POST",
+    "endpoint": "/auth/refresh/",
+    "expected": 200,
+    "status": 200,
+    "ok": true,
+    "notes": ""
+  },
+  {
+    "module": "Authentication",
+    "method": "POST",
+    "endpoint": "/auth/logout/",
+    "expected": 200,
+    "status": 200,
+    "ok": true,
+    "notes": ""
+  },
+  {
+    "module": "Authentication",
+    "method": "POST",
+    "endpoint": "/auth/logout/ (invalid token)",
+    "expected": 400,
+    "status": 500,
+    "ok": false,
+    "notes": "BUG: should be 400, not 500"
+  },
+  {
+    "module": "Authentication",
+    "method": "POST",
+    "endpoint": "/auth/switch/",
+    "expected": 200,
+    "status": 200,
+    "ok": true,
+    "notes": ""
+  },
+  {
+    "module": "Authentication",
+    "method": "GET",
+    "endpoint": "/auth/me/",
+    "expected": 200,
+    "status": 200,
+    "ok": true,
+    "notes": ""
+  },
+  {
+    "module": "Authentication",
+    "method": "GET",
+    "endpoint": "/auth/login-history/",
+    "expected": 200,
+    "status": 200,
+    "ok": true,
+    "notes": ""
+  },
+  {
+    "module": "Authentication",
+    "method": "POST",
+    "endpoint": "/auth/email-verification/request/",
+    "expected": 200,
+    "status": 200,
+    "ok": true,
+    "notes": ""
+  },
+  {
+    "module": "Authentication",
+    "method": "GET",
+    "endpoint": "/auth/email-verification/confirm/",
+    "expected": 200,
+    "status": 200,
+    "ok": true,
+    "notes": ""
+  },
+  {
+    "module": "Authentication",
+    "method": "POST",
+    "endpoint": "/auth/password-reset/request/",
+    "expected": 200,
+    "status": 200,
+    "ok": true,
+    "notes": ""
+  },
+  {
+    "module": "Authentication",
+    "method": "POST",
+    "endpoint": "/auth/password-reset/verify-otp/",
+    "expected": 200,
+    "status": 200,
+    "ok": true,
+    "notes": ""
+  },
+  {
+    "module": "Authentication",
+    "method": "POST",
+    "endpoint": "/auth/password-reset/confirm/",
+    "expected": 200,
+    "status": 200,
+    "ok": true,
+    "notes": ""
+  },
+  {
+    "module": "Authentication",
+    "method": "POST",
+    "endpoint": "/auth/change-password/",
+    "expected": 200,
+    "status": 200,
+    "ok": true,
+    "notes": ""
+  },
+  {
+    "module": "Accounts",
+    "method": "GET",
+    "endpoint": "/accounts/users/",
+    "expected": 200,
+    "status": 200,
+    "ok": true,
+    "notes": ""
+  },
+  {
+    "module": "Accounts",
+    "method": "POST",
+    "endpoint": "/accounts/users/",
+    "expected": 201,
+    "status": 201,
+    "ok": true,
+    "notes": ""
+  },
+  {
+    "module": "Accounts",
+    "method": "GET",
+    "endpoint": "/accounts/users/12/",
+    "expected": 200,
+    "status": 200,
+    "ok": true,
+    "notes": ""
+  },
+  {
+    "module": "Accounts",
+    "method": "PATCH",
+    "endpoint": "/accounts/users/12/",
+    "expected": 200,
+    "status": 200,
+    "ok": true,
+    "notes": ""
+  },
+  {
+    "module": "Accounts",
+    "method": "PUT",
+    "endpoint": "/accounts/users/12/",
+    "expected": 200,
+    "status": 200,
+    "ok": true,
+    "notes": ""
+  },
+  {
+    "module": "Accounts",
+    "method": "DELETE",
+    "endpoint": "/accounts/users/12/",
+    "expected": 204,
+    "status": 204,
+    "ok": true,
+    "notes": ""
+  },
+  {
+    "module": "Companies",
+    "method": "GET",
+    "endpoint": "/companies/companies/",
+    "expected": 200,
+    "status": 200,
+    "ok": true,
+    "notes": ""
+  },
+  {
+    "module": "Companies",
+    "method": "POST",
+    "endpoint": "/companies/companies/",
+    "expected": 201,
+    "status": 400,
+    "ok": false,
+    "notes": "{'logo': ['The submitted data was not a file. Check the encoding type on the form.']}"
+  },
+  {
+    "module": "Companies",
+    "method": "GET",
+    "endpoint": "/companies/companies/{id}/",
+    "expected": 200,
+    "status": null,
+    "ok": false,
+    "notes": "no id to test detail"
+  },
+  {
+    "module": "Companies",
+    "method": "DELETE",
+    "endpoint": "/companies/companies/{id}/",
+    "expected": 204,
+    "status": null,
+    "ok": false,
+    "notes": "no id to test delete"
+  },
+  {
+    "module": "Company Members",
+    "method": "GET",
+    "endpoint": "/memberships/",
+    "expected": 200,
+    "status": 200,
+    "ok": true,
+    "notes": ""
+  },
+  {
+    "module": "Company Members",
+    "method": "POST",
+    "endpoint": "/memberships/",
+    "expected": 201,
+    "status": 400,
+    "ok": false,
+    "notes": "{'non_field_errors': ['The fields user, company must make a unique set.']}"
+  },
+  {
+    "module": "Company Members",
+    "method": "GET",
+    "endpoint": "/memberships/{id}/",
+    "expected": 200,
+    "status": null,
+    "ok": false,
+    "notes": "no id to test detail"
+  },
+  {
+    "module": "Company Members",
+    "method": "DELETE",
+    "endpoint": "/memberships/{id}/",
+    "expected": 204,
+    "status": null,
+    "ok": false,
+    "notes": "no id to test delete"
+  },
+  {
+    "module": "Roles",
+    "method": "GET",
+    "endpoint": "/roles/",
+    "expected": 200,
+    "status": 200,
+    "ok": true,
+    "notes": ""
+  },
+  {
+    "module": "Roles",
+    "method": "POST",
+    "endpoint": "/roles/",
+    "expected": 201,
+    "status": 201,
+    "ok": true,
+    "notes": ""
+  },
+  {
+    "module": "Roles",
+    "method": "GET",
+    "endpoint": "/roles/3/",
+    "expected": 200,
+    "status": 200,
+    "ok": true,
+    "notes": ""
+  },
+  {
+    "module": "Roles",
+    "method": "PATCH",
+    "endpoint": "/roles/3/",
+    "expected": 200,
+    "status": 400,
+    "ok": false,
+    "notes": "{'role_key': ['\"super_adminx\" is not a valid choice.']}"
+  },
+  {
+    "module": "Roles",
+    "method": "PUT",
+    "endpoint": "/roles/3/",
+    "expected": 200,
+    "status": 200,
+    "ok": true,
+    "notes": ""
+  },
+  {
+    "module": "Roles",
+    "method": "DELETE",
+    "endpoint": "/roles/3/",
+    "expected": 204,
+    "status": 204,
+    "ok": true,
+    "notes": ""
+  },
+  {
+    "module": "Permissions",
+    "method": "GET",
+    "endpoint": "/permissions/",
+    "expected": 200,
+    "status": 200,
+    "ok": true,
+    "notes": ""
+  },
+  {
+    "module": "Permissions",
+    "method": "POST",
+    "endpoint": "/permissions/",
+    "expected": 201,
+    "status": 201,
+    "ok": true,
+    "notes": ""
+  },
+  {
+    "module": "Permissions",
+    "method": "GET",
+    "endpoint": "/permissions/1/",
+    "expected": 200,
+    "status": 200,
+    "ok": true,
+    "notes": ""
+  },
+  {
+    "module": "Permissions",
+    "method": "PATCH",
+    "endpoint": "/permissions/1/",
+    "expected": 200,
+    "status": 400,
+    "ok": false,
+    "notes": "{'feature': ['\"dashboardx\" is not a valid choice.']}"
+  },
+  {
+    "module": "Permissions",
+    "method": "PUT",
+    "endpoint": "/permissions/1/",
+    "expected": 200,
+    "status": 200,
+    "ok": true,
+    "notes": ""
+  },
+  {
+    "module": "Permissions",
+    "method": "DELETE",
+    "endpoint": "/permissions/1/",
+    "expected": 204,
+    "status": 204,
+    "ok": true,
+    "notes": ""
+  },
+  {
+    "module": "Departments",
+    "method": "GET",
+    "endpoint": "/departments/",
+    "expected": 200,
+    "status": 200,
+    "ok": true,
+    "notes": ""
+  },
+  {
+    "module": "Departments",
+    "method": "POST",
+    "endpoint": "/departments/",
+    "expected": 201,
+    "status": 201,
+    "ok": true,
+    "notes": ""
+  },
+  {
+    "module": "Departments",
+    "method": "GET",
+    "endpoint": "/departments/1/",
+    "expected": 200,
+    "status": 200,
+    "ok": true,
+    "notes": ""
+  },
+  {
+    "module": "Departments",
+    "method": "PATCH",
+    "endpoint": "/departments/1/",
+    "expected": 200,
+    "status": null,
+    "ok": false,
+    "notes": "no patch field"
+  },
+  {
+    "module": "Departments",
+    "method": "PUT",
+    "endpoint": "/departments/1/",
+    "expected": 200,
+    "status": 200,
+    "ok": true,
+    "notes": ""
+  },
+  {
+    "module": "Departments",
+    "method": "DELETE",
+    "endpoint": "/departments/1/",
+    "expected": 204,
+    "status": 204,
+    "ok": true,
+    "notes": ""
+  },
+  {
+    "module": "Teams",
+    "method": "GET",
+    "endpoint": "/teams/",
+    "expected": 200,
+    "status": 200,
+    "ok": true,
+    "notes": ""
+  },
+  {
+    "module": "Teams",
+    "method": "POST",
+    "endpoint": "/teams/",
+    "expected": 201,
+    "status": 400,
+    "ok": false,
+    "notes": "{'department': ['Invalid pk \"1006\" - object does not exist.']}"
+  },
+  {
+    "module": "Teams",
+    "method": "GET",
+    "endpoint": "/teams/{id}/",
+    "expected": 200,
+    "status": null,
+    "ok": false,
+    "notes": "no id to test detail"
+  },
+  {
+    "module": "Teams",
+    "method": "DELETE",
+    "endpoint": "/teams/{id}/",
+    "expected": 204,
+    "status": null,
+    "ok": false,
+    "notes": "no id to test delete"
+  },
+  {
+    "module": "Projects",
+    "method": "GET",
+    "endpoint": "/projects/",
+    "expected": 200,
+    "status": 200,
+    "ok": true,
+    "notes": ""
+  },
+  {
+    "module": "Projects",
+    "method": "POST",
+    "endpoint": "/projects/",
+    "expected": 201,
+    "status": 201,
+    "ok": true,
+    "notes": ""
+  },
+  {
+    "module": "Projects",
+    "method": "GET",
+    "endpoint": "/projects/3/",
+    "expected": 200,
+    "status": 200,
+    "ok": true,
+    "notes": ""
+  },
+  {
+    "module": "Projects",
+    "method": "PATCH",
+    "endpoint": "/projects/3/",
+    "expected": 200,
+    "status": 200,
+    "ok": true,
+    "notes": ""
+  },
+  {
+    "module": "Projects",
+    "method": "PUT",
+    "endpoint": "/projects/3/",
+    "expected": 200,
+    "status": 200,
+    "ok": true,
+    "notes": ""
+  },
+  {
+    "module": "Projects",
+    "method": "DELETE",
+    "endpoint": "/projects/3/",
+    "expected": 204,
+    "status": 204,
+    "ok": true,
+    "notes": ""
+  },
+  {
+    "module": "Project Phases",
+    "method": "GET",
+    "endpoint": "/projects/phases/",
+    "expected": 200,
+    "status": 200,
+    "ok": true,
+    "notes": ""
+  },
+  {
+    "module": "Project Phases",
+    "method": "POST",
+    "endpoint": "/projects/phases/",
+    "expected": 201,
+    "status": 400,
+    "ok": false,
+    "notes": "{'project': ['Invalid pk \"1007\" - object does not exist.']}"
+  },
+  {
+    "module": "Project Phases",
+    "method": "GET",
+    "endpoint": "/projects/phases/{id}/",
+    "expected": 200,
+    "status": null,
+    "ok": false,
+    "notes": "no id to test detail"
+  },
+  {
+    "module": "Project Phases",
+    "method": "DELETE",
+    "endpoint": "/projects/phases/{id}/",
+    "expected": 204,
+    "status": null,
+    "ok": false,
+    "notes": "no id to test delete"
+  },
+  {
+    "module": "Project Milestones",
+    "method": "GET",
+    "endpoint": "/projects/milestones/",
+    "expected": 200,
+    "status": 200,
+    "ok": true,
+    "notes": ""
+  },
+  {
+    "module": "Project Milestones",
+    "method": "POST",
+    "endpoint": "/projects/milestones/",
+    "expected": 201,
+    "status": 400,
+    "ok": false,
+    "notes": "{'project': ['Invalid pk \"1008\" - object does not exist.']}"
+  },
+  {
+    "module": "Project Milestones",
+    "method": "GET",
+    "endpoint": "/projects/milestones/{id}/",
+    "expected": 200,
+    "status": null,
+    "ok": false,
+    "notes": "no id to test detail"
+  },
+  {
+    "module": "Project Milestones",
+    "method": "DELETE",
+    "endpoint": "/projects/milestones/{id}/",
+    "expected": 204,
+    "status": null,
+    "ok": false,
+    "notes": "no id to test delete"
+  },
+  {
+    "module": "Project Members",
+    "method": "GET",
+    "endpoint": "/project-members/",
+    "expected": 200,
+    "status": 200,
+    "ok": true,
+    "notes": ""
+  },
+  {
+    "module": "Project Members",
+    "method": "POST",
+    "endpoint": "/project-members/",
+    "expected": 201,
+    "status": 400,
+    "ok": false,
+    "notes": "{'project': ['Invalid pk \"1009\" - object does not exist.']}"
+  },
+  {
+    "module": "Project Members",
+    "method": "GET",
+    "endpoint": "/project-members/{id}/",
+    "expected": 200,
+    "status": null,
+    "ok": false,
+    "notes": "no id to test detail"
+  },
+  {
+    "module": "Project Members",
+    "method": "DELETE",
+    "endpoint": "/project-members/{id}/",
+    "expected": 204,
+    "status": null,
+    "ok": false,
+    "notes": "no id to test delete"
+  },
+  {
+    "module": "Discovery",
+    "method": "GET",
+    "endpoint": "/discovery/",
+    "expected": 200,
+    "status": 200,
+    "ok": true,
+    "notes": ""
+  },
+  {
+    "module": "Discovery",
+    "method": "POST",
+    "endpoint": "/discovery/",
+    "expected": 201,
+    "status": 400,
+    "ok": false,
+    "notes": "{'text_content': {'business_problem': ['This field is required.'], 'business_goal': ['This field is required.'], 'current_process': ['This field is required.'],"
+  },
+  {
+    "module": "Discovery",
+    "method": "GET",
+    "endpoint": "/discovery/{id}/",
+    "expected": 200,
+    "status": null,
+    "ok": false,
+    "notes": "no id to test detail"
+  },
+  {
+    "module": "Discovery",
+    "method": "DELETE",
+    "endpoint": "/discovery/{id}/",
+    "expected": 204,
+    "status": null,
+    "ok": false,
+    "notes": "no id to test delete"
+  },
+  {
+    "module": "Documents",
+    "method": "GET",
+    "endpoint": "/documents/",
+    "expected": 200,
+    "status": 200,
+    "ok": true,
+    "notes": ""
+  },
+  {
+    "module": "Documents",
+    "method": "POST",
+    "endpoint": "/documents/",
+    "expected": 201,
+    "status": 400,
+    "ok": false,
+    "notes": "{'project': ['Invalid pk \"1011\" - object does not exist.']}"
+  },
+  {
+    "module": "Documents",
+    "method": "GET",
+    "endpoint": "/documents/{id}/",
+    "expected": 200,
+    "status": null,
+    "ok": false,
+    "notes": "no id to test detail"
+  },
+  {
+    "module": "Documents",
+    "method": "DELETE",
+    "endpoint": "/documents/{id}/",
+    "expected": 204,
+    "status": null,
+    "ok": false,
+    "notes": "no id to test delete"
+  },
+  {
+    "module": "Document Templates",
+    "method": "GET",
+    "endpoint": "/document-templates/",
+    "expected": 200,
+    "status": 200,
+    "ok": true,
+    "notes": ""
+  },
+  {
+    "module": "Document Templates",
+    "method": "POST",
+    "endpoint": "/document-templates/",
+    "expected": 201,
+    "status": 400,
+    "ok": false,
+    "notes": "{'project': ['Invalid pk \"1012\" - object does not exist.'], 'file': ['The submitted data was not a file. Check the encoding type on the form.']}"
+  },
+  {
+    "module": "Document Templates",
+    "method": "GET",
+    "endpoint": "/document-templates/{id}/",
+    "expected": 200,
+    "status": null,
+    "ok": false,
+    "notes": "no id to test detail"
+  },
+  {
+    "module": "Document Templates",
+    "method": "DELETE",
+    "endpoint": "/document-templates/{id}/",
+    "expected": 204,
+    "status": null,
+    "ok": false,
+    "notes": "no id to test delete"
+  },
+  {
+    "module": "AI Engine",
+    "method": "GET",
+    "endpoint": "/ai-engine/assessments/",
+    "expected": 200,
+    "status": 200,
+    "ok": true,
+    "notes": ""
+  },
+  {
+    "module": "AI Engine",
+    "method": "POST",
+    "endpoint": "/ai-engine/assessments/",
+    "expected": 201,
+    "status": 400,
+    "ok": false,
+    "notes": "{'project': ['Invalid pk \"1013\" - object does not exist.']}"
+  },
+  {
+    "module": "AI Engine",
+    "method": "GET",
+    "endpoint": "/ai-engine/assessments/{id}/",
+    "expected": 200,
+    "status": null,
+    "ok": false,
+    "notes": "no id to test detail"
+  },
+  {
+    "module": "AI Engine",
+    "method": "DELETE",
+    "endpoint": "/ai-engine/assessments/{id}/",
+    "expected": 204,
+    "status": null,
+    "ok": false,
+    "notes": "no id to test delete"
+  },
+  {
+    "module": "AI Engine",
+    "method": "GET",
+    "endpoint": "/ai-engine/use-cases/",
+    "expected": 200,
+    "status": 200,
+    "ok": true,
+    "notes": ""
+  },
+  {
+    "module": "AI Engine",
+    "method": "POST",
+    "endpoint": "/ai-engine/use-cases/",
+    "expected": 201,
+    "status": 400,
+    "ok": false,
+    "notes": "{'assessment': ['Invalid pk \"1014\" - object does not exist.']}"
+  },
+  {
+    "module": "AI Engine",
+    "method": "GET",
+    "endpoint": "/ai-engine/use-cases/{id}/",
+    "expected": 200,
+    "status": null,
+    "ok": false,
+    "notes": "no id to test detail"
+  },
+  {
+    "module": "AI Engine",
+    "method": "DELETE",
+    "endpoint": "/ai-engine/use-cases/{id}/",
+    "expected": 204,
+    "status": null,
+    "ok": false,
+    "notes": "no id to test delete"
+  },
+  {
+    "module": "AI Engine",
+    "method": "GET",
+    "endpoint": "/ai-engine/prompts/",
+    "expected": 200,
+    "status": 200,
+    "ok": true,
+    "notes": ""
+  },
+  {
+    "module": "AI Engine",
+    "method": "GET",
+    "endpoint": "/ai-engine/prompts/matrix_template/",
+    "expected": 200,
+    "status": 404,
+    "ok": false,
+    "notes": ""
+  },
+  {
+    "module": "Knowledge Base",
+    "method": "GET",
+    "endpoint": "/knowledge-base/",
+    "expected": 200,
+    "status": 200,
+    "ok": true,
+    "notes": ""
+  },
+  {
+    "module": "Knowledge Base",
+    "method": "POST",
+    "endpoint": "/knowledge-base/",
+    "expected": 201,
+    "status": 400,
+    "ok": false,
+    "notes": "{'project': ['Invalid pk \"1015\" - object does not exist.']}"
+  },
+  {
+    "module": "Knowledge Base",
+    "method": "GET",
+    "endpoint": "/knowledge-base/{id}/",
+    "expected": 200,
+    "status": null,
+    "ok": false,
+    "notes": "no id to test detail"
+  },
+  {
+    "module": "Knowledge Base",
+    "method": "DELETE",
+    "endpoint": "/knowledge-base/{id}/",
+    "expected": 204,
+    "status": null,
+    "ok": false,
+    "notes": "no id to test delete"
+  },
+  {
+    "module": "Chat",
+    "method": "GET",
+    "endpoint": "/chat/conversations/",
+    "expected": 200,
+    "status": 200,
+    "ok": true,
+    "notes": ""
+  },
+  {
+    "module": "Chat",
+    "method": "POST",
+    "endpoint": "/chat/conversations/",
+    "expected": 201,
+    "status": 400,
+    "ok": false,
+    "notes": "{'project': ['Invalid pk \"1016\" - object does not exist.']}"
+  },
+  {
+    "module": "Chat",
+    "method": "GET",
+    "endpoint": "/chat/conversations/{id}/",
+    "expected": 200,
+    "status": null,
+    "ok": false,
+    "notes": "no id to test detail"
+  },
+  {
+    "module": "Chat",
+    "method": "DELETE",
+    "endpoint": "/chat/conversations/{id}/",
+    "expected": 204,
+    "status": null,
+    "ok": false,
+    "notes": "no id to test delete"
+  },
+  {
+    "module": "Chat",
+    "method": "GET",
+    "endpoint": "/chat/messages/",
+    "expected": 200,
+    "status": 200,
+    "ok": true,
+    "notes": ""
+  },
+  {
+    "module": "Chat",
+    "method": "POST",
+    "endpoint": "/chat/messages/",
+    "expected": 201,
+    "status": 400,
+    "ok": false,
+    "notes": "{'conversation': ['Invalid pk \"1017\" - object does not exist.'], 'attachment': ['The submitted data was not a file. Check the encoding type on the form.']}"
+  },
+  {
+    "module": "Chat",
+    "method": "GET",
+    "endpoint": "/chat/messages/{id}/",
+    "expected": 200,
+    "status": null,
+    "ok": false,
+    "notes": "no id to test detail"
+  },
+  {
+    "module": "Chat",
+    "method": "DELETE",
+    "endpoint": "/chat/messages/{id}/",
+    "expected": 204,
+    "status": null,
+    "ok": false,
+    "notes": "no id to test delete"
+  },
+  {
+    "module": "Reviews",
+    "method": "GET",
+    "endpoint": "/reviews/",
+    "expected": 200,
+    "status": 200,
+    "ok": true,
+    "notes": ""
+  },
+  {
+    "module": "Reviews",
+    "method": "POST",
+    "endpoint": "/reviews/",
+    "expected": 201,
+    "status": 400,
+    "ok": false,
+    "notes": "{'project': ['Invalid pk \"1018\" - object does not exist.']}"
+  },
+  {
+    "module": "Reviews",
+    "method": "GET",
+    "endpoint": "/reviews/{id}/",
+    "expected": 200,
+    "status": null,
+    "ok": false,
+    "notes": "no id to test detail"
+  },
+  {
+    "module": "Reviews",
+    "method": "DELETE",
+    "endpoint": "/reviews/{id}/",
+    "expected": 204,
+    "status": null,
+    "ok": false,
+    "notes": "no id to test delete"
+  },
+  {
+    "module": "Approvals",
+    "method": "GET",
+    "endpoint": "/approvals/",
+    "expected": 200,
+    "status": 200,
+    "ok": true,
+    "notes": ""
+  },
+  {
+    "module": "Approvals",
+    "method": "POST",
+    "endpoint": "/approvals/",
+    "expected": 201,
+    "status": 400,
+    "ok": false,
+    "notes": "{'project': ['Invalid pk \"1019\" - object does not exist.']}"
+  },
+  {
+    "module": "Approvals",
+    "method": "GET",
+    "endpoint": "/approvals/{id}/",
+    "expected": 200,
+    "status": null,
+    "ok": false,
+    "notes": "no id to test detail"
+  },
+  {
+    "module": "Approvals",
+    "method": "DELETE",
+    "endpoint": "/approvals/{id}/",
+    "expected": 204,
+    "status": null,
+    "ok": false,
+    "notes": "no id to test delete"
+  },
+  {
+    "module": "Workflows",
+    "method": "GET",
+    "endpoint": "/workflows/",
+    "expected": 200,
+    "status": 200,
+    "ok": true,
+    "notes": ""
+  },
+  {
+    "module": "Workflows",
+    "method": "POST",
+    "endpoint": "/workflows/",
+    "expected": 201,
+    "status": 400,
+    "ok": false,
+    "notes": "{'project': ['Invalid pk \"1020\" - object does not exist.']}"
+  },
+  {
+    "module": "Workflows",
+    "method": "GET",
+    "endpoint": "/workflows/{id}/",
+    "expected": 200,
+    "status": null,
+    "ok": false,
+    "notes": "no id to test detail"
+  },
+  {
+    "module": "Workflows",
+    "method": "DELETE",
+    "endpoint": "/workflows/{id}/",
+    "expected": 204,
+    "status": null,
+    "ok": false,
+    "notes": "no id to test delete"
+  },
+  {
+    "module": "Workflows",
+    "method": "GET",
+    "endpoint": "/workflows/executions/",
+    "expected": 200,
+    "status": 404,
+    "ok": false,
+    "notes": ""
+  },
+  {
+    "module": "Tasks",
+    "method": "GET",
+    "endpoint": "/tasks/",
+    "expected": 200,
+    "status": 200,
+    "ok": true,
+    "notes": ""
+  },
+  {
+    "module": "Tasks",
+    "method": "POST",
+    "endpoint": "/tasks/",
+    "expected": 201,
+    "status": 400,
+    "ok": false,
+    "notes": "{'project': ['Invalid pk \"1021\" - object does not exist.'], 'estimated_hours': ['A valid number is required.'], 'actual_hours': ['A valid number is required.']}"
+  },
+  {
+    "module": "Tasks",
+    "method": "GET",
+    "endpoint": "/tasks/{id}/",
+    "expected": 200,
+    "status": null,
+    "ok": false,
+    "notes": "no id to test detail"
+  },
+  {
+    "module": "Tasks",
+    "method": "DELETE",
+    "endpoint": "/tasks/{id}/",
+    "expected": 204,
+    "status": null,
+    "ok": false,
+    "notes": "no id to test delete"
+  },
+  {
+    "module": "Tasks",
+    "method": "GET",
+    "endpoint": "/tasks/comments/",
+    "expected": 200,
+    "status": 404,
+    "ok": false,
+    "notes": ""
+  },
+  {
+    "module": "Meetings",
+    "method": "GET",
+    "endpoint": "/meetings/",
+    "expected": 200,
+    "status": 200,
+    "ok": true,
+    "notes": ""
+  },
+  {
+    "module": "Meetings",
+    "method": "POST",
+    "endpoint": "/meetings/",
+    "expected": 201,
+    "status": 400,
+    "ok": false,
+    "notes": "{'project': ['Invalid pk \"1022\" - object does not exist.']}"
+  },
+  {
+    "module": "Meetings",
+    "method": "GET",
+    "endpoint": "/meetings/{id}/",
+    "expected": 200,
+    "status": null,
+    "ok": false,
+    "notes": "no id to test detail"
+  },
+  {
+    "module": "Meetings",
+    "method": "DELETE",
+    "endpoint": "/meetings/{id}/",
+    "expected": 204,
+    "status": null,
+    "ok": false,
+    "notes": "no id to test delete"
+  },
+  {
+    "module": "Risks",
+    "method": "GET",
+    "endpoint": "/risks/",
+    "expected": 200,
+    "status": 200,
+    "ok": true,
+    "notes": ""
+  },
+  {
+    "module": "Risks",
+    "method": "POST",
+    "endpoint": "/risks/",
+    "expected": 201,
+    "status": 400,
+    "ok": false,
+    "notes": "{'project': ['Invalid pk \"1023\" - object does not exist.']}"
+  },
+  {
+    "module": "Risks",
+    "method": "GET",
+    "endpoint": "/risks/{id}/",
+    "expected": 200,
+    "status": null,
+    "ok": false,
+    "notes": "no id to test detail"
+  },
+  {
+    "module": "Risks",
+    "method": "DELETE",
+    "endpoint": "/risks/{id}/",
+    "expected": 204,
+    "status": null,
+    "ok": false,
+    "notes": "no id to test delete"
+  },
+  {
+    "module": "Issues",
+    "method": "GET",
+    "endpoint": "/issues/",
+    "expected": 200,
+    "status": 200,
+    "ok": true,
+    "notes": ""
+  },
+  {
+    "module": "Issues",
+    "method": "POST",
+    "endpoint": "/issues/",
+    "expected": 201,
+    "status": 400,
+    "ok": false,
+    "notes": "{'project': ['Invalid pk \"1024\" - object does not exist.']}"
+  },
+  {
+    "module": "Issues",
+    "method": "GET",
+    "endpoint": "/issues/{id}/",
+    "expected": 200,
+    "status": null,
+    "ok": false,
+    "notes": "no id to test detail"
+  },
+  {
+    "module": "Issues",
+    "method": "DELETE",
+    "endpoint": "/issues/{id}/",
+    "expected": 204,
+    "status": null,
+    "ok": false,
+    "notes": "no id to test delete"
+  },
+  {
+    "module": "Architecture",
+    "method": "GET",
+    "endpoint": "/architecture/diagrams/",
+    "expected": 200,
+    "status": 200,
+    "ok": true,
+    "notes": ""
+  },
+  {
+    "module": "Architecture",
+    "method": "GET",
+    "endpoint": "/architecture/tech-stack/",
+    "expected": 200,
+    "status": 200,
+    "ok": true,
+    "notes": ""
+  },
+  {
+    "module": "Security",
+    "method": "GET",
+    "endpoint": "/security/checklists/",
+    "expected": 200,
+    "status": 200,
+    "ok": true,
+    "notes": ""
+  },
+  {
+    "module": "Security",
+    "method": "GET",
+    "endpoint": "/security/vulnerabilities/",
+    "expected": 200,
+    "status": 200,
+    "ok": true,
+    "notes": ""
+  },
+  {
+    "module": "Deployments",
+    "method": "GET",
+    "endpoint": "/deployments/",
+    "expected": 200,
+    "status": 200,
+    "ok": true,
+    "notes": ""
+  },
+  {
+    "module": "Monitoring",
+    "method": "GET",
+    "endpoint": "/monitoring/alerts/",
+    "expected": 200,
+    "status": 200,
+    "ok": true,
+    "notes": ""
+  },
+  {
+    "module": "Monitoring",
+    "method": "GET",
+    "endpoint": "/monitoring/metrics/",
+    "expected": 200,
+    "status": 200,
+    "ok": true,
+    "notes": ""
+  },
+  {
+    "module": "Reports",
+    "method": "GET",
+    "endpoint": "/reports/",
+    "expected": 200,
+    "status": 200,
+    "ok": true,
+    "notes": ""
+  },
+  {
+    "module": "Reports",
+    "method": "POST",
+    "endpoint": "/reports/",
+    "expected": 201,
+    "status": 400,
+    "ok": false,
+    "notes": "{'project': ['Invalid pk \"1025\" - object does not exist.'], 'file': ['The submitted data was not a file. Check the encoding type on the form.']}"
+  },
+  {
+    "module": "Reports",
+    "method": "GET",
+    "endpoint": "/reports/{id}/",
+    "expected": 200,
+    "status": null,
+    "ok": false,
+    "notes": "no id to test detail"
+  },
+  {
+    "module": "Reports",
+    "method": "DELETE",
+    "endpoint": "/reports/{id}/",
+    "expected": 204,
+    "status": null,
+    "ok": false,
+    "notes": "no id to test delete"
+  },
+  {
+    "module": "Dashboard",
+    "method": "GET",
+    "endpoint": "/dashboard/widgets/",
+    "expected": 200,
+    "status": 200,
+    "ok": true,
+    "notes": ""
+  },
+  {
+    "module": "Notifications",
+    "method": "GET",
+    "endpoint": "/notifications/",
+    "expected": 200,
+    "status": 200,
+    "ok": true,
+    "notes": ""
+  },
+  {
+    "module": "Notifications",
+    "method": "POST",
+    "endpoint": "/notifications/",
+    "expected": 201,
+    "status": 500,
+    "ok": false,
+    "notes": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\">\n  <meta name=\"robots\" content=\"NONE,NOARCHIVE\">\n  "
+  },
+  {
+    "module": "Notifications",
+    "method": "GET",
+    "endpoint": "/notifications/{id}/",
+    "expected": 200,
+    "status": null,
+    "ok": false,
+    "notes": "no id to test detail"
+  },
+  {
+    "module": "Notifications",
+    "method": "DELETE",
+    "endpoint": "/notifications/{id}/",
+    "expected": 204,
+    "status": null,
+    "ok": false,
+    "notes": "no id to test delete"
+  },
+  {
+    "module": "Notifications",
+    "method": "GET",
+    "endpoint": "/notifications/preferences/",
+    "expected": 200,
+    "status": 404,
+    "ok": false,
+    "notes": ""
+  },
+  {
+    "module": "Audit Logs",
+    "method": "GET",
+    "endpoint": "/audit-logs/",
+    "expected": 200,
+    "status": 200,
+    "ok": true,
+    "notes": ""
+  },
+  {
+    "module": "Integrations",
+    "method": "GET",
+    "endpoint": "/integrations/",
+    "expected": 200,
+    "status": 200,
+    "ok": true,
+    "notes": ""
+  },
+  {
+    "module": "Integrations",
+    "method": "POST",
+    "endpoint": "/integrations/",
+    "expected": 201,
+    "status": 400,
+    "ok": false,
+    "notes": "{'project': ['Invalid pk \"1027\" - object does not exist.']}"
+  },
+  {
+    "module": "Integrations",
+    "method": "GET",
+    "endpoint": "/integrations/{id}/",
+    "expected": 200,
+    "status": null,
+    "ok": false,
+    "notes": "no id to test detail"
+  },
+  {
+    "module": "Integrations",
+    "method": "DELETE",
+    "endpoint": "/integrations/{id}/",
+    "expected": 204,
+    "status": null,
+    "ok": false,
+    "notes": "no id to test delete"
+  },
+  {
+    "module": "Settings",
+    "method": "GET",
+    "endpoint": "/settings/system/",
+    "expected": 200,
+    "status": 200,
+    "ok": true,
+    "notes": ""
+  },
+  {
+    "module": "Settings",
+    "method": "GET",
+    "endpoint": "/settings/profile/",
+    "expected": 200,
+    "status": 200,
+    "ok": true,
+    "notes": ""
+  },
+  {
+    "module": "Subscriptions",
+    "method": "GET",
+    "endpoint": "/subscriptions/plans/",
+    "expected": 200,
+    "status": 200,
+    "ok": true,
+    "notes": ""
+  },
+  {
+    "module": "Subscriptions",
+    "method": "GET",
+    "endpoint": "/subscriptions/subscriptions/",
+    "expected": 200,
+    "status": 200,
+    "ok": true,
+    "notes": ""
+  },
+  {
+    "module": "Utility",
+    "method": "GET",
+    "endpoint": "/schema/",
+    "expected": 200,
+    "status": 200,
+    "ok": true,
+    "notes": ""
+  },
+  {
+    "module": "Utility",
+    "method": "GET",
+    "endpoint": "/docs/",
+    "expected": 200,
+    "status": 200,
+    "ok": true,
+    "notes": ""
+  }
+]
