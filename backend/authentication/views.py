@@ -1,5 +1,5 @@
 from rest_framework import status, viewsets
-from rest_framework import filters
+from rest_framework import filters, serializers
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -41,7 +41,12 @@ class RegisterAPIView(APIView):
 
     def post(self, request):
         serializer = RegisterSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
+        if not serializer.is_valid():
+            import json as _json
+
+            print("REGISTER-DEBUG body:", _json.dumps(request.data)[:1000])
+            print("REGISTER-DEBUG errors:", _json.dumps(serializer.errors)[:1000])
+            raise serializers.ValidationError(serializer.errors)
 
         result = serializer.create(serializer.validated_data)
         user = result["user"]
@@ -440,6 +445,9 @@ class LoginHistoryViewSet(viewsets.ReadOnlyModelViewSet):
         """
 
         from company_members.models import CompanyMember
+
+        if getattr(self, "swagger_fake_view", False):
+            return LoginHistory.objects.none()
 
         queryset = (
             LoginHistory.objects.select_related(

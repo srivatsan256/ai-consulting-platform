@@ -3,6 +3,7 @@ from rest_framework import status, viewsets
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from drf_spectacular.utils import OpenApiTypes, extend_schema
 
 from .models import Project, ProjectPhase, Milestone, LevelModule, ProjectDocument
 from .serializers import (
@@ -73,6 +74,11 @@ def _tenant_scoped_project(request, pk):
 class LevelModuleListView(APIView):
     permission_classes = [IsAuthenticated]
 
+    @extend_schema(
+        operation_id="level_modules_list",
+        summary="List level modules",
+        responses={200: LevelModuleSerializer(many=True)},
+    )
     def get(self, request):
         modules = LevelModule.objects.all()
         return Response(
@@ -84,6 +90,11 @@ class LevelModuleListView(APIView):
 class ProjectListCreateView(APIView):
     permission_classes = [IsAuthenticated]
 
+    @extend_schema(
+        operation_id="projects_list",
+        summary="List projects",
+        responses={200: ProjectSerializer(many=True)},
+    )
     def get(self, request):
         queryset = Project.objects.select_related("company")
         company = _tenant_company(request)
@@ -99,6 +110,12 @@ class ProjectListCreateView(APIView):
             status=status.HTTP_200_OK,
         )
 
+    @extend_schema(
+        operation_id="projects_create",
+        summary="Create a project",
+        request=ProjectSerializer,
+        responses={201: ProjectSerializer},
+    )
     def post(self, request):
         serializer = ProjectSerializer(
             data=request.data,
@@ -115,6 +132,11 @@ class ProjectListCreateView(APIView):
 class ProjectDetailView(APIView):
     permission_classes = [IsAuthenticated]
 
+    @extend_schema(
+        operation_id="projects_retrieve",
+        summary="Retrieve a project",
+        responses={200: ProjectSerializer},
+    )
     def get(self, request, pk):
         project = _tenant_scoped_project(request, pk)
         return Response(
@@ -125,6 +147,12 @@ class ProjectDetailView(APIView):
             status=status.HTTP_200_OK,
         )
 
+    @extend_schema(
+        operation_id="projects_partial_update",
+        summary="Partially update a project",
+        request=ProjectSerializer,
+        responses={200: ProjectSerializer},
+    )
     def patch(self, request, pk):
         project = _tenant_scoped_project(request, pk)
         serializer = ProjectSerializer(
@@ -140,9 +168,20 @@ class ProjectDetailView(APIView):
             status=status.HTTP_200_OK,
         )
 
+    @extend_schema(
+        operation_id="projects_update",
+        summary="Update a project",
+        request=ProjectSerializer,
+        responses={200: ProjectSerializer},
+    )
     def put(self, request, pk):
         return self.patch(request, pk)
 
+    @extend_schema(
+        operation_id="projects_destroy",
+        summary="Delete a project",
+        responses={204: None},
+    )
     def delete(self, request, pk):
         project = _tenant_scoped_project(request, pk)
         project.delete()
@@ -152,6 +191,22 @@ class ProjectDetailView(APIView):
 class ProjectDocumentUploadView(APIView):
     permission_classes = [IsAuthenticated]
 
+    @extend_schema(
+        operation_id="projects_document_upload",
+        summary="Upload a document for a project",
+        request={
+            "multipart/form-data": {
+                "type": "object",
+                "properties": {
+                    "file": {"type": "string", "format": "binary"},
+                    "doc_type": {"type": "string"},
+                    "level": {"type": "integer"},
+                },
+                "required": ["file"],
+            }
+        },
+        responses={201: ProjectDocumentSerializer},
+    )
     def post(self, request, pk):
         project = _tenant_scoped_project(request, pk)
 
@@ -199,6 +254,19 @@ class ProjectDocumentUploadView(APIView):
 class ProjectVerifyView(APIView):
     permission_classes = [IsAuthenticated]
 
+    @extend_schema(
+        operation_id="projects_verify",
+        summary="Verify a project",
+        request={
+            "application/json": {
+                "type": "object",
+                "properties": {
+                    "use_ai": {"type": "boolean"},
+                },
+            }
+        },
+        responses={200: OpenApiTypes.OBJECT},
+    )
     def post(self, request, pk):
         project = _tenant_scoped_project(request, pk)
         use_ai = bool(request.data.get("use_ai", False))
@@ -209,6 +277,27 @@ class ProjectVerifyView(APIView):
 class ProjectChatView(APIView):
     permission_classes = [IsAuthenticated]
 
+    @extend_schema(
+        operation_id="projects_chat",
+        summary="Ask a question about a project",
+        request={
+            "application/json": {
+                "type": "object",
+                "properties": {
+                    "question": {"type": "string"},
+                },
+                "required": ["question"],
+            }
+        },
+        responses={
+            200: {
+                "type": "object",
+                "properties": {
+                    "answer": {"type": "string"},
+                },
+            }
+        },
+    )
     def post(self, request, pk):
         project = _tenant_scoped_project(request, pk)
         question = request.data.get("question", "")
@@ -221,6 +310,19 @@ class ProjectChatView(APIView):
 class ProjectDeliverablesView(APIView):
     permission_classes = [IsAuthenticated]
 
+    @extend_schema(
+        operation_id="projects_generate_deliverables",
+        summary="Generate deliverables archive for a project",
+        request=None,
+        responses={
+            200: {
+                "type": "object",
+                "properties": {
+                    "zip_download_url": {"type": "string"},
+                },
+            }
+        },
+    )
     def post(self, request, pk):
         project = _tenant_scoped_project(request, pk)
         url = generate_deliverables(project, request=request)
@@ -233,6 +335,11 @@ class ProjectDeliverablesView(APIView):
 class RequiredDocStatusView(APIView):
     permission_classes = [IsAuthenticated]
 
+    @extend_schema(
+        operation_id="projects_required_doc_status",
+        summary="Get required document status for a project level",
+        responses={200: OpenApiTypes.OBJECT},
+    )
     def get(self, request, pk):
         project = _tenant_scoped_project(request, pk)
         level = max(1, project.current_level or 1)

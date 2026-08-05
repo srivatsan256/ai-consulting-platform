@@ -11,3 +11,5 @@ class AuthenticationConfig(AppConfig):
             import authentication.signals  # type: ignore # noqa: F401
         except ImportError:
             pass
+
+        import authentication.schemas  # noqa: F401

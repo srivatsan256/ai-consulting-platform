@@ -500,7 +500,7 @@ class LoginHistorySerializer(serializers.ModelSerializer):
 
     user_email = serializers.SerializerMethodField()
 
-    def get_user_email(self, obj):
+    def get_user_email(self, obj) -> str | None:
         user = getattr(obj, "user", None)
         if user is None:
             return None
@@ -508,7 +508,7 @@ class LoginHistorySerializer(serializers.ModelSerializer):
 
     company_name = serializers.SerializerMethodField()
 
-    def get_company_name(self, obj):
+    def get_company_name(self, obj) -> str | None:
         company = getattr(obj, "company", None)
         if company is None:
             return None

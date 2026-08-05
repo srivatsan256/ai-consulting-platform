@@ -48,7 +48,7 @@ class ProjectDocumentSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = fields
 
-    def get_file_url(self, obj):
+    def get_file_url(self, obj) -> str | None:
         if not obj.file:
             return None
         request = self.context.get("request")
@@ -111,7 +111,7 @@ class ProjectSerializer(serializers.ModelSerializer):
             return obj.project_manager.get_full_name() or obj.project_manager.username
         return None
 
-    def get_documents(self, obj):
+    def get_documents(self, obj) -> list:
         return ProjectDocumentSerializer(
             obj.uploaded_documents.all(),
             many=True,
