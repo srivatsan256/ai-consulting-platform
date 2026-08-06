@@ -34,3 +34,10 @@ class DepartmentViewSet(viewsets.ModelViewSet):
     ordering = ["-created_at"]
 
     permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        tenant = getattr(self.request, "tenant", None)
+        if tenant and tenant.company:
+            return queryset.filter(company=tenant.company)
+        return queryset.none()

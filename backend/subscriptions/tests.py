@@ -1,5 +1,3 @@
-from datetime import date
-
 from django.test import TestCase
 from rest_framework.exceptions import ValidationError
 
@@ -7,15 +5,12 @@ from companies.models import Company
 from core.tests_helpers import create_company
 from subscriptions.models import (
     CompanyFeatureOverride,
-    CompanySubscription,
     FeatureFlag,
     SubscriptionPlan,
-    SubscriptionStatus,
 )
 from subscriptions.services.feature_flag_service import FeatureFlagService
 from subscriptions.services.usage_service import QuotaService, UsageService
 from subscriptions.services.service import SubscriptionService
-from django.utils import timezone
 
 
 class FeatureFlagServiceTests(TestCase):

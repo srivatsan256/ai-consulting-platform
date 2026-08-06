@@ -25,6 +25,18 @@ class CompanyMemberViewSet(viewsets.ModelViewSet):
         return CompanyMember.objects.for_user(user)
 
     def perform_create(self, serializer):
+        company = serializer.validated_data.get("company")
+        if company is not None:
+            from subscriptions.services.usage_service import QuotaService
+
+            QuotaService.check(
+                company,
+                "users",
+                CompanyMember.objects.filter(
+                    company=company,
+                    is_active=True,
+                ).count(),
+            )
         serializer.save(user=self.request.user)
 
     @action(detail=False, methods=["post"], url_path="switch")

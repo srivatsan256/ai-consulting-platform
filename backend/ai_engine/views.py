@@ -7,6 +7,7 @@ from .models import AIAssessment, AIUseCase
 from .serializers import AIAssessmentSerializer, AIUseCaseSerializer
 from .filters import AIAssessmentFilter
 from core.ai_service import get_llm_client
+from core.enforcement import TenantEnforcement
 from core.vector_store import add_document as add_to_vector_store
 from core.prompt_manager import render_prompt, get_prompt
 from projects.models import Project
@@ -38,6 +39,13 @@ class AIAssessmentViewSet(viewsets.ModelViewSet):
     ordering = ["-created_at"]
 
     permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        tenant = getattr(self.request, "tenant", None)
+        if tenant and tenant.company:
+            return queryset.filter(project__company=tenant.company)
+        return queryset.none()
 
     def _get_project_context(self, project):
         parts = [
@@ -81,6 +89,8 @@ class AIAssessmentViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=["post"])
     def ai_analyze(self, request, pk=None):
+        TenantEnforcement.require_subscription(request)
+        TenantEnforcement.require_feature(request, "custom_rag")
         assessment = self.get_object()
         project = assessment.project
         project_context = self._get_project_context(project)
@@ -115,6 +125,7 @@ class AIAssessmentViewSet(viewsets.ModelViewSet):
                     "score": assessment.overall_score,
                 },
             )
+            TenantEnforcement.record_usage(request, "ai_requests_per_month")
             return Response({
                 "message": "AI analysis completed.",
                 "analysis": ai_response,
@@ -128,6 +139,8 @@ class AIAssessmentViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=["post"])
     def ai_recommend(self, request, pk=None):
+        TenantEnforcement.require_subscription(request)
+        TenantEnforcement.require_feature(request, "custom_rag")
         assessment = self.get_object()
         project = assessment.project
         project_context = self._get_project_context(project)
@@ -167,6 +180,7 @@ class AIAssessmentViewSet(viewsets.ModelViewSet):
             ai_response = response.choices[0].message.content
             assessment.recommendations = ai_response
             assessment.save(update_fields=["recommendations"])
+            TenantEnforcement.record_usage(request, "ai_requests_per_month")
             return Response({
                 "message": "AI recommendations generated.",
                 "recommendations": ai_response,

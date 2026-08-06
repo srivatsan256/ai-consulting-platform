@@ -117,6 +117,17 @@ class ProjectListCreateView(APIView):
         responses={201: ProjectSerializer},
     )
     def post(self, request):
+        from core.enforcement import TenantEnforcement
+
+        tenant = TenantEnforcement.require_subscription(request)
+        TenantEnforcement.check_quota(
+            tenant,
+            "projects",
+            Project.objects.filter(
+                company=tenant.company,
+                is_active=True,
+            ).count(),
+        )
         serializer = ProjectSerializer(
             data=request.data,
             context={"request": request},

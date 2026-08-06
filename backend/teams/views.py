@@ -9,6 +9,13 @@ class TeamViewSet(viewsets.ModelViewSet):
     serializer_class = TeamSerializer
     permission_classes = [IsAuthenticated]
 
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        tenant = getattr(self.request, "tenant", None)
+        if tenant and tenant.company:
+            return queryset.filter(department__company=tenant.company)
+        return queryset.none()
+
     queryset = Team.objects.select_related("department", "department__company")
 
     filterset_fields = ["department", "is_active"]
