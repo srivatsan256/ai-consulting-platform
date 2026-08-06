@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useCallback, useEffect } from "react";
 import { ROLES_DATA } from "../constants/roles";
-import { authService, TOKEN_KEY } from "../services/api";
+import { authService, TOKEN_KEY, companyService, subscriptionService } from "../services/api";
 
 const AuthContext = createContext(null);
 
@@ -37,7 +37,34 @@ export function AuthProvider({ children }) {
     const stored = localStorage.getItem("user");
     return stored ? JSON.parse(stored) : null;
   });
+  const [tenant, setTenant] = useState(null);
+  const [plan, setPlan] = useState(null);
   const [authReady, setAuthReady] = useState(false);
+
+  const loadTenant = useCallback(async () => {
+    try {
+      const [contextRes, featuresRes, usageRes, quotasRes] = await Promise.all([
+        companyService.context(),
+        subscriptionService.features(),
+        subscriptionService.usage(),
+        subscriptionService.quotas(),
+      ]);
+      setTenant({
+        company: contextRes.data?.data?.company || null,
+        settings: contextRes.data?.data?.settings || null,
+        onboarding: contextRes.data?.data?.onboarding || null,
+      });
+      setPlan({
+        features: featuresRes.data || {},
+        usage: usageRes.data?.period || [],
+        quotas: quotasRes.data?.quotas || [],
+        plan: quotasRes.data?.plan || null,
+      });
+    } catch {
+      setTenant(null);
+      setPlan(null);
+    }
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -54,6 +81,7 @@ export function AuthProvider({ children }) {
         const built = buildUser(res.data.data);
         setUser(built);
         localStorage.setItem("user", JSON.stringify(built));
+        await loadTenant();
       } catch {
         authService.logout();
         if (!cancelled) setUser(null);
@@ -65,7 +93,7 @@ export function AuthProvider({ children }) {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [loadTenant]);
 
   const login = useCallback(async (email, password, _toggleRole) => {
     const res = await authService.login(email, password);
@@ -81,8 +109,9 @@ export function AuthProvider({ children }) {
     });
     setUser(built);
     localStorage.setItem("user", JSON.stringify(built));
+    await loadTenant();
     return built;
-  }, []);
+  }, [loadTenant]);
 
   const register = useCallback(async (data) => {
     const res = await authService.register(data);
@@ -98,22 +127,28 @@ export function AuthProvider({ children }) {
     });
     setUser(built);
     localStorage.setItem("user", JSON.stringify(built));
+    await loadTenant();
     return built;
-  }, []);
+  }, [loadTenant]);
 
   const logout = useCallback(() => {
     authService.logout();
     setUser(null);
+    setTenant(null);
+    setPlan(null);
   }, []);
 
   return (
     <AuthContext.Provider
       value={{
         user,
+        tenant,
+        plan,
         authReady,
         login,
         register,
         logout,
+        loadTenant,
         isAdmin: user?.role === "admin",
         isClient: user?.role === "client",
       }}

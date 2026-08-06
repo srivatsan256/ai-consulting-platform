@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { projectService } from "../services/api";
+import { projectService, getApiError } from "../services/api";
 import TopHeader from "../components/TopHeader";
 
 const STATUS_COLORS = {
@@ -25,6 +25,7 @@ export default function ProjectsPage({ onSelectProject }) {
     team_members: "", expected_timeline: "",
   });
   const [submitting, setSubmitting] = useState(false);
+  const [formError, setFormError] = useState(null);
   const [search, setSearch] = useState("");
   const [filterStatus, setFilterStatus] = useState("ALL");
 
@@ -44,6 +45,7 @@ export default function ProjectsPage({ onSelectProject }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmitting(true);
+    setFormError(null);
     try {
       if (editingProject) {
         await projectService.update(editingProject.id, form);
@@ -55,7 +57,7 @@ export default function ProjectsPage({ onSelectProject }) {
       resetForm();
       fetchProjects();
     } catch (err) {
-      console.error("Failed to save project:", err);
+      setFormError(getApiError(err, "Failed to save project."));
     } finally {
       setSubmitting(false);
     }
@@ -82,6 +84,7 @@ export default function ProjectsPage({ onSelectProject }) {
     });
     setEditingProject(project);
     setShowCreate(true);
+    setFormError(null);
   };
 
   const resetForm = () => {
@@ -218,13 +221,19 @@ export default function ProjectsPage({ onSelectProject }) {
                 {editingProject ? "Edit Project" : "New Project"}
               </h3>
               <button
-                onClick={() => { setShowCreate(false); setEditingProject(null); }}
+                onClick={() => { setShowCreate(false); setEditingProject(null); setFormError(null); }}
                 className="p-2 rounded-lg hover:bg-surface-container transition-colors"
               >
                 <span className="material-symbols-outlined text-[20px]">close</span>
               </button>
             </div>
             <form onSubmit={handleSubmit} className="p-6 space-y-4">
+              {formError && (
+                <div className="flex items-start gap-2 px-4 py-3 rounded-xl bg-error/10 border border-error/30 text-on-surface text-sm">
+                  <span className="material-symbols-outlined text-[18px] text-error shrink-0">error</span>
+                  <span>{formError}</span>
+                </div>
+              )}
               <div>
                 <label className="block font-label-md text-[11px] uppercase tracking-wider text-on-surface-variant mb-1.5">
                   Company Name *
@@ -305,7 +314,7 @@ export default function ProjectsPage({ onSelectProject }) {
               <div className="flex gap-3 pt-2">
                 <button
                   type="button"
-                  onClick={() => { setShowCreate(false); setEditingProject(null); }}
+                  onClick={() => { setShowCreate(false); setEditingProject(null); setFormError(null); }}
                   className="flex-1 py-2.5 rounded-xl border border-outline-variant/40 text-on-surface-variant text-sm font-medium hover:bg-surface-container transition-colors"
                 >
                   Cancel

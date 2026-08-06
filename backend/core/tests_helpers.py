@@ -73,4 +73,9 @@ def create_project(company, name="Test Project", **kwargs):
 
 
 def authenticate(client, user):
-    client.force_authenticate(user=user)
+    """Authenticate a test client via a real JWT so the full auth + tenant
+    resolution path (including ``request.tenant``) is exercised."""
+    from rest_framework_simplejwt.tokens import RefreshToken
+
+    access = RefreshToken.for_user(user).access_token
+    client.credentials(HTTP_AUTHORIZATION=f"Bearer {access}")

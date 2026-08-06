@@ -49,6 +49,30 @@ class CustomJWTAuthentication(JWTAuthentication):
 
         return user
 
+    def authenticate(self, request):
+        """
+        Authenticate the request and attach the resolved tenant context.
+
+        ``TenantMiddleware`` runs before DRF authentication, so it cannot
+        resolve a tenant for token-authenticated requests. Resolve it here
+        (after the user is known) so ``request.tenant`` is available to
+        permissions, views and services.
+        """
+        result = super().authenticate(request)
+
+        if result is not None:
+            user, validated_token = result
+            from core.services.tenant_resolution_service import (
+                TenantResolutionService,
+            )
+
+            request.tenant = TenantResolutionService().resolve_for_user(
+                user=user,
+                company_id=validated_token.get("company_id"),
+            )
+
+        return result
+
 
 class CustomTokenRefreshSerializer(TokenRefreshSerializer):
     """

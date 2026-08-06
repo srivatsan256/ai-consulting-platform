@@ -20,23 +20,24 @@ class CompanyMemberViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
-        if user.is_superuser:
+        if user.is_superuser: # type: ignore
             return CompanyMember.objects.all()
-        return CompanyMember.objects.for_user(user)
+        return CompanyMember.objects.for_user(user) # type: ignore
 
     def perform_create(self, serializer):
         company = serializer.validated_data.get("company")
         if company is not None:
             from subscriptions.services.usage_service import QuotaService
 
-            QuotaService.check(
-                company,
-                "users",
-                CompanyMember.objects.filter(
-                    company=company,
-                    is_active=True,
-                ).count(),
-            )
+            if QuotaService.get_active_subscription(company) is not None:
+                QuotaService.check(
+                    company,
+                    "users",
+                    CompanyMember.objects.filter(
+                        company=company,
+                        is_active=True,
+                    ).count(),
+                )
         serializer.save(user=self.request.user)
 
     @action(detail=False, methods=["post"], url_path="switch")
@@ -64,14 +65,14 @@ class CompanyMemberViewSet(viewsets.ModelViewSet):
             )
 
         # Set as primary
-        CompanyMember.objects.set_primary(user, membership.company)
+        CompanyMember.objects.set_primary(user, membership.company) # type: ignore
 
         # Update JWT claim or return new token
         # For now, return success with updated membership
         return Response(
             {
                 "detail": "Company switched successfully.",
-                "company_id": membership.company_id,
+                "company_id": membership.company_id, # type: ignore
                 "company_name": membership.company.company_name,
                 "role": membership.role.display_name,
             },

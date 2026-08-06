@@ -10,6 +10,21 @@ const api = axios.create({
 export const TOKEN_KEY = "access_token";
 export const REFRESH_KEY = "refresh_token";
 
+export function getApiError(error, fallback = "Something went wrong.") {
+  const data = error?.response?.data;
+  if (!data) return error?.message || fallback;
+  if (typeof data === "string") return data;
+  if (typeof data.detail === "string") return data.detail;
+  if (typeof data.message === "string") return data.message;
+  if (Array.isArray(data.non_field_errors) && data.non_field_errors.length) {
+    return data.non_field_errors.join(", ");
+  }
+  if (data.errors && typeof data.errors !== "object") return String(data.errors);
+  const field = Object.keys(data)[0];
+  if (field && Array.isArray(data[field])) return data[field].join(", ");
+  return fallback;
+}
+
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem(TOKEN_KEY);
   if (token) config.headers.Authorization = `Bearer ${token}`;
@@ -121,6 +136,22 @@ export const deliverableService = {
 export const levelModuleService = {
   getAll: () => api.get("/projects/level-modules/"),
   get: (level) => api.get(`/projects/level-modules/?level=${level}`),
+};
+
+export const membershipService = {
+  current: () => api.get("/memberships/current/"),
+  list: () => api.get("/memberships/"),
+  switchCompany: (companyId) => api.post("/memberships/switch/", { company_id: companyId }),
+};
+
+export const companyService = {
+  context: () => api.get("/companies/context/"),
+};
+
+export const subscriptionService = {
+  features: () => api.get("/subscriptions/subscriptions/features/"),
+  usage: () => api.get("/subscriptions/subscriptions/usage/"),
+  quotas: () => api.get("/subscriptions/subscriptions/quotas/"),
 };
 
 export default api;

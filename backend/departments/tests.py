@@ -5,6 +5,7 @@ from rest_framework.test import APITestCase
 from core.tests_helpers import (
     authenticate,
     create_company,
+    create_member,
     create_user,
 )
 from departments.models import Department
@@ -59,6 +60,7 @@ class DepartmentViewSetTests(APITestCase):
     def setUp(self):
         self.user = create_user(username="dept_user", email="dept@example.com")
         self.company = create_company(name="Dept API Corp")
+        create_member(self.user, self.company)
         self.list_url = reverse("department-list")
 
     def test_requires_authentication(self):

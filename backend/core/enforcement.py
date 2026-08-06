@@ -68,10 +68,16 @@ class TenantEnforcement:
         """
         Raise a ``ValidationError`` when ``current_count`` meets or exceeds
         the tenant's plan limit for ``resource``.
+
+        Fail-open when the tenant has no active subscription: without a plan
+        there is no defined limit, so resource creation (e.g. during
+        onboarding) is not blocked.
         """
         from subscriptions.services.usage_service import QuotaService
 
         tenant = TenantEnforcement.require_tenant(request)
+        if QuotaService.get_active_subscription(tenant.company) is None:
+            return tenant
         QuotaService.check(tenant.company, resource, current_count)
         return tenant
 

@@ -2,7 +2,12 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from core.tests_helpers import authenticate, create_company, create_user
+from core.tests_helpers import (
+    authenticate,
+    create_company,
+    create_member,
+    create_user,
+)
 from departments.models import Department
 from teams.models import Team
 
@@ -39,6 +44,7 @@ class TeamViewSetTests(APITestCase):
     def setUp(self):
         self.user = create_user(username="team_user", email="team@example.com")
         self.company = create_company(name="Team API Corp")
+        create_member(self.user, self.company)
         self.department = Department.objects.create(
             company=self.company,
             name="Engineering",

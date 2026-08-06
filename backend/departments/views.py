@@ -41,3 +41,10 @@ class DepartmentViewSet(viewsets.ModelViewSet):
         if tenant and tenant.company:
             return queryset.filter(company=tenant.company)
         return queryset.none()
+
+    def perform_create(self, serializer):
+        tenant = getattr(self.request, "tenant", None)
+        serializer.save(
+            company=tenant.company if tenant and tenant.company else None,
+            created_by=self.request.user,
+        )

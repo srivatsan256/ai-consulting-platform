@@ -1,8 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
-import { projectService, chatService } from "../services/api";
+import { projectService, chatService, getApiError } from "../services/api";
+import { useAuth } from "../context/AuthContext";
 import TopHeader from "../components/TopHeader";
 
 export default function AIChatPage({ projectId, onSelectProject }) {
+  const { plan } = useAuth();
+  const aiEnabled = !plan || Boolean(plan.features?.custom_rag);
   const [projects, setProjects] = useState([]);
   const [selectedId, setSelectedId] = useState(projectId || "");
   const [messages, setMessages] = useState([]);
@@ -36,7 +39,8 @@ export default function AIChatPage({ projectId, onSelectProject }) {
       const res = await chatService.ask(selectedId, q);
       setMessages((prev) => [...prev, { role: "assistant", content: res.data.answer }]);
     } catch (err) {
-      setMessages((prev) => [...prev, { role: "assistant", content: "Failed to get a response. Please ensure the backend is running and documents are uploaded." }]);
+      const detail = getApiError(err, "Failed to get a response. Please ensure the backend is running and documents are uploaded.");
+      setMessages((prev) => [...prev, { role: "assistant", content: detail }]);
     } finally {
       setLoading(false);
     }
@@ -58,6 +62,19 @@ export default function AIChatPage({ projectId, onSelectProject }) {
   return (
     <div className="space-y-6">
       <TopHeader title="AI Assistant" subtitle="Chat with project knowledge" />
+
+      {!aiEnabled && (
+        <div className="bg-white rounded-xl soft-shadow border border-outline-variant/20 p-8 text-center">
+          <span className="material-symbols-outlined text-[56px] text-outline-variant">lock</span>
+          <h3 className="font-headline-sm text-lg font-bold text-on-surface mt-3">
+            Custom RAG not available on your plan
+          </h3>
+          <p className="text-on-surface-variant text-sm mt-1 max-w-md mx-auto">
+            This feature requires the custom_rag add-on. Ask your company admin to upgrade the
+            subscription to enable AI document chat.
+          </p>
+        </div>
+      )}
 
       {/* Project Selector */}
       <div className="bg-white rounded-xl soft-shadow border border-outline-variant/20 p-4">
@@ -135,13 +152,13 @@ export default function AIChatPage({ projectId, onSelectProject }) {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleSend()}
-              placeholder={selectedId ? "Ask a question about the project documents..." : "Select a project first"}
-              disabled={!selectedId}
+              placeholder={!aiEnabled ? "Custom RAG is disabled on this plan" : selectedId ? "Ask a question about the project documents..." : "Select a project first"}
+              disabled={!selectedId || !aiEnabled}
               className="flex-1 px-4 py-3 rounded-xl border border-outline-variant/40 text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 disabled:opacity-50"
             />
             <button
               onClick={handleSend}
-              disabled={!input.trim() || !selectedId || loading}
+              disabled={!input.trim() || !selectedId || loading || !aiEnabled}
               className="px-5 py-3 bg-primary text-on-primary rounded-xl font-bold text-sm hover:opacity-90 disabled:opacity-50 transition-all flex items-center gap-2"
             >
               <span className="material-symbols-outlined text-[18px]">send</span>

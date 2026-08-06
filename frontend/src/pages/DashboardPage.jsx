@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { projectService } from '../services/api';
+import { useAuth } from '../context/AuthContext';
 
 function formatDate(value) {
   if (!value) return 'N/A';
@@ -15,7 +16,38 @@ function getStatusTone(status) {
   return 'bg-blue-50 text-blue-700';
 }
 
+function featureLabel(code) {
+  const labels = {
+    custom_rag: 'Custom RAG',
+    advanced_reports: 'Advanced Reports',
+    custom_integrations: 'Custom Integrations',
+  };
+  return labels[code] || code.replace(/_/g, ' ');
+}
+
+function QuotaBar({ label, used, limit }) {
+  const pct = limit > 0 ? Math.min(100, Math.round(((used || 0) / limit) * 100)) : 0;
+  const nearLimit = pct >= 90;
+  return (
+    <div>
+      <div className="flex items-center justify-between mb-1">
+        <p className="text-xs text-on-surface font-medium">{label}</p>
+        <p className="text-[11px] text-on-surface-variant">
+          {used ?? 0} / {limit}
+        </p>
+      </div>
+      <div className="w-full h-1.5 bg-surface-container rounded-full overflow-hidden">
+        <div
+          className={`h-full rounded-full transition-all ${nearLimit ? "bg-red-500" : "bg-primary"}`}
+          style={{ width: `${pct}%` }}
+        />
+      </div>
+    </div>
+  );
+}
+
 export default function DashboardPage({ user, onOpenProject, onNewProject, onViewAllProjects }) {
+  const { plan } = useAuth();
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -106,6 +138,78 @@ export default function DashboardPage({ user, onOpenProject, onNewProject, onVie
             <p className="text-[11px] text-outline mt-2">{stat.change}</p>
           </div>
         ))}
+      </div>
+
+      {/* Plan & Usage */}
+      <div className="bg-white rounded-xl soft-shadow border border-outline-variant/20 overflow-hidden">
+        <div className="p-6 border-b border-outline-variant/20 flex items-center justify-between gap-4">
+          <div>
+            <span className="font-label-md text-primary uppercase tracking-tighter text-[11px]">Subscription</span>
+            <h3 className="font-headline-sm text-base font-semibold text-on-surface mt-0.5">
+              Plan & Usage
+            </h3>
+          </div>
+          {plan?.plan && (
+            <span className="px-3 py-1 rounded-lg bg-primary/10 text-primary text-xs font-bold uppercase tracking-wider">
+              {plan.plan}
+            </span>
+          )}
+        </div>
+        {plan ? (
+          <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="space-y-4">
+              <QuotaBar
+                label="Active Projects"
+                used={projects.length}
+                limit={(plan.quotas || []).find((q) => q.resource === "projects")?.limit}
+              />
+              <QuotaBar
+                label="AI Requests / Month"
+                used={(plan.usage || []).find((u) => u.feature === "ai_requests_per_month")?.quantity}
+                limit={(plan.quotas || []).find((q) => q.resource === "ai_requests_per_month")?.limit}
+              />
+              <QuotaBar
+                label="Team Members"
+                used={(plan.quotas || []).find((q) => q.resource === "users")?.usage}
+                limit={(plan.quotas || []).find((q) => q.resource === "users")?.limit}
+              />
+            </div>
+            <div>
+              <p className="font-label-md text-[11px] uppercase tracking-wider text-on-surface-variant mb-2">
+                Enabled Features
+              </p>
+              {Object.keys(plan.features || {}).length > 0 ? (
+                <div className="flex flex-wrap gap-2">
+                  {Object.entries(plan.features)
+                    .filter(([, enabled]) => enabled)
+                    .map(([code]) => (
+                      <span
+                        key={code}
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-50 text-emerald-700 text-xs font-medium"
+                      >
+                        <span className="material-symbols-outlined text-[14px]">check_circle</span>
+                        {featureLabel(code)}
+                      </span>
+                    ))}
+                </div>
+              ) : (
+                <p className="text-sm text-on-surface-variant">
+                  No features enabled yet. Check your subscription plan.
+                </p>
+              )}
+            </div>
+          </div>
+        ) : (
+          <div className="p-6 flex items-start gap-3">
+            <span className="material-symbols-outlined text-[20px] text-outline-variant">info</span>
+            <div>
+              <p className="text-sm text-on-surface">No active plan found.</p>
+              <p className="text-xs text-on-surface-variant mt-0.5">
+                Quotas and AI features are gated by your company's subscription plan.
+              </p>
+            </div>
+          </div>
+        )}
       </div>
 
       <div className="grid grid-cols-12 gap-6">

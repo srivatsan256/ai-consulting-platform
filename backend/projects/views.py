@@ -119,7 +119,7 @@ class ProjectListCreateView(APIView):
     def post(self, request):
         from core.enforcement import TenantEnforcement
 
-        tenant = TenantEnforcement.require_subscription(request)
+        tenant = TenantEnforcement.require_tenant(request)
         TenantEnforcement.check_quota(
             tenant,
             "projects",
