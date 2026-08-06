@@ -3,7 +3,7 @@ from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from django.utils import timezone
-from drf_spectacular.utils import extend_schema, OpenApiTypes
+from drf_spectacular.utils import extend_schema, OpenApiTypes # type: ignore
 
 from .models import Task, TaskComment
 from .serializers import TaskDetailSerializer, TaskCommentSerializer
@@ -40,6 +40,8 @@ class TaskViewSet(viewsets.ModelViewSet):
 
     permission_classes = [IsAuthenticated]
 
+    lookup_value_regex = r"[0-9]+"
+
     @action(detail=True, methods=["post"])
     def complete(self, request, pk=None):
         task = self.get_object()
@@ -50,27 +52,18 @@ class TaskViewSet(viewsets.ModelViewSet):
 
     @extend_schema(
         operation_id="tasks_task_comments_list",
-        summary="List comments for a task",
-        responses={200: TaskCommentSerializer(many=True)},
-        tags=["tasks"],
-    )
-    @action(detail=True, methods=["get"], url_path="task-comments")
-    def list_comments(self, request, pk=None):
-        task = self.get_object()
-        comments = task.comments.select_related("author")
-        serializer = TaskCommentSerializer(comments, many=True)
-        return Response(serializer.data)
-
-    @extend_schema(
-        operation_id="tasks_task_comments_create",
-        summary="Create a comment for a task",
+        summary="List or create comments for a task",
         request=TaskCommentSerializer,
-        responses={201: TaskCommentSerializer},
+        responses={200: TaskCommentSerializer(many=True), 201: TaskCommentSerializer},
         tags=["tasks"],
     )
-    @action(detail=True, methods=["post"], url_path="task-comments")
-    def create_comment(self, request, pk=None):
+    @action(detail=True, methods=["get", "post"], url_path="task-comments")
+    def task_comments(self, request, pk=None):
         task = self.get_object()
+        if request.method == "GET":
+            comments = task.comments.select_related("author")
+            serializer = TaskCommentSerializer(comments, many=True)
+            return Response(serializer.data)
         serializer = TaskCommentSerializer(
             data=request.data,
             context={"request": request},

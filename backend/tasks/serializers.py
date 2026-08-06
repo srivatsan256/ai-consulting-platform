@@ -23,6 +23,7 @@ class TaskCommentSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = (
             "id",
+            "task",
             "author",
             "created_at",
             "updated_at",
