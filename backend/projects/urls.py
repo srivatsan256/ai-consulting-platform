@@ -21,7 +21,7 @@ router.register("phases", ProjectPhaseViewSet)
 router.register("milestones", MilestoneViewSet)
 
 urlpatterns = [
-    path("level-modules/", LevelModuleListView.as_view()),
+    path("level-modules/", LevelModuleListView.as_view(), name="level-modules"),
     path("", ProjectListCreateView.as_view()),
     path("<int:pk>/", ProjectDetailView.as_view()),
     path("<int:pk>/documents/", ProjectDocumentUploadView.as_view()),

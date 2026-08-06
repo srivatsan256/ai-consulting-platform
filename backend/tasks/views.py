@@ -42,6 +42,29 @@ class TaskViewSet(viewsets.ModelViewSet):
 
     lookup_value_regex = r"[0-9]+"
 
+    def _notify_assignee(self, task):
+        if task.assigned_to is None:
+            return
+        from notifications.services.service import NotificationService
+
+        NotificationService.notify(
+            recipient=task.assigned_to,
+            title=f"Task assigned: {task.title}",
+            message=f"You have been assigned to task '{task.title}'.",
+            notification_type="info",
+            category="task",
+            entity_type="task",
+            entity_id=task.pk,
+        )
+
+    def perform_create(self, serializer):
+        task = serializer.save()
+        self._notify_assignee(task)
+
+    def perform_update(self, serializer):
+        task = serializer.save()
+        self._notify_assignee(task)
+
     @action(detail=True, methods=["post"])
     def complete(self, request, pk=None):
         task = self.get_object()

@@ -133,6 +133,8 @@ MIDDLEWARE = [
 
     "core.middleware.company_middleware.CompanyMiddleware",
 
+    "core.middleware.maintenance_middleware.MaintenanceModeMiddleware",
+
     "django.contrib.messages.middleware.MessageMiddleware",
 
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
@@ -278,6 +280,34 @@ REST_FRAMEWORK = {
         "rest_framework.permissions.IsAuthenticated",
 
     ),
+
+    "DEFAULT_PAGINATION_CLASS":
+
+        "core.pagination.StandardPagination",
+
+    "PAGE_SIZE":
+
+        20,
+
+    "EXCEPTION_HANDLER":
+
+        "core.exception_handler.custom_exception_handler",
+
+    "DEFAULT_THROTTLE_CLASSES": (
+
+        "rest_framework.throttling.AnonRateThrottle",
+
+        "rest_framework.throttling.UserRateThrottle",
+
+    ),
+
+    "DEFAULT_THROTTLE_RATES": {
+
+        "anon": os.environ.get("THROTTLE_ANON_RATE", "120/min"),
+
+        "user": os.environ.get("THROTTLE_USER_RATE", "5000/day"),
+
+    },
 
     "DEFAULT_SCHEMA_CLASS":
 
@@ -442,3 +472,95 @@ FRONTEND_URL = os.environ.get(
     "FRONTEND_URL",
     "http://localhost:3000",
 )
+
+
+# ==========================
+# Security Headers
+# ==========================
+
+SECURE_CONTENT_TYPE_NOSNIFF = True
+
+SECURE_REFERRER_POLICY = "same-origin"
+
+# Browser XSS filter header (best effort; CSP recommended for production).
+SECURE_BROWSER_XSS_FILTER = True
+
+SECURE_SSL_REDIRECT = os.environ.get(
+    "SECURE_SSL_REDIRECT",
+    "False",
+).lower() in ("true", "1", "yes")
+
+if SECURE_SSL_REDIRECT:
+    SECURE_HSTS_SECONDS = int(
+        os.environ.get("SECURE_HSTS_SECONDS", "31536000")
+    )
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
+
+# ==========================
+# Logging
+# ==========================
+
+import os as _os
+
+_LOG_DIR = _os.path.join(BASE_DIR, "logs")
+_os.makedirs(_LOG_DIR, exist_ok=True)
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "verbose": {
+            "format": "{levelname} {asctime} {module} {process:d} {thread:d} {message}",
+            "style": "{",
+        },
+        "simple": {
+            "format": "{levelname} {asctime} {message}",
+            "style": "{",
+        },
+    },
+    "filters": {
+        "require_debug_false": {
+            "()": "django.utils.log.RequireDebugFalse",
+        },
+    },
+    "handlers": {
+        "console": {
+            "level": "INFO",
+            "class": "logging.StreamHandler",
+            "formatter": "simple",
+        },
+        "file": {
+            "level": "INFO",
+            "class": "logging.handlers.RotatingFileHandler",
+            "filename": _os.path.join(_LOG_DIR, "django.log"),
+            "maxBytes": 5 * 1024 * 1024,
+            "backupCount": 5,
+            "formatter": "verbose",
+        },
+        "mail_admins": {
+            "level": "ERROR",
+            "class": "django.utils.log.AdminEmailHandler",
+            "filters": ["require_debug_false"],
+        },
+    },
+    "loggers": {
+        "django": {
+            "handlers": ["console", "file"],
+            "level": "INFO",
+        },
+        "django.request": {
+            "handlers": ["mail_admins"],
+            "level": "ERROR",
+            "propagate": True,
+        },
+    },
+    "root": {
+        "handlers": ["console", "file"],
+        "level": "INFO",
+    },
+}

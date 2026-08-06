@@ -93,7 +93,7 @@ class ProjectTenantScopingTests(APITestCase):
         authenticate(self.client, self.user)
         response = self.client.get("/api/projects/")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        names = [p["project_name"] for p in response.data]
+        names = [p["project_name"] for p in response.data["results"]]
         self.assertIn("Mine", names)
         self.assertNotIn("Theirs", names)
 
@@ -175,7 +175,7 @@ class ProjectPhaseAndMilestoneTests(APITestCase):
             order=1,
         )
         response = self.client.get(reverse("projectphase-list"))
-        names = [p["phase_name"] for p in response.data]
+        names = [p["phase_name"] for p in response.data["results"]]
         self.assertEqual(names, ["First", "Second"])
 
 

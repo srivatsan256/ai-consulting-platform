@@ -9,7 +9,7 @@ from core.tests_helpers import (
     create_user,
 )
 from departments.models import Department
-from teams.models import Team
+from teams.models import Team, TeamMember
 
 
 class TeamModelTests(APITestCase):
@@ -104,8 +104,8 @@ class TeamViewSetTests(APITestCase):
             self.list_url,
             {"department": self.department.id},
         )
-        self.assertEqual(len(response.data), 1)
-        self.assertEqual(response.data[0]["team_name"], "Backend")
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(response.data["results"][0]["team_name"], "Backend")
 
     def test_delete_team(self):
         team = Team.objects.create(

@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import SystemSetting, UserProfile
+from .models import SystemSetting, UserProfile, Announcement
 
 
 class SystemSettingSerializer(serializers.ModelSerializer):
@@ -63,3 +63,45 @@ class UserProfileSerializer(serializers.ModelSerializer):
             "created_at",
             "updated_at",
         )
+
+
+class AnnouncementSerializer(serializers.ModelSerializer):
+
+    is_visible = serializers.BooleanField(read_only=True)
+
+    class Meta:
+        model = Announcement
+        fields = [
+            "id",
+            "title",
+            "message",
+            "level",
+            "scope",
+            "company",
+            "is_active",
+            "scheduled_for",
+            "expires_at",
+            "created_by",
+            "created_at",
+            "updated_at",
+            "is_visible",
+        ]
+        read_only_fields = (
+            "id",
+            "created_by",
+            "created_at",
+            "updated_at",
+        )
+
+    def validate(self, attrs):
+        request = self.context.get("request")
+        scope = attrs.get("scope", getattr(self.instance, "scope", None) or "tenant")
+        if (
+            scope == "global"
+            and request
+            and not getattr(request.user, "is_staff", False)
+        ):
+            raise serializers.ValidationError(
+                {"scope": "Only staff users can create global announcements."}
+            )
+        return attrs

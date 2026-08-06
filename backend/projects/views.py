@@ -31,6 +31,20 @@ class ProjectViewSet(viewsets.ModelViewSet):
     ordering_fields = ["project_name", "start_date", "created_at", "status"]
     ordering = ["-created_at"]
 
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        company = _tenant_company(self.request)
+        if company:
+            queryset = queryset.filter(company=company)
+        return queryset
+
+    def perform_create(self, serializer):
+        company = _tenant_company(self.request)
+        if company:
+            serializer.save(company=company)
+        else:
+            serializer.save()
+
 
 class ProjectPhaseViewSet(viewsets.ModelViewSet):
     queryset = ProjectPhase.objects.select_related("project")
@@ -40,6 +54,13 @@ class ProjectPhaseViewSet(viewsets.ModelViewSet):
     search_fields = ["phase_name"]
     ordering_fields = ["order", "created_at"]
 
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        company = _tenant_company(self.request)
+        if company:
+            queryset = queryset.filter(project__company=company)
+        return queryset
+
 
 class MilestoneViewSet(viewsets.ModelViewSet):
     queryset = Milestone.objects.select_related("project")
@@ -48,6 +69,13 @@ class MilestoneViewSet(viewsets.ModelViewSet):
     filterset_fields = ["project", "completed"]
     search_fields = ["title"]
     ordering_fields = ["due_date", "created_at"]
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        company = _tenant_company(self.request)
+        if company:
+            queryset = queryset.filter(project__company=company)
+        return queryset
 
 
 def _tenant_company(request):
@@ -226,6 +254,23 @@ class ProjectDocumentUploadView(APIView):
             return Response(
                 {"detail": "A file is required."},
                 status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        from core.enforcement import TenantEnforcement
+        from subscriptions.services.usage_service import QuotaService
+
+        tenant = TenantEnforcement.require_tenant(request)
+        if QuotaService.get_active_subscription(tenant.company) is not None:
+            total_bytes = sum(
+                doc.file.size or 0
+                for doc in ProjectDocument.objects.filter(
+                    project__company=tenant.company,
+                )
+            ) + (file.size or 0)
+            TenantEnforcement.check_quota(
+                tenant,
+                "storage_gb",
+                total_bytes / (1024 ** 3),
             )
 
         doc_type = (request.data.get("doc_type") or "OTHER").upper()

@@ -73,8 +73,8 @@ class CompanyMemberViewSetTests(APITestCase):
         authenticate(self.client, self.user)
         response = self.client.get(self.list_url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 1)
-        self.assertEqual(response.data[0]["company"], self.company.id)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(response.data["results"][0]["company"], self.company.id)
 
     def test_switch_company_sets_primary(self):
         other_company = create_company(name="Second Corp")

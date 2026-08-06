@@ -19,6 +19,8 @@ class NotificationViewSet(viewsets.ModelViewSet):
 
     permission_classes = [IsAuthenticated]
 
+    lookup_value_regex = r"[0-9]+"
+
     def get_queryset(self):
         return Notification.objects.filter(
             recipient=self.request.user,

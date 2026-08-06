@@ -11,32 +11,19 @@ class StandardPagination(PageNumberPagination):
 
     def get_paginated_response(self, data):
         return Response({
-            "pagination": {
-                "count": self.page.paginator.count,
-                "total_pages": self.page.paginator.num_pages,
-                "current_page": self.page.number,
-                "page_size": self.get_page_size(self.request),
-                "next": self.get_next_link(),
-                "previous": self.get_previous_link(),
-            },
-            "data": data,
+            "count": self.page.paginator.count,
+            "next": self.get_next_link(),
+            "previous": self.get_previous_link(),
+            "results": data,
         })
 
     def get_paginated_response_schema(self, schema):
         return {
             "type": "object",
             "properties": {
-                "pagination": {
-                    "type": "object",
-                    "properties": {
-                        "count": {"type": "integer"},
-                        "total_pages": {"type": "integer"},
-                        "current_page": {"type": "integer"},
-                        "page_size": {"type": "integer"},
-                        "next": {"type": "string", "nullable": True},
-                        "previous": {"type": "string", "nullable": True},
-                    },
-                },
-                "data": schema,
+                "count": {"type": "integer"},
+                "next": {"type": "string", "nullable": True},
+                "previous": {"type": "string", "nullable": True},
+                "results": schema,
             },
         }

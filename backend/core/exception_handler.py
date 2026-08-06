@@ -25,21 +25,32 @@ def custom_exception_handler(exc, context):
         "success": False,
         "message": "Internal server error.",
         "data": None,
-        "errors": {"detail": str(exc)},
+        "errors": {"detail": "An unexpected error occurred."},
     }, status=500)
 
 
 def get_message(exc):
-    if isinstance(exc, APIException):
-        return exc.detail
+    if isinstance(exc, ValidationError):
+        detail = exc.detail
+        if isinstance(detail, dict):
+            return "; ".join(
+                f"{key}: {', '.join(value) if isinstance(value, list) else value}"
+                for key, value in detail.items()
+            )
+        if isinstance(detail, (list, tuple)):
+            return ", ".join(str(item) for item in detail)
+        return str(detail)
     if isinstance(exc, AuthenticationFailed):
         return "Authentication failed."
     if isinstance(exc, PermissionDenied):
         return "Permission denied."
     if isinstance(exc, NotFound):
         return "Not found."
-    if isinstance(exc, ValidationError):
-        return "Validation error."
+    if isinstance(exc, APIException):
+        detail = exc.detail
+        if isinstance(detail, (dict, list, tuple)):
+            return str(detail)
+        return str(detail)
     return "An error occurred."
 
 

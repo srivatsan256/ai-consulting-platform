@@ -1,12 +1,42 @@
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from django.utils import timezone
+from rest_framework.views import APIView
+
+from core.constants import API_VERSION
 
 from .models import MonitoringAlert, SystemMetric
 from .serializers import MonitoringAlertSerializer, SystemMetricSerializer
 from .filters import MonitoringAlertFilter, SystemMetricFilter
+
+
+class HealthCheckAPIView(APIView):
+    """Unauthenticated liveness/readiness probe for load balancers."""
+
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        db_status = "ok"
+        try:
+            from django.db import connection
+
+            connection.ensure_connection()
+        except Exception:
+            db_status = "error"
+
+        ok = db_status == "ok"
+        return Response(
+            {
+                "status": "ok" if ok else "degraded",
+                "service": "ai-consulting-platform",
+                "version": API_VERSION,
+                "database": db_status,
+                "time": timezone.now().isoformat(),
+            },
+            status=status.HTTP_200_OK if ok else status.HTTP_503_SERVICE_UNAVAILABLE,
+        )
 
 
 class MonitoringAlertViewSet(viewsets.ModelViewSet):

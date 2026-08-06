@@ -1,5 +1,6 @@
 from django.db import models
 
+from accounts.models import User
 from departments.models import Department
 
 
@@ -26,3 +27,39 @@ class Team(models.Model):
 
     def __str__(self):
         return self.team_name
+
+
+class TeamMember(models.Model):
+    ROLE = [
+        ("member", "Member"),
+        ("lead", "Lead"),
+        ("manager", "Manager"),
+    ]
+
+    team = models.ForeignKey(
+        Team,
+        on_delete=models.CASCADE,
+        related_name="members",
+    )
+
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="team_memberships",
+    )
+
+    role = models.CharField(
+        max_length=20,
+        choices=ROLE,
+        default="member",
+    )
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = "team_members"
+        unique_together = ("team", "user")
+        ordering = ["created_at"]
+
+    def __str__(self):
+        return f"{self.user} in {self.team}"

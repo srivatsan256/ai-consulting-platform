@@ -86,7 +86,7 @@ class UserViewSetTests(APITestCase):
             {"search": self.user.email},
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        emails = [u["email"] for u in response.data]
+        emails = [u["email"] for u in response.data["results"]]
         self.assertIn(self.user.email, emails)
         self.assertNotIn("other@example.com", emails)
 

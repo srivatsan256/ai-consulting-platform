@@ -212,3 +212,12 @@ class AIUseCaseViewSet(viewsets.ModelViewSet):
     ]
 
     ordering = ["-created_at"]
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        tenant = getattr(self.request, "tenant", None)
+        if tenant and tenant.company:
+            return queryset.filter(
+                assessment__project__company=tenant.company,
+            )
+        return queryset.none()

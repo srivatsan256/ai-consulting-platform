@@ -117,6 +117,6 @@ class CompanyViewSetTests(APITestCase):
         create_company(name="Beta Inc")
         authenticate(self.client, self.user)
         response = self.client.get(self.list_url, {"search": "Alpha"})
-        names = [c["company_name"] for c in response.data]
+        names = [c["company_name"] for c in response.data["results"]]
         self.assertIn("Alpha Ltd", names)
         self.assertNotIn("Beta Inc", names)

@@ -11,11 +11,15 @@ from authentication.views import (
     PasswordResetVerifyOTPAPIView,
     PasswordResetConfirmAPIView,
 )
+from monitoring.views import HealthCheckAPIView
 
 urlpatterns = [
 
     # Admin
     path("admin/", admin.site.urls),
+
+    # Health check (unauthenticated)
+    path("api/health/", HealthCheckAPIView.as_view(), name="health-check"),
 
     # Browsable API login/logout (DRF SessionAuthentication)
     path("api-auth/", include("rest_framework.urls")),

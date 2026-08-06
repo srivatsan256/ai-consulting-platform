@@ -130,8 +130,8 @@ class DepartmentViewSetTests(APITestCase):
             self.list_url,
             {"company": self.company.id},
         )
-        self.assertEqual(len(response.data), 1)
-        self.assertEqual(response.data[0]["name"], "Mine")
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(response.data["results"][0]["name"], "Mine")
 
     def test_delete_department(self):
         dept = Department.objects.create(

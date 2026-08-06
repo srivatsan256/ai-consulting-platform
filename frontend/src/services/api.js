@@ -19,7 +19,16 @@ export function getApiError(error, fallback = "Something went wrong.") {
   if (Array.isArray(data.non_field_errors) && data.non_field_errors.length) {
     return data.non_field_errors.join(", ");
   }
-  if (data.errors && typeof data.errors !== "object") return String(data.errors);
+  if (data.errors) {
+    if (typeof data.errors === "string") return data.errors;
+    if (Array.isArray(data.errors)) return data.errors.join(", ");
+    if (typeof data.errors === "object") {
+      const key = Object.keys(data.errors)[0];
+      const value = data.errors[key];
+      if (Array.isArray(value)) return `${key}: ${value.join(", ")}`;
+      return `${key}: ${value}`;
+    }
+  }
   const field = Object.keys(data)[0];
   if (field && Array.isArray(data[field])) return data[field].join(", ");
   return fallback;
