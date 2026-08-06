@@ -26,6 +26,7 @@ class BaseService:
 
     model: Type[models.Model] = None
     request = None
+    quota_resource: Optional[str] = None
 
     def __init__(self, company=None, user=None, request=None):
         self.company = company
@@ -44,6 +45,7 @@ class BaseService:
     @transaction.atomic
     def create(self, data: Dict[str, Any]) -> models.Model:
         self.validate_create(data)
+        self.check_quota()
         data["company"] = self.company
         data["created_by"] = self.user
         data["updated_by"] = self.user
@@ -140,15 +142,49 @@ class BaseService:
 
     def require_feature(self, feature_name: str):
         """
-        Raise PermissionDenied if feature is not enabled.
+        Raise PermissionDenied if feature is not enabled for the tenant.
+
+        Delegates to the feature flag service so global flags, per-company
+        overrides and plan grants are all respected.
         """
         tenant = getattr(self.request, "tenant", None) if self.request else None
-        if not tenant:
+        if not tenant or not tenant.company:
             raise PermissionDenied("Tenant context required.")
-        if not tenant.has_feature(feature_name):
+
+        from subscriptions.services.feature_flag_service import FeatureFlagService
+
+        if not FeatureFlagService.is_enabled(
+            tenant.company, feature_name, subscription=tenant.subscription
+        ):
             raise PermissionDenied(
                 f"Feature '{feature_name}' is not available on your current plan."
             )
+
+    def check_quota(self):
+        """
+        Raise ValidationError when creating would exceed the tenant's plan
+        quota for ``quota_resource``.
+
+        Subclasses opt in by setting ``quota_resource`` and may override
+        ``get_usage_count`` to count something other than all non-deleted
+        rows.
+        """
+        if not self.quota_resource or not self.company:
+            return
+
+        from subscriptions.services.usage_service import QuotaService
+
+        QuotaService.check(
+            self.company,
+            self.quota_resource,
+            self.get_usage_count(),
+        )
+
+    def get_usage_count(self) -> int:
+        return self.model.objects.filter(
+            company=self.company,
+            is_deleted=False,
+        ).count()
 
     def require_permission(self, permission_name: str):
         """

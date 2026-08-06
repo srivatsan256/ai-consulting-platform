@@ -1,72 +1,39 @@
+"""
+Tenant Middleware
+=================
+
+Thin middleware that resolves the tenant context for every request by
+delegating to :class:`core.services.tenant_resolution_service.TenantResolutionService`.
+
+No business logic lives here. The service decides which company the
+request is acting on (JWT claim -> ``X-Company-ID`` header -> primary
+membership) and populates both ``request.tenant`` and the thread-local
+current tenant. Validation and enforcement happen in permission classes
+and the service layer.
+"""
+
 from core.middleware.tenant_context import TenantContext
+from core.services.tenant_resolution_service import TenantResolutionService
 
 
 class TenantMiddleware:
     """
-    Resolves tenant context from JWT claim or primary membership.
-    Lightweight - only populates request.tenant, no business logic.
+    Resolves and attaches the ``TenantContext`` to ``request.tenant``.
 
-    Business logic (subscription validation, feature checks) belongs in:
-    - Permission classes
-    - Service layer
+    The ``X-Company-ID`` header is whitelisted per-request so it cannot
+    be used to forge a context on public endpoints; an unauthenticated
+    request always receives an empty ``TenantContext``.
     """
 
     def __init__(self, get_response):
         self.get_response = get_response
+        self.resolution_service = TenantResolutionService()
 
     def __call__(self, request):
-        request.tenant = TenantContext()
+        context = self.resolution_service.resolve_for_request(request)
 
-        user = getattr(request, "user", None)
+        if not isinstance(context, TenantContext):
+            context = TenantContext()
 
-        if user and user.is_authenticated:
-            membership = self._get_primary_membership(user)
-            if membership:
-                subscription = self._get_subscription(membership.company)
-                request.tenant = TenantContext(
-                    company=membership.company,
-                    membership=membership,
-                    role=membership.role,
-                    subscription=subscription,
-                    features=self._get_features(subscription),
-                )
-
+        request.tenant = context
         return self.get_response(request)
-
-    def _get_primary_membership(self, user):
-        """
-        Get primary membership for user.
-        Could be extended to use JWT claim (X-Company-ID header) first.
-        """
-        from company_members.models import CompanyMember
-
-        return CompanyMember.objects.primary_for_user(user)
-
-    def _get_subscription(self, company):
-        """
-        Get active subscription for company.
-        """
-        from subscriptions.models import CompanySubscription, SubscriptionStatus
-
-        return (
-            CompanySubscription.objects.filter(
-                company=company,
-                status__in=[SubscriptionStatus.ACTIVE, SubscriptionStatus.TRIALING],
-            )
-            .select_related("plan")
-            .first()
-        )
-
-    def _get_features(self, subscription):
-        """
-        Get feature flags from subscription plan.
-        """
-        if not subscription:
-            return {}
-
-        plan = subscription.plan
-        return {
-            "custom_rag": getattr(plan, "allows_custom_rag", False),
-            "advanced_reports": getattr(plan, "allows_advanced_reports", False),
-            "custom_integrations": getattr(plan, "allows_custom_integrations", False),
-        }

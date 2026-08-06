@@ -42,3 +42,9 @@ def validate_integer_range(value, min_val=None, max_val=None):
         raise ValidationError(f"Value must be at least {min_val}.")
     if max_val is not None and value > max_val:
         raise ValidationError(f"Value must be at most {max_val}.")
+
+
+def validate_hex_color(value):
+    pattern = r"^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})$"
+    if not re.match(pattern, value):
+        raise ValidationError("Value must be a valid hex color (e.g. #2563eb).")

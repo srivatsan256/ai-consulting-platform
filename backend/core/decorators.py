@@ -41,7 +41,11 @@ def feature_required(feature_name):
             tenant = getattr(request, "tenant", None)
             if not tenant:
                 raise PermissionDenied("Tenant context required.")
-            if not tenant.has_feature(feature_name):
+            from subscriptions.services.feature_flag_service import FeatureFlagService
+
+            if not FeatureFlagService.is_enabled(
+                tenant.company, feature_name, subscription=tenant.subscription
+            ):
                 raise PermissionDenied(f"Feature '{feature_name}' is not available.")
             return view_func(request, *args, **kwargs)
         return wrapper

@@ -3,7 +3,12 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 
 from companies.models import Company
-from core.tests_helpers import authenticate, create_company, create_user
+from core.tests_helpers import (
+    authenticate,
+    create_company,
+    create_member,
+    create_user,
+)
 
 
 class CompanyModelTests(APITestCase):
@@ -19,6 +24,14 @@ class CompanyModelTests(APITestCase):
     def test_string_representation(self):
         company = create_company(name="Brand Co")
         self.assertEqual(str(company), "Brand Co")
+
+    def test_suspend_syncs_is_active(self):
+        company = create_company(name="Suspend Co")
+        company.status = "suspended"
+        company.save()
+        company.refresh_from_db()
+        self.assertFalse(company.is_active)
+        self.assertTrue(company.is_suspended)
 
 
 class CompanyViewSetTests(APITestCase):
@@ -57,6 +70,7 @@ class CompanyViewSetTests(APITestCase):
 
     def test_retrieve_company(self):
         company = create_company(name="Retrievable Co")
+        create_member(self.user, company)
         authenticate(self.client, self.user)
         response = self.client.get(
             reverse("company-detail", args=[company.pk])
@@ -64,8 +78,19 @@ class CompanyViewSetTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["company_name"], "Retrievable Co")
 
+    def test_cannot_retrieve_unrelated_company(self):
+        company = create_company(name="Foreign Co")
+        other = create_company(name="My Co")
+        create_member(self.user, other)
+        authenticate(self.client, self.user)
+        response = self.client.get(
+            reverse("company-detail", args=[company.pk])
+        )
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
     def test_update_company(self):
         company = create_company(name="Old Name")
+        create_member(self.user, company)
         authenticate(self.client, self.user)
         response = self.client.patch(
             reverse("company-detail", args=[company.pk]),
@@ -78,6 +103,7 @@ class CompanyViewSetTests(APITestCase):
 
     def test_delete_company(self):
         company = create_company(name="Doomed Co")
+        create_member(self.user, company)
         authenticate(self.client, self.user)
         response = self.client.delete(
             reverse("company-detail", args=[company.pk])
@@ -86,7 +112,8 @@ class CompanyViewSetTests(APITestCase):
         self.assertFalse(Company.objects.filter(pk=company.pk).exists())
 
     def test_search_by_name(self):
-        create_company(name="Alpha Ltd")
+        my_company = create_company(name="Alpha Ltd")
+        create_member(self.user, my_company)
         create_company(name="Beta Inc")
         authenticate(self.client, self.user)
         response = self.client.get(self.list_url, {"search": "Alpha"})

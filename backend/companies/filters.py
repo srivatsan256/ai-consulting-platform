@@ -10,10 +10,13 @@ class CompanyFilter(django_filters.FilterSet):
 
     is_active = django_filters.BooleanFilter()
 
+    status = django_filters.CharFilter()
+
     class Meta:
         model = Company
         fields = [
             "company_name",
             "industry",
             "is_active",
+            "status",
         ]

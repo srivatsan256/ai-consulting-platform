@@ -121,3 +121,91 @@ class CompanySubscription(models.Model):
                 "Upgrade your plan to continue."
             )
         return True
+
+
+class FeatureFlag(models.Model):
+    """
+    Platform-level feature flag.
+
+    ``is_plan_gated`` flags are only enabled when the tenant's plan also
+    grants them (``allows_<code>`` on the plan). Non-gated flags apply
+    globally once active. Per-company overrides live on
+    :class:`CompanyFeatureOverride`.
+    """
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    code = models.SlugField(max_length=50, unique=True)
+    name = models.CharField(max_length=100)
+    description = models.TextField(blank=True, default="")
+    is_plan_gated = models.BooleanField(
+        default=True,
+        help_text="Requires allows_<code> on the plan when enabled.",
+    )
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = "feature_flags"
+        ordering = ["code"]
+
+    def __str__(self):
+        return f"{self.name} ({self.code})"
+
+
+class CompanyFeatureOverride(models.Model):
+    """
+    Per-tenant override of a feature flag. When present it is
+    authoritative for that company.
+    """
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    company = models.ForeignKey(
+        "companies.Company",
+        on_delete=models.CASCADE,
+        related_name="feature_overrides",
+    )
+    feature = models.ForeignKey(
+        FeatureFlag,
+        on_delete=models.CASCADE,
+        related_name="company_overrides",
+    )
+    is_enabled = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = "company_feature_overrides"
+        unique_together = ("company", "feature")
+
+    def __str__(self):
+        return f"{self.feature.code} {'on' if self.is_enabled else 'off'} for {self.company}"
+
+
+class UsageRecord(models.Model):
+    """
+    Monthly aggregated usage counter per company and feature/resource.
+
+    Rows are keyed by (company, feature, month) and incremented
+    atomically, keeping usage analytics bounded per month.
+    """
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    company = models.ForeignKey(
+        "companies.Company",
+        on_delete=models.CASCADE,
+        related_name="usage_records",
+    )
+    feature = models.CharField(max_length=50, db_index=True)
+    quantity = models.PositiveIntegerField(default=0)
+    period_start = models.DateField(db_index=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = "usage_records"
+        unique_together = ("company", "feature", "period_start")
+        ordering = ["-period_start"]
+
+    def __str__(self):
+        return f"{self.company} - {self.feature} ({self.quantity}) @ {self.period_start}"
