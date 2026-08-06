@@ -99,3 +99,34 @@ class UserViewSetTests(APITestCase):
         self.assertFalse(
             User.objects.filter(pk=target.pk).exists()
         )
+
+    def test_deactivate_user(self):
+        authenticate(self.client, self.user)
+        target = create_user(username="deact", email="deact@example.com")
+        response = self.client.post(
+            reverse("user-deactivate", args=[target.pk])
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        target.refresh_from_db()
+        self.assertFalse(target.is_active)
+
+    def test_activate_user(self):
+        authenticate(self.client, self.user)
+        target = create_user(username="inactive", email="inactive@example.com")
+        target.is_active = False
+        target.save(update_fields=["is_active"])
+        response = self.client.post(
+            reverse("user-activate", args=[target.pk])
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        target.refresh_from_db()
+        self.assertTrue(target.is_active)
+
+    def test_cannot_deactivate_self(self):
+        authenticate(self.client, self.user)
+        response = self.client.post(
+            reverse("user-deactivate", args=[self.user.pk])
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.user.refresh_from_db()
+        self.assertTrue(self.user.is_active)

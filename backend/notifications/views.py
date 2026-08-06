@@ -26,6 +26,9 @@ class NotificationViewSet(viewsets.ModelViewSet):
             recipient=self.request.user,
         ).select_related("recipient")
 
+    def perform_create(self, serializer):
+        serializer.save(recipient=self.request.user)
+
     ordering_fields = [
         "created_at",
         "notification_type",

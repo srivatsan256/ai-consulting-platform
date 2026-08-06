@@ -78,7 +78,14 @@ class AuthenticationService:
 
         from authentication.services.login_history import LoginHistoryService
 
-        token = RefreshToken(refresh_token)
+        from rest_framework.exceptions import ValidationError
+        from rest_framework_simplejwt.exceptions import TokenError
+
+        try:
+            token = RefreshToken(refresh_token)
+        except (TokenError, TypeError, ValueError):
+            raise ValidationError({"refresh": "Invalid or expired refresh token."})
+
         token.blacklist()
 
         UserSession.objects.filter(

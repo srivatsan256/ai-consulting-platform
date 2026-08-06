@@ -4,3 +4,93 @@ INFO 2026-08-06 07:12:44,188 autoreload 97688 8355668352 /Users/srivatsan/Deskto
 INFO 2026-08-06 07:12:44,188 autoreload 97688 8355668352 /Users/srivatsan/Desktop/ai-consulting-platform/backend/config/settings.py changed, reloading.
 INFO 2026-08-06 07:12:44,556 autoreload 97817 8355668352 Watching for file changes with StatReloader
 INFO 2026-08-06 07:12:44,556 autoreload 97817 8355668352 Watching for file changes with StatReloader
+ERROR 2026-08-06 07:17:15,405 log 2596 8355668352 Service Unavailable: /api/companies/
+ERROR 2026-08-06 07:17:15,405 log 2596 8355668352 Service Unavailable: /api/companies/
+ERROR 2026-08-06 07:20:29,449 log 5580 8355668352 Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/Users/srivatsan/Desktop/ai-consulting-platform/backend/venv/lib/python3.14/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Users/srivatsan/Desktop/ai-consulting-platform/backend/venv/lib/python3.14/site-packages/django/utils/deprecation.py", line 133, in __call__
+    response = self.process_request(request)
+  File "/Users/srivatsan/Desktop/ai-consulting-platform/backend/venv/lib/python3.14/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/Users/srivatsan/Desktop/ai-consulting-platform/backend/venv/lib/python3.14/site-packages/django/http/request.py", line 151, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+ERROR 2026-08-06 07:20:29,449 log 5580 8355668352 Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/Users/srivatsan/Desktop/ai-consulting-platform/backend/venv/lib/python3.14/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Users/srivatsan/Desktop/ai-consulting-platform/backend/venv/lib/python3.14/site-packages/django/utils/deprecation.py", line 133, in __call__
+    response = self.process_request(request)
+  File "/Users/srivatsan/Desktop/ai-consulting-platform/backend/venv/lib/python3.14/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/Users/srivatsan/Desktop/ai-consulting-platform/backend/venv/lib/python3.14/site-packages/django/http/request.py", line 151, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+ERROR 2026-08-06 07:20:37,585 log 5699 8355668352 Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/Users/srivatsan/Desktop/ai-consulting-platform/backend/venv/lib/python3.14/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Users/srivatsan/Desktop/ai-consulting-platform/backend/venv/lib/python3.14/site-packages/django/utils/deprecation.py", line 133, in __call__
+    response = self.process_request(request)
+  File "/Users/srivatsan/Desktop/ai-consulting-platform/backend/venv/lib/python3.14/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/Users/srivatsan/Desktop/ai-consulting-platform/backend/venv/lib/python3.14/site-packages/django/http/request.py", line 151, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+ERROR 2026-08-06 07:20:37,585 log 5699 8355668352 Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/Users/srivatsan/Desktop/ai-consulting-platform/backend/venv/lib/python3.14/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Users/srivatsan/Desktop/ai-consulting-platform/backend/venv/lib/python3.14/site-packages/django/utils/deprecation.py", line 133, in __call__
+    response = self.process_request(request)
+  File "/Users/srivatsan/Desktop/ai-consulting-platform/backend/venv/lib/python3.14/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/Users/srivatsan/Desktop/ai-consulting-platform/backend/venv/lib/python3.14/site-packages/django/http/request.py", line 151, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+INFO 2026-08-06 07:24:17,456 autoreload 97817 8355668352 /Users/srivatsan/Desktop/ai-consulting-platform/backend/projects/views.py changed, reloading.
+INFO 2026-08-06 07:24:17,456 autoreload 97817 8355668352 /Users/srivatsan/Desktop/ai-consulting-platform/backend/projects/views.py changed, reloading.
+INFO 2026-08-06 07:24:17,986 autoreload 9018 8355668352 Watching for file changes with StatReloader
+INFO 2026-08-06 07:24:17,986 autoreload 9018 8355668352 Watching for file changes with StatReloader
+INFO 2026-08-06 07:24:20,666 autoreload 9018 8355668352 /Users/srivatsan/Desktop/ai-consulting-platform/backend/projects/views.py changed, reloading.
+INFO 2026-08-06 07:24:20,666 autoreload 9018 8355668352 /Users/srivatsan/Desktop/ai-consulting-platform/backend/projects/views.py changed, reloading.
+INFO 2026-08-06 07:24:20,989 autoreload 9070 8355668352 Watching for file changes with StatReloader
+INFO 2026-08-06 07:24:20,989 autoreload 9070 8355668352 Watching for file changes with StatReloader
+ERROR 2026-08-06 07:28:05,454 log 10279 8355668352 Service Unavailable: /api/companies/
+ERROR 2026-08-06 07:28:05,454 log 10279 8355668352 Service Unavailable: /api/companies/
+INFO 2026-08-06 07:28:49,857 autoreload 9070 8355668352 /Users/srivatsan/Desktop/ai-consulting-platform/backend/projects/views.py changed, reloading.
+INFO 2026-08-06 07:28:49,857 autoreload 9070 8355668352 /Users/srivatsan/Desktop/ai-consulting-platform/backend/projects/views.py changed, reloading.
+INFO 2026-08-06 07:28:50,370 autoreload 12817 8355668352 Watching for file changes with StatReloader
+INFO 2026-08-06 07:28:50,370 autoreload 12817 8355668352 Watching for file changes with StatReloader
+ERROR 2026-08-06 07:29:49,622 log 12923 8355668352 Internal Server Error: /api/projects/milestones/
+ERROR 2026-08-06 07:29:49,622 log 12923 8355668352 Internal Server Error: /api/projects/milestones/
+ERROR 2026-08-06 07:31:23,206 log 12923 8355668352 Service Unavailable: /api/companies/
+ERROR 2026-08-06 07:31:23,206 log 12923 8355668352 Service Unavailable: /api/companies/
+ERROR 2026-08-06 07:32:22,125 log 14925 8355668352 Internal Server Error: /api/projects/milestones/
+ERROR 2026-08-06 07:32:22,125 log 14925 8355668352 Internal Server Error: /api/projects/milestones/
+ERROR 2026-08-06 07:33:51,201 log 14925 8355668352 Service Unavailable: /api/companies/
+ERROR 2026-08-06 07:33:51,201 log 14925 8355668352 Service Unavailable: /api/companies/
+ERROR 2026-08-06 07:34:09,059 log 16843 8355668352 Internal Server Error: /api/projects/milestones/
+ERROR 2026-08-06 07:34:09,059 log 16843 8355668352 Internal Server Error: /api/projects/milestones/
+ERROR 2026-08-06 07:34:23,462 log 17057 8355668352 Internal Server Error: /api/projects/milestones/
+ERROR 2026-08-06 07:34:23,462 log 17057 8355668352 Internal Server Error: /api/projects/milestones/
+INFO 2026-08-06 07:36:12,535 autoreload 12817 8355668352 /Users/srivatsan/Desktop/ai-consulting-platform/backend/projects/views.py changed, reloading.
+INFO 2026-08-06 07:36:12,535 autoreload 12817 8355668352 /Users/srivatsan/Desktop/ai-consulting-platform/backend/projects/views.py changed, reloading.
+INFO 2026-08-06 07:36:12,885 autoreload 18850 8355668352 Watching for file changes with StatReloader
+INFO 2026-08-06 07:36:12,885 autoreload 18850 8355668352 Watching for file changes with StatReloader
+ERROR 2026-08-06 07:38:38,400 log 18945 8355668352 Service Unavailable: /api/companies/
+ERROR 2026-08-06 07:38:38,400 log 18945 8355668352 Service Unavailable: /api/companies/
+ERROR 2026-08-06 07:40:07,695 log 20971 8355668352 Service Unavailable: /api/companies/
+ERROR 2026-08-06 07:40:07,695 log 20971 8355668352 Service Unavailable: /api/companies/
+INFO 2026-08-06 07:44:29,260 autoreload 18850 8355668352 /Users/srivatsan/Desktop/ai-consulting-platform/backend/notifications/views.py changed, reloading.
+INFO 2026-08-06 07:44:29,260 autoreload 18850 8355668352 /Users/srivatsan/Desktop/ai-consulting-platform/backend/notifications/views.py changed, reloading.
+INFO 2026-08-06 07:44:29,749 autoreload 25735 8355668352 Watching for file changes with StatReloader
+INFO 2026-08-06 07:44:29,749 autoreload 25735 8355668352 Watching for file changes with StatReloader
+INFO 2026-08-06 07:44:35,499 autoreload 25735 8355668352 /Users/srivatsan/Desktop/ai-consulting-platform/backend/authentication/services/service.py changed, reloading.
+INFO 2026-08-06 07:44:35,499 autoreload 25735 8355668352 /Users/srivatsan/Desktop/ai-consulting-platform/backend/authentication/services/service.py changed, reloading.
+INFO 2026-08-06 07:44:35,940 autoreload 25844 8355668352 Watching for file changes with StatReloader
+INFO 2026-08-06 07:44:35,940 autoreload 25844 8355668352 Watching for file changes with StatReloader
+INFO 2026-08-06 07:46:01,889 basehttp 25844 6124007424 "GET /api/health/ HTTP/1.1" 200 123
+INFO 2026-08-06 07:46:01,889 basehttp 25844 6124007424 "GET /api/health/ HTTP/1.1" 200 123

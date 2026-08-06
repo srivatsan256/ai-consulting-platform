@@ -1,6 +1,7 @@
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
+from django.core.files.uploadedfile import SimpleUploadedFile
 
 from core.tests_helpers import (
     authenticate,
@@ -93,7 +94,7 @@ class ProjectTenantScopingTests(APITestCase):
         authenticate(self.client, self.user)
         response = self.client.get("/api/projects/")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        names = [p["project_name"] for p in response.data["results"]]
+        names = [p["project_name"] for p in response.data]
         self.assertIn("Mine", names)
         self.assertNotIn("Theirs", names)
 
@@ -211,3 +212,88 @@ class LevelModuleTests(APITestCase):
         self.assertEqual(response.data["current_level"], 1)
         self.assertEqual(len(response.data["required_docs"]), 1)
         self.assertFalse(response.data["required_docs"][0]["has_passed"])
+
+
+class StorageQuotaTests(APITestCase):
+    def setUp(self):
+        self.user = create_user(username="uploader", email="upload@example.com")
+        self.company = create_company(name="Storage Corp")
+        create_member(self.user, self.company)
+        self.project = create_project(self.company, name="Storage Project")
+        self.upload_url = f"/api/projects/{self.project.pk}/documents/"
+
+    def test_upload_fail_open_without_subscription(self):
+        authenticate(self.client, self.user)
+        response = self.client.post(
+            self.upload_url,
+            {"file": SimpleUploadedFile("a.txt", b"hello world")},
+            format="multipart",
+        )
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_upload_blocked_when_storage_quota_exhausted(self):
+        from subscriptions.models import SubscriptionPlan
+        from subscriptions.services.service import SubscriptionService
+
+        plan = SubscriptionPlan.objects.create(
+            name="Free",
+            code="free",
+            tier="free",
+            max_storage_gb=0,
+        )
+        SubscriptionService.start_trial(self.company, plan)
+        authenticate(self.client, self.user)
+        response = self.client.post(
+            self.upload_url,
+            {"file": SimpleUploadedFile("a.txt", b"hello world")},
+            format="multipart",
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+
+class ProjectTenantScopingTests(APITestCase):
+    def test_project_viewset_scoped_to_company(self):
+        user = create_user(username="scoper", email="scoper@example.com")
+        company = create_company(name="Scope Corp")
+        other = create_company(name="Other Scope Corp")
+        create_member(user, company)
+        mine = create_project(company, name="Scoped Mine")
+        create_project(other, name="Scoped Theirs")
+        authenticate(self.client, user)
+        response = self.client.get("/api/projects/")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        names = [p["project_name"] for p in response.data]
+        self.assertIn("Scoped Mine", names)
+        self.assertNotIn("Scoped Theirs", names)
+
+    def test_milestone_viewset_scoped_to_company(self):
+        user = create_user(username="miles", email="miles@example.com")
+        company = create_company(name="Milestone Corp")
+        other = create_company(name="Other Milestone Corp")
+        create_member(user, company)
+        project = create_project(company, name="Milestone Project")
+        other_project = create_project(other, name="Other Project")
+        Milestone.objects.create(project=project, title="Mine", due_date="2025-03-01")
+        Milestone.objects.create(project=other_project, title="Theirs", due_date="2025-03-01")
+        authenticate(self.client, user)
+        response = self.client.get("/api/projects/milestones/")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        titles = [m["title"] for m in response.data["results"]]
+        self.assertIn("Mine", titles)
+        self.assertNotIn("Theirs", titles)
+
+    def test_phase_viewset_scoped_to_company(self):
+        user = create_user(username="phaser", email="phaser@example.com")
+        company = create_company(name="Phase Corp")
+        other = create_company(name="Other Phase Corp")
+        create_member(user, company)
+        project = create_project(company, name="Phase Project")
+        other_project = create_project(other, name="Other Project")
+        ProjectPhase.objects.create(project=project, phase_name="Mine", order=1)
+        ProjectPhase.objects.create(project=other_project, phase_name="Theirs", order=1)
+        authenticate(self.client, user)
+        response = self.client.get("/api/projects/phases/")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        names = [p["phase_name"] for p in response.data["results"]]
+        self.assertIn("Mine", names)
+        self.assertNotIn("Theirs", names)

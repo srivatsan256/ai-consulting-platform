@@ -135,6 +135,26 @@ class SessionManagementTests(APITestCase):
         )
         self.assertEqual(logout_event.count(), 1)
 
+    def test_logout_with_invalid_token_returns_400(self):
+        tokens = self._login()
+        response = self.client.post(
+            self.logout_url,
+            {"refresh": "not-a-valid-token"},
+            format="json",
+            HTTP_AUTHORIZATION=f"Bearer {tokens['access']}",
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_logout_missing_token_returns_400(self):
+        tokens = self._login()
+        response = self.client.post(
+            self.logout_url,
+            {},
+            format="json",
+            HTTP_AUTHORIZATION=f"Bearer {tokens['access']}",
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
     def test_old_access_token_invalid_after_password_change(self):
         tokens = self._login()
 

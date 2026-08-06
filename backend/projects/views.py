@@ -68,7 +68,8 @@ class MilestoneViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
     filterset_fields = ["project", "completed"]
     search_fields = ["title"]
-    ordering_fields = ["due_date", "created_at"]
+    ordering_fields = ["due_date"]
+    ordering = ["-id"]
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -149,7 +150,7 @@ class ProjectListCreateView(APIView):
 
         tenant = TenantEnforcement.require_tenant(request)
         TenantEnforcement.check_quota(
-            tenant,
+            request,
             "projects",
             Project.objects.filter(
                 company=tenant.company,
@@ -268,7 +269,7 @@ class ProjectDocumentUploadView(APIView):
                 )
             ) + (file.size or 0)
             TenantEnforcement.check_quota(
-                tenant,
+                request,
                 "storage_gb",
                 total_bytes / (1024 ** 3),
             )

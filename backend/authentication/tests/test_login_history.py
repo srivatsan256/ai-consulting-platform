@@ -130,6 +130,6 @@ class LoginHistoryServiceTests(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        records = response.data["data"]
+        records = response.data["data"]["results"]
         self.assertEqual(len(records), 1)
         self.assertEqual(records[0]["company"], self.company.id)

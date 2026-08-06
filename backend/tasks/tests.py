@@ -71,6 +71,31 @@ class TaskViewSetTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertTrue(Task.objects.filter(title="New task").exists())
 
+    def test_task_assignment_creates_notification(self):
+        assignee = create_user(
+            username="assignee",
+            email="assignee@example.com",
+        )
+        authenticate(self.client, self.user)
+        response = self.client.post(
+            self.list_url,
+            {
+                "project": self.project.id,
+                "title": "Assigned task",
+                "assigned_to": assignee.id,
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        from notifications.models import Notification
+
+        notification = Notification.objects.filter(
+            recipient=assignee,
+            entity_type="task",
+        ).first()
+        self.assertIsNotNone(notification)
+        self.assertIn("Assigned task", notification.title)
+
     def test_complete_action_sets_done(self):
         authenticate(self.client, self.user)
         response = self.client.post(
