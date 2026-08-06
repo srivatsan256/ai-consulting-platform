@@ -146,7 +146,7 @@
   {
     "module": "Accounts",
     "method": "GET",
-    "endpoint": "/accounts/users/20/",
+    "endpoint": "/accounts/users/29/",
     "expected": 200,
     "status": 200,
     "ok": true,
@@ -155,7 +155,7 @@
   {
     "module": "Accounts",
     "method": "PATCH",
-    "endpoint": "/accounts/users/20/",
+    "endpoint": "/accounts/users/29/",
     "expected": 200,
     "status": 200,
     "ok": true,
@@ -164,7 +164,7 @@
   {
     "module": "Accounts",
     "method": "PUT",
-    "endpoint": "/accounts/users/20/",
+    "endpoint": "/accounts/users/29/",
     "expected": 200,
     "status": 200,
     "ok": true,
@@ -173,7 +173,7 @@
   {
     "module": "Accounts",
     "method": "DELETE",
-    "endpoint": "/accounts/users/20/",
+    "endpoint": "/accounts/users/29/",
     "expected": 204,
     "status": 204,
     "ok": true,
@@ -182,7 +182,7 @@
   {
     "module": "Accounts",
     "method": "POST",
-    "endpoint": "/accounts/users/21/deactivate/",
+    "endpoint": "/accounts/users/30/deactivate/",
     "expected": 200,
     "status": 200,
     "ok": true,
@@ -191,7 +191,7 @@
   {
     "module": "Accounts",
     "method": "POST",
-    "endpoint": "/accounts/users/21/activate/",
+    "endpoint": "/accounts/users/30/activate/",
     "expected": 200,
     "status": 200,
     "ok": true,
@@ -200,7 +200,7 @@
   {
     "module": "Accounts",
     "method": "DELETE",
-    "endpoint": "/accounts/users/21/",
+    "endpoint": "/accounts/users/30/",
     "expected": 204,
     "status": 204,
     "ok": true,
@@ -236,7 +236,7 @@
   {
     "module": "Companies",
     "method": "GET",
-    "endpoint": "/companies/companies/18/",
+    "endpoint": "/companies/companies/22/",
     "expected": 200,
     "status": 200,
     "ok": true,
@@ -245,7 +245,7 @@
   {
     "module": "Companies",
     "method": "PATCH",
-    "endpoint": "/companies/companies/18/",
+    "endpoint": "/companies/companies/22/",
     "expected": 200,
     "status": 200,
     "ok": true,
@@ -254,7 +254,7 @@
   {
     "module": "Companies",
     "method": "PUT",
-    "endpoint": "/companies/companies/18/",
+    "endpoint": "/companies/companies/22/",
     "expected": 200,
     "status": 200,
     "ok": true,
@@ -263,7 +263,7 @@
   {
     "module": "Companies",
     "method": "DELETE",
-    "endpoint": "/companies/companies/18/",
+    "endpoint": "/companies/companies/22/",
     "expected": 204,
     "status": 204,
     "ok": true,
@@ -274,32 +274,32 @@
     "method": "POST",
     "endpoint": "/memberships/",
     "expected": 201,
-    "status": 400,
-    "ok": false,
-    "notes": "{'success': False, 'message': 'role: This field is required.', 'data': None, 'errors': {'role': ['This field is required.']}}"
+    "status": 201,
+    "ok": true,
+    "notes": ""
   },
   {
     "module": "Company Members",
     "method": "GET",
-    "endpoint": "/memberships/{id}/",
+    "endpoint": "/memberships/20/",
     "expected": 200,
-    "status": null,
-    "ok": false,
-    "notes": "no id to test detail"
+    "status": 200,
+    "ok": true,
+    "notes": ""
   },
   {
     "module": "Company Members",
     "method": "DELETE",
-    "endpoint": "/memberships/{id}/",
+    "endpoint": "/memberships/20/",
     "expected": 204,
-    "status": null,
-    "ok": false,
-    "notes": "no id to test delete"
+    "status": 204,
+    "ok": true,
+    "notes": ""
   },
   {
     "module": "Accounts",
     "method": "DELETE",
-    "endpoint": "/accounts/users/22/ (membership probe)",
+    "endpoint": "/accounts/users/31/ (membership probe)",
     "expected": 204,
     "status": 204,
     "ok": true,
@@ -315,33 +315,6 @@
     "notes": ""
   },
   {
-    "module": "Roles",
-    "method": "POST",
-    "endpoint": "/roles/",
-    "expected": 201,
-    "status": 400,
-    "ok": false,
-    "notes": "{'success': False, 'message': 'role_key: \"matrix_role_18914\" is not a valid choice.', 'data': None, 'errors': {'role_key': ['\"matrix_role_18914\" is not a valid "
-  },
-  {
-    "module": "Roles",
-    "method": "GET",
-    "endpoint": "/roles/{id}/",
-    "expected": 200,
-    "status": null,
-    "ok": false,
-    "notes": "no id to test detail"
-  },
-  {
-    "module": "Roles",
-    "method": "DELETE",
-    "endpoint": "/roles/{id}/",
-    "expected": 204,
-    "status": null,
-    "ok": false,
-    "notes": "no id to test delete"
-  },
-  {
     "module": "Permissions",
     "method": "GET",
     "endpoint": "/permissions/",
@@ -355,27 +328,45 @@
     "method": "POST",
     "endpoint": "/permissions/",
     "expected": 201,
-    "status": 400,
-    "ok": false,
-    "notes": "{'success': False, 'message': 'role: Invalid pk \"1002\" - object does not exist.', 'data': None, 'errors': {'role': ['Invalid pk \"1002\" - object does not exist.'"
+    "status": 201,
+    "ok": true,
+    "notes": ""
   },
   {
     "module": "Permissions",
     "method": "GET",
-    "endpoint": "/permissions/{id}/",
+    "endpoint": "/permissions/3/",
     "expected": 200,
-    "status": null,
-    "ok": false,
-    "notes": "no id to test detail"
+    "status": 200,
+    "ok": true,
+    "notes": ""
+  },
+  {
+    "module": "Permissions",
+    "method": "PATCH",
+    "endpoint": "/permissions/3/",
+    "expected": 200,
+    "status": 200,
+    "ok": true,
+    "notes": ""
+  },
+  {
+    "module": "Permissions",
+    "method": "PUT",
+    "endpoint": "/permissions/3/",
+    "expected": 200,
+    "status": 200,
+    "ok": true,
+    "notes": ""
   },
   {
     "module": "Permissions",
     "method": "DELETE",
-    "endpoint": "/permissions/{id}/",
+    "endpoint": "/permissions/3/",
     "expected": 204,
-    "status": null,
-    "ok": false,
-    "notes": "no id to test delete"
+    "status": 204,
+    "ok": true,
+    "notes": ""
   },
   {
     "module": "Departments",
@@ -398,7 +389,7 @@
   {
     "module": "Departments",
     "method": "GET",
-    "endpoint": "/departments/2/",
+    "endpoint": "/departments/4/",
     "expected": 200,
     "status": 200,
     "ok": true,
@@ -407,7 +398,7 @@
   {
     "module": "Departments",
     "method": "PATCH",
-    "endpoint": "/departments/2/",
+    "endpoint": "/departments/4/",
     "expected": 200,
     "status": 200,
     "ok": true,
@@ -416,7 +407,7 @@
   {
     "module": "Departments",
     "method": "PUT",
-    "endpoint": "/departments/2/",
+    "endpoint": "/departments/4/",
     "expected": 200,
     "status": 200,
     "ok": true,
@@ -425,11 +416,11 @@
   {
     "module": "Departments",
     "method": "DELETE",
-    "endpoint": "/departments/2/",
+    "endpoint": "/departments/4/",
     "expected": 204,
-    "status": null,
-    "ok": false,
-    "notes": "kept as FK parent"
+    "status": 204,
+    "ok": true,
+    "notes": "kept as FK parent (retained for FK reuse)"
   },
   {
     "module": "Teams",
@@ -452,7 +443,7 @@
   {
     "module": "Teams",
     "method": "GET",
-    "endpoint": "/teams/1/",
+    "endpoint": "/teams/3/",
     "expected": 200,
     "status": 200,
     "ok": true,
@@ -461,7 +452,7 @@
   {
     "module": "Teams",
     "method": "PATCH",
-    "endpoint": "/teams/1/",
+    "endpoint": "/teams/3/",
     "expected": 200,
     "status": 200,
     "ok": true,
@@ -470,7 +461,7 @@
   {
     "module": "Teams",
     "method": "PUT",
-    "endpoint": "/teams/1/",
+    "endpoint": "/teams/3/",
     "expected": 200,
     "status": 200,
     "ok": true,
@@ -479,11 +470,11 @@
   {
     "module": "Teams",
     "method": "DELETE",
-    "endpoint": "/teams/1/",
+    "endpoint": "/teams/3/",
     "expected": 204,
-    "status": null,
-    "ok": false,
-    "notes": "kept as FK parent"
+    "status": 204,
+    "ok": true,
+    "notes": "kept as FK parent (retained for FK reuse)"
   },
   {
     "module": "Team Members",
@@ -506,7 +497,7 @@
   {
     "module": "Team Members",
     "method": "GET",
-    "endpoint": "/teams/members/1/",
+    "endpoint": "/teams/members/3/",
     "expected": 200,
     "status": 200,
     "ok": true,
@@ -515,7 +506,7 @@
   {
     "module": "Team Members",
     "method": "PATCH",
-    "endpoint": "/teams/members/1/",
+    "endpoint": "/teams/members/3/",
     "expected": 200,
     "status": 200,
     "ok": true,
@@ -524,7 +515,7 @@
   {
     "module": "Team Members",
     "method": "PUT",
-    "endpoint": "/teams/members/1/",
+    "endpoint": "/teams/members/3/",
     "expected": 200,
     "status": 200,
     "ok": true,
@@ -533,7 +524,7 @@
   {
     "module": "Team Members",
     "method": "DELETE",
-    "endpoint": "/teams/members/1/",
+    "endpoint": "/teams/members/3/",
     "expected": 204,
     "status": 204,
     "ok": true,
@@ -560,7 +551,7 @@
   {
     "module": "Projects",
     "method": "GET",
-    "endpoint": "/projects/13/",
+    "endpoint": "/projects/15/",
     "expected": 200,
     "status": 200,
     "ok": true,
@@ -569,7 +560,7 @@
   {
     "module": "Projects",
     "method": "PATCH",
-    "endpoint": "/projects/13/",
+    "endpoint": "/projects/15/",
     "expected": 200,
     "status": 200,
     "ok": true,
@@ -578,7 +569,7 @@
   {
     "module": "Projects",
     "method": "PUT",
-    "endpoint": "/projects/13/",
+    "endpoint": "/projects/15/",
     "expected": 200,
     "status": 200,
     "ok": true,
@@ -587,11 +578,11 @@
   {
     "module": "Projects",
     "method": "DELETE",
-    "endpoint": "/projects/13/",
+    "endpoint": "/projects/15/",
     "expected": 204,
-    "status": null,
-    "ok": false,
-    "notes": "kept as FK parent"
+    "status": 204,
+    "ok": true,
+    "notes": "kept as FK parent (retained for FK reuse)"
   },
   {
     "module": "Project Phases",
@@ -614,7 +605,7 @@
   {
     "module": "Project Phases",
     "method": "GET",
-    "endpoint": "/projects/phases/1/",
+    "endpoint": "/projects/phases/3/",
     "expected": 200,
     "status": 200,
     "ok": true,
@@ -623,7 +614,7 @@
   {
     "module": "Project Phases",
     "method": "PATCH",
-    "endpoint": "/projects/phases/1/",
+    "endpoint": "/projects/phases/3/",
     "expected": 200,
     "status": 200,
     "ok": true,
@@ -632,7 +623,7 @@
   {
     "module": "Project Phases",
     "method": "PUT",
-    "endpoint": "/projects/phases/1/",
+    "endpoint": "/projects/phases/3/",
     "expected": 200,
     "status": 200,
     "ok": true,
@@ -641,7 +632,7 @@
   {
     "module": "Project Phases",
     "method": "DELETE",
-    "endpoint": "/projects/phases/1/",
+    "endpoint": "/projects/phases/3/",
     "expected": 204,
     "status": 204,
     "ok": true,
@@ -668,7 +659,7 @@
   {
     "module": "Project Milestones",
     "method": "GET",
-    "endpoint": "/projects/milestones/7/",
+    "endpoint": "/projects/milestones/9/",
     "expected": 200,
     "status": 200,
     "ok": true,
@@ -677,7 +668,7 @@
   {
     "module": "Project Milestones",
     "method": "PATCH",
-    "endpoint": "/projects/milestones/7/",
+    "endpoint": "/projects/milestones/9/",
     "expected": 200,
     "status": 200,
     "ok": true,
@@ -686,7 +677,7 @@
   {
     "module": "Project Milestones",
     "method": "PUT",
-    "endpoint": "/projects/milestones/7/",
+    "endpoint": "/projects/milestones/9/",
     "expected": 200,
     "status": 200,
     "ok": true,
@@ -695,7 +686,7 @@
   {
     "module": "Project Milestones",
     "method": "DELETE",
-    "endpoint": "/projects/milestones/7/",
+    "endpoint": "/projects/milestones/9/",
     "expected": 204,
     "status": 204,
     "ok": true,
@@ -715,34 +706,43 @@
     "method": "POST",
     "endpoint": "/project-members/",
     "expected": 201,
-    "status": 400,
-    "ok": false,
-    "notes": "{'success': False, 'message': 'role: Invalid pk \"1008\" - object does not exist.', 'data': None, 'errors': {'role': ['Invalid pk \"1008\" - object does not exist.'"
+    "status": 201,
+    "ok": true,
+    "notes": ""
   },
   {
     "module": "Project Members",
     "method": "GET",
-    "endpoint": "/project-members/{id}/",
+    "endpoint": "/project-members/2/",
     "expected": 200,
-    "status": null,
-    "ok": false,
-    "notes": "no id to test detail"
+    "status": 200,
+    "ok": true,
+    "notes": ""
+  },
+  {
+    "module": "Project Members",
+    "method": "PATCH",
+    "endpoint": "/project-members/2/",
+    "expected": 200,
+    "status": 200,
+    "ok": true,
+    "notes": ""
+  },
+  {
+    "module": "Project Members",
+    "method": "PUT",
+    "endpoint": "/project-members/2/",
+    "expected": 200,
+    "status": 200,
+    "ok": true,
+    "notes": ""
   },
   {
     "module": "Project Members",
     "method": "DELETE",
-    "endpoint": "/project-members/{id}/",
+    "endpoint": "/project-members/2/",
     "expected": 204,
-    "status": null,
-    "ok": false,
-    "notes": "no id to test delete"
-  },
-  {
-    "module": "Discovery",
-    "method": "GET",
-    "endpoint": "/discovery/",
-    "expected": 200,
-    "status": 200,
+    "status": 204,
     "ok": true,
     "notes": ""
   },
@@ -751,27 +751,27 @@
     "method": "POST",
     "endpoint": "/discovery/",
     "expected": 201,
-    "status": 400,
-    "ok": false,
-    "notes": "{'success': False, 'message': \"document: {'uploaded_file': [ErrorDetail(string='No file was submitted.', code='required')]}\", 'data': None, 'errors': {'document"
+    "status": 201,
+    "ok": true,
+    "notes": ""
   },
   {
     "module": "Discovery",
     "method": "GET",
-    "endpoint": "/discovery/{id}/",
+    "endpoint": "/discovery/2/",
     "expected": 200,
-    "status": null,
-    "ok": false,
-    "notes": "no id to test detail"
+    "status": 200,
+    "ok": true,
+    "notes": ""
   },
   {
     "module": "Discovery",
     "method": "DELETE",
-    "endpoint": "/discovery/{id}/",
+    "endpoint": "/discovery/2/",
     "expected": 204,
-    "status": null,
-    "ok": false,
-    "notes": "no id to test delete"
+    "status": 204,
+    "ok": true,
+    "notes": ""
   },
   {
     "module": "Documents",
@@ -794,7 +794,7 @@
   {
     "module": "Documents",
     "method": "GET",
-    "endpoint": "/documents/1/",
+    "endpoint": "/documents/3/",
     "expected": 200,
     "status": 200,
     "ok": true,
@@ -803,7 +803,7 @@
   {
     "module": "Documents",
     "method": "PATCH",
-    "endpoint": "/documents/1/",
+    "endpoint": "/documents/3/",
     "expected": 200,
     "status": 200,
     "ok": true,
@@ -812,7 +812,7 @@
   {
     "module": "Documents",
     "method": "PUT",
-    "endpoint": "/documents/1/",
+    "endpoint": "/documents/3/",
     "expected": 200,
     "status": 200,
     "ok": true,
@@ -821,7 +821,7 @@
   {
     "module": "Documents",
     "method": "DELETE",
-    "endpoint": "/documents/1/",
+    "endpoint": "/documents/3/",
     "expected": 204,
     "status": 204,
     "ok": true,
@@ -829,8 +829,17 @@
   },
   {
     "module": "Document Templates",
-    "method": "GET",
+    "method": "POST",
     "endpoint": "/document-templates/",
+    "expected": 201,
+    "status": 201,
+    "ok": true,
+    "notes": ""
+  },
+  {
+    "module": "Document Templates",
+    "method": "GET",
+    "endpoint": "/document-templates/2/",
     "expected": 200,
     "status": 200,
     "ok": true,
@@ -838,30 +847,12 @@
   },
   {
     "module": "Document Templates",
-    "method": "POST",
-    "endpoint": "/document-templates/",
-    "expected": 201,
-    "status": 400,
-    "ok": false,
-    "notes": "{'success': False, 'message': 'file: No file was submitted.', 'data': None, 'errors': {'file': ['No file was submitted.']}}"
-  },
-  {
-    "module": "Document Templates",
-    "method": "GET",
-    "endpoint": "/document-templates/{id}/",
-    "expected": 200,
-    "status": null,
-    "ok": false,
-    "notes": "no id to test detail"
-  },
-  {
-    "module": "Document Templates",
     "method": "DELETE",
-    "endpoint": "/document-templates/{id}/",
+    "endpoint": "/document-templates/2/",
     "expected": 204,
-    "status": null,
-    "ok": false,
-    "notes": "no id to test delete"
+    "status": 204,
+    "ok": true,
+    "notes": ""
   },
   {
     "module": "AI Engine",
@@ -884,7 +875,7 @@
   {
     "module": "AI Engine",
     "method": "GET",
-    "endpoint": "/ai-engine/assessments/1/",
+    "endpoint": "/ai-engine/assessments/3/",
     "expected": 200,
     "status": 200,
     "ok": true,
@@ -893,7 +884,7 @@
   {
     "module": "AI Engine",
     "method": "PATCH",
-    "endpoint": "/ai-engine/assessments/1/",
+    "endpoint": "/ai-engine/assessments/3/",
     "expected": 200,
     "status": 200,
     "ok": true,
@@ -902,7 +893,7 @@
   {
     "module": "AI Engine",
     "method": "PUT",
-    "endpoint": "/ai-engine/assessments/1/",
+    "endpoint": "/ai-engine/assessments/3/",
     "expected": 200,
     "status": 200,
     "ok": true,
@@ -911,11 +902,11 @@
   {
     "module": "AI Engine",
     "method": "DELETE",
-    "endpoint": "/ai-engine/assessments/1/",
+    "endpoint": "/ai-engine/assessments/3/",
     "expected": 204,
-    "status": null,
-    "ok": false,
-    "notes": "kept as FK parent"
+    "status": 204,
+    "ok": true,
+    "notes": "kept as FK parent (retained for FK reuse)"
   },
   {
     "module": "AI Engine",
@@ -938,7 +929,7 @@
   {
     "module": "AI Engine",
     "method": "GET",
-    "endpoint": "/ai-engine/use-cases/1/",
+    "endpoint": "/ai-engine/use-cases/3/",
     "expected": 200,
     "status": 200,
     "ok": true,
@@ -947,7 +938,7 @@
   {
     "module": "AI Engine",
     "method": "PATCH",
-    "endpoint": "/ai-engine/use-cases/1/",
+    "endpoint": "/ai-engine/use-cases/3/",
     "expected": 200,
     "status": 200,
     "ok": true,
@@ -956,7 +947,7 @@
   {
     "module": "AI Engine",
     "method": "PUT",
-    "endpoint": "/ai-engine/use-cases/1/",
+    "endpoint": "/ai-engine/use-cases/3/",
     "expected": 200,
     "status": 200,
     "ok": true,
@@ -965,7 +956,7 @@
   {
     "module": "AI Engine",
     "method": "DELETE",
-    "endpoint": "/ai-engine/use-cases/1/",
+    "endpoint": "/ai-engine/use-cases/3/",
     "expected": 204,
     "status": 204,
     "ok": true,
@@ -1010,7 +1001,7 @@
   {
     "module": "Knowledge Base",
     "method": "GET",
-    "endpoint": "/knowledge-base/1/",
+    "endpoint": "/knowledge-base/3/",
     "expected": 200,
     "status": 200,
     "ok": true,
@@ -1019,7 +1010,7 @@
   {
     "module": "Knowledge Base",
     "method": "PATCH",
-    "endpoint": "/knowledge-base/1/",
+    "endpoint": "/knowledge-base/3/",
     "expected": 200,
     "status": 200,
     "ok": true,
@@ -1028,7 +1019,7 @@
   {
     "module": "Knowledge Base",
     "method": "PUT",
-    "endpoint": "/knowledge-base/1/",
+    "endpoint": "/knowledge-base/3/",
     "expected": 200,
     "status": 200,
     "ok": true,
@@ -1037,7 +1028,7 @@
   {
     "module": "Knowledge Base",
     "method": "DELETE",
-    "endpoint": "/knowledge-base/1/",
+    "endpoint": "/knowledge-base/3/",
     "expected": 204,
     "status": 204,
     "ok": true,
@@ -1064,7 +1055,7 @@
   {
     "module": "Chat",
     "method": "GET",
-    "endpoint": "/chat/conversations/1/",
+    "endpoint": "/chat/conversations/3/",
     "expected": 200,
     "status": 200,
     "ok": true,
@@ -1073,7 +1064,7 @@
   {
     "module": "Chat",
     "method": "PATCH",
-    "endpoint": "/chat/conversations/1/",
+    "endpoint": "/chat/conversations/3/",
     "expected": 200,
     "status": 200,
     "ok": true,
@@ -1082,7 +1073,7 @@
   {
     "module": "Chat",
     "method": "PUT",
-    "endpoint": "/chat/conversations/1/",
+    "endpoint": "/chat/conversations/3/",
     "expected": 200,
     "status": 200,
     "ok": true,
@@ -1091,11 +1082,11 @@
   {
     "module": "Chat",
     "method": "DELETE",
-    "endpoint": "/chat/conversations/1/",
+    "endpoint": "/chat/conversations/3/",
     "expected": 204,
-    "status": null,
-    "ok": false,
-    "notes": "kept as FK parent"
+    "status": 204,
+    "ok": true,
+    "notes": "kept as FK parent (retained for FK reuse)"
   },
   {
     "module": "Chat",
@@ -1118,7 +1109,7 @@
   {
     "module": "Chat",
     "method": "GET",
-    "endpoint": "/chat/messages/1/",
+    "endpoint": "/chat/messages/3/",
     "expected": 200,
     "status": 200,
     "ok": true,
@@ -1127,7 +1118,7 @@
   {
     "module": "Chat",
     "method": "PATCH",
-    "endpoint": "/chat/messages/1/",
+    "endpoint": "/chat/messages/3/",
     "expected": 200,
     "status": 200,
     "ok": true,
@@ -1136,7 +1127,7 @@
   {
     "module": "Chat",
     "method": "PUT",
-    "endpoint": "/chat/messages/1/",
+    "endpoint": "/chat/messages/3/",
     "expected": 200,
     "status": 200,
     "ok": true,
@@ -1145,7 +1136,7 @@
   {
     "module": "Chat",
     "method": "DELETE",
-    "endpoint": "/chat/messages/1/",
+    "endpoint": "/chat/messages/3/",
     "expected": 204,
     "status": 204,
     "ok": true,
@@ -1172,7 +1163,7 @@
   {
     "module": "Reviews",
     "method": "GET",
-    "endpoint": "/reviews/1/",
+    "endpoint": "/reviews/3/",
     "expected": 200,
     "status": 200,
     "ok": true,
@@ -1181,7 +1172,7 @@
   {
     "module": "Reviews",
     "method": "PATCH",
-    "endpoint": "/reviews/1/",
+    "endpoint": "/reviews/3/",
     "expected": 200,
     "status": 200,
     "ok": true,
@@ -1190,7 +1181,7 @@
   {
     "module": "Reviews",
     "method": "PUT",
-    "endpoint": "/reviews/1/",
+    "endpoint": "/reviews/3/",
     "expected": 200,
     "status": 200,
     "ok": true,
@@ -1199,7 +1190,7 @@
   {
     "module": "Reviews",
     "method": "DELETE",
-    "endpoint": "/reviews/1/",
+    "endpoint": "/reviews/3/",
     "expected": 204,
     "status": 204,
     "ok": true,
@@ -1226,7 +1217,7 @@
   {
     "module": "Approvals",
     "method": "GET",
-    "endpoint": "/approvals/1/",
+    "endpoint": "/approvals/3/",
     "expected": 200,
     "status": 200,
     "ok": true,
@@ -1235,7 +1226,7 @@
   {
     "module": "Approvals",
     "method": "PATCH",
-    "endpoint": "/approvals/1/",
+    "endpoint": "/approvals/3/",
     "expected": 200,
     "status": 200,
     "ok": true,
@@ -1244,7 +1235,7 @@
   {
     "module": "Approvals",
     "method": "PUT",
-    "endpoint": "/approvals/1/",
+    "endpoint": "/approvals/3/",
     "expected": 200,
     "status": 200,
     "ok": true,
@@ -1253,7 +1244,7 @@
   {
     "module": "Approvals",
     "method": "DELETE",
-    "endpoint": "/approvals/1/",
+    "endpoint": "/approvals/3/",
     "expected": 204,
     "status": 204,
     "ok": true,
@@ -1280,7 +1271,7 @@
   {
     "module": "Workflows",
     "method": "GET",
-    "endpoint": "/workflows/1/",
+    "endpoint": "/workflows/3/",
     "expected": 200,
     "status": 200,
     "ok": true,
@@ -1289,7 +1280,7 @@
   {
     "module": "Workflows",
     "method": "PATCH",
-    "endpoint": "/workflows/1/",
+    "endpoint": "/workflows/3/",
     "expected": 200,
     "status": 200,
     "ok": true,
@@ -1298,7 +1289,7 @@
   {
     "module": "Workflows",
     "method": "PUT",
-    "endpoint": "/workflows/1/",
+    "endpoint": "/workflows/3/",
     "expected": 200,
     "status": 200,
     "ok": true,
@@ -1307,16 +1298,16 @@
   {
     "module": "Workflows",
     "method": "DELETE",
-    "endpoint": "/workflows/1/",
+    "endpoint": "/workflows/3/",
     "expected": 204,
-    "status": null,
-    "ok": false,
-    "notes": "kept as FK parent"
+    "status": 204,
+    "ok": true,
+    "notes": "kept as FK parent (retained for FK reuse)"
   },
   {
     "module": "Workflows",
     "method": "GET",
-    "endpoint": "/workflows/1/workflow-executions/",
+    "endpoint": "/workflows/3/workflow-executions/",
     "expected": 200,
     "status": 200,
     "ok": true,
@@ -1343,7 +1334,7 @@
   {
     "module": "Tasks",
     "method": "GET",
-    "endpoint": "/tasks/3/",
+    "endpoint": "/tasks/5/",
     "expected": 200,
     "status": 200,
     "ok": true,
@@ -1352,7 +1343,7 @@
   {
     "module": "Tasks",
     "method": "PATCH",
-    "endpoint": "/tasks/3/",
+    "endpoint": "/tasks/5/",
     "expected": 200,
     "status": 200,
     "ok": true,
@@ -1361,7 +1352,7 @@
   {
     "module": "Tasks",
     "method": "PUT",
-    "endpoint": "/tasks/3/",
+    "endpoint": "/tasks/5/",
     "expected": 200,
     "status": 200,
     "ok": true,
@@ -1370,7 +1361,7 @@
   {
     "module": "Tasks",
     "method": "DELETE",
-    "endpoint": "/tasks/3/",
+    "endpoint": "/tasks/5/",
     "expected": 204,
     "status": 204,
     "ok": true,
@@ -1406,7 +1397,7 @@
   {
     "module": "Meetings",
     "method": "GET",
-    "endpoint": "/meetings/1/",
+    "endpoint": "/meetings/3/",
     "expected": 200,
     "status": 200,
     "ok": true,
@@ -1415,7 +1406,7 @@
   {
     "module": "Meetings",
     "method": "PATCH",
-    "endpoint": "/meetings/1/",
+    "endpoint": "/meetings/3/",
     "expected": 200,
     "status": 200,
     "ok": true,
@@ -1424,7 +1415,7 @@
   {
     "module": "Meetings",
     "method": "PUT",
-    "endpoint": "/meetings/1/",
+    "endpoint": "/meetings/3/",
     "expected": 200,
     "status": 200,
     "ok": true,
@@ -1433,7 +1424,7 @@
   {
     "module": "Meetings",
     "method": "DELETE",
-    "endpoint": "/meetings/1/",
+    "endpoint": "/meetings/3/",
     "expected": 204,
     "status": 204,
     "ok": true,
@@ -1460,7 +1451,7 @@
   {
     "module": "Risks",
     "method": "GET",
-    "endpoint": "/risks/1/",
+    "endpoint": "/risks/3/",
     "expected": 200,
     "status": 200,
     "ok": true,
@@ -1469,7 +1460,7 @@
   {
     "module": "Risks",
     "method": "PATCH",
-    "endpoint": "/risks/1/",
+    "endpoint": "/risks/3/",
     "expected": 200,
     "status": 200,
     "ok": true,
@@ -1478,7 +1469,7 @@
   {
     "module": "Risks",
     "method": "PUT",
-    "endpoint": "/risks/1/",
+    "endpoint": "/risks/3/",
     "expected": 200,
     "status": 200,
     "ok": true,
@@ -1487,7 +1478,7 @@
   {
     "module": "Risks",
     "method": "DELETE",
-    "endpoint": "/risks/1/",
+    "endpoint": "/risks/3/",
     "expected": 204,
     "status": 204,
     "ok": true,
@@ -1514,7 +1505,7 @@
   {
     "module": "Issues",
     "method": "GET",
-    "endpoint": "/issues/1/",
+    "endpoint": "/issues/3/",
     "expected": 200,
     "status": 200,
     "ok": true,
@@ -1523,7 +1514,7 @@
   {
     "module": "Issues",
     "method": "PATCH",
-    "endpoint": "/issues/1/",
+    "endpoint": "/issues/3/",
     "expected": 200,
     "status": 200,
     "ok": true,
@@ -1532,7 +1523,7 @@
   {
     "module": "Issues",
     "method": "PUT",
-    "endpoint": "/issues/1/",
+    "endpoint": "/issues/3/",
     "expected": 200,
     "status": 200,
     "ok": true,
@@ -1541,7 +1532,7 @@
   {
     "module": "Issues",
     "method": "DELETE",
-    "endpoint": "/issues/1/",
+    "endpoint": "/issues/3/",
     "expected": 204,
     "status": 204,
     "ok": true,
@@ -1631,7 +1622,7 @@
   {
     "module": "Reports",
     "method": "GET",
-    "endpoint": "/reports/1/",
+    "endpoint": "/reports/3/",
     "expected": 200,
     "status": 200,
     "ok": true,
@@ -1640,7 +1631,7 @@
   {
     "module": "Reports",
     "method": "PATCH",
-    "endpoint": "/reports/1/",
+    "endpoint": "/reports/3/",
     "expected": 200,
     "status": 200,
     "ok": true,
@@ -1649,7 +1640,7 @@
   {
     "module": "Reports",
     "method": "PUT",
-    "endpoint": "/reports/1/",
+    "endpoint": "/reports/3/",
     "expected": 200,
     "status": 200,
     "ok": true,
@@ -1658,7 +1649,7 @@
   {
     "module": "Reports",
     "method": "DELETE",
-    "endpoint": "/reports/1/",
+    "endpoint": "/reports/3/",
     "expected": 204,
     "status": 204,
     "ok": true,
@@ -1694,7 +1685,7 @@
   {
     "module": "Notifications",
     "method": "GET",
-    "endpoint": "/notifications/5/",
+    "endpoint": "/notifications/13/",
     "expected": 200,
     "status": 200,
     "ok": true,
@@ -1703,7 +1694,7 @@
   {
     "module": "Notifications",
     "method": "PATCH",
-    "endpoint": "/notifications/5/",
+    "endpoint": "/notifications/13/",
     "expected": 200,
     "status": 200,
     "ok": true,
@@ -1712,7 +1703,7 @@
   {
     "module": "Notifications",
     "method": "PUT",
-    "endpoint": "/notifications/5/",
+    "endpoint": "/notifications/13/",
     "expected": 200,
     "status": 200,
     "ok": true,
@@ -1721,7 +1712,7 @@
   {
     "module": "Notifications",
     "method": "DELETE",
-    "endpoint": "/notifications/5/",
+    "endpoint": "/notifications/13/",
     "expected": 204,
     "status": 204,
     "ok": true,
@@ -1766,7 +1757,7 @@
   {
     "module": "Integrations",
     "method": "GET",
-    "endpoint": "/integrations/1/",
+    "endpoint": "/integrations/3/",
     "expected": 200,
     "status": 200,
     "ok": true,
@@ -1775,7 +1766,7 @@
   {
     "module": "Integrations",
     "method": "PATCH",
-    "endpoint": "/integrations/1/",
+    "endpoint": "/integrations/3/",
     "expected": 200,
     "status": 200,
     "ok": true,
@@ -1784,7 +1775,7 @@
   {
     "module": "Integrations",
     "method": "PUT",
-    "endpoint": "/integrations/1/",
+    "endpoint": "/integrations/3/",
     "expected": 200,
     "status": 200,
     "ok": true,
@@ -1793,7 +1784,7 @@
   {
     "module": "Integrations",
     "method": "DELETE",
-    "endpoint": "/integrations/1/",
+    "endpoint": "/integrations/3/",
     "expected": 204,
     "status": 204,
     "ok": true,
@@ -1838,7 +1829,7 @@
   {
     "module": "Announcements",
     "method": "GET",
-    "endpoint": "/settings/announcements/2/",
+    "endpoint": "/settings/announcements/4/",
     "expected": 200,
     "status": 200,
     "ok": true,
@@ -1847,7 +1838,7 @@
   {
     "module": "Announcements",
     "method": "PATCH",
-    "endpoint": "/settings/announcements/2/",
+    "endpoint": "/settings/announcements/4/",
     "expected": 200,
     "status": 200,
     "ok": true,
@@ -1856,7 +1847,7 @@
   {
     "module": "Announcements",
     "method": "PUT",
-    "endpoint": "/settings/announcements/2/",
+    "endpoint": "/settings/announcements/4/",
     "expected": 200,
     "status": 200,
     "ok": true,
@@ -1865,7 +1856,7 @@
   {
     "module": "Announcements",
     "method": "DELETE",
-    "endpoint": "/settings/announcements/2/",
+    "endpoint": "/settings/announcements/4/",
     "expected": 204,
     "status": 204,
     "ok": true,

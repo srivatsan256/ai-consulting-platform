@@ -103,3 +103,38 @@ class CompanyMemberViewSetTests(APITestCase):
         response = self.client.get(reverse("companymember-current-membership"))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["company"], self.company.id)
+
+    def test_company_admin_can_add_another_user_as_member(self):
+        new_user = create_user(username="newhire", email="newhire@example.com")
+        role = CompanyMember.objects.get(user=self.user, company=self.company).role
+        authenticate(self.client, self.user)
+        response = self.client.post(
+            self.list_url,
+            {
+                "user": new_user.id,
+                "company": self.company.id,
+                "role": role.id,
+                "is_active": True,
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.data["user"], new_user.id)
+
+    def test_regular_user_cannot_add_other_users(self):
+        plain = create_user(username="plain", email="plain@example.com")
+        new_user = create_user(username="newhire2", email="newhire2@example.com")
+        role = CompanyMember.objects.get(user=self.user, company=self.company).role
+        authenticate(self.client, plain)
+        response = self.client.post(
+            self.list_url,
+            {
+                "user": new_user.id,
+                "company": self.company.id,
+                "role": role.id,
+                "is_active": True,
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.data["user"], plain.id)

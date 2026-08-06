@@ -26,6 +26,9 @@ class CompanyMemberViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         company = serializer.validated_data.get("company")
+        target_user = serializer.validated_data.get("user")
+        user = self.request.user
+
         if company is not None:
             from subscriptions.services.usage_service import QuotaService
 
@@ -38,7 +41,27 @@ class CompanyMemberViewSet(viewsets.ModelViewSet):
                         is_active=True,
                     ).count(),
                 )
-        serializer.save(user=self.request.user)
+
+        can_manage = bool(user.is_superuser)  # type: ignore
+        if not can_manage and company is not None:
+            existing = (
+                CompanyMember.objects.filter(
+                    user=user,
+                    company=company,
+                    is_active=True,
+                )
+                .select_related("role")
+                .first()
+            )
+            can_manage = existing is not None and existing.role is not None and existing.role.role_key in (
+                "super_admin",
+                "company_admin",
+            )
+
+        if target_user is None or not can_manage:
+            serializer.save(user=user)
+        else:
+            serializer.save(user=target_user)
 
     @action(detail=False, methods=["post"], url_path="switch")
     def switch_company(self, request):
