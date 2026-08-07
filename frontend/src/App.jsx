@@ -25,6 +25,11 @@ import VerificationPage from "./pages/VerificationPage";
 import AIChatPage from "./pages/AIChatPage";
 import DeliverablesPage from "./pages/DeliverablesPage";
 import ReportsPage from "./pages/ReportsPage";
+import TasksPage from "./pages/TasksPage";
+import TaskDetailPage from "./pages/TaskDetailPage";
+import UsersPage from "./pages/UsersPage";
+import TeamsDepartmentsPage from "./pages/TeamsDepartmentsPage";
+import RolesPage from "./pages/RolesPage";
 
 import ClientDashboard from "./pages/ClientDashboard";
 import ClientProjectsPage from "./pages/ClientProjectsPage";
@@ -157,6 +162,24 @@ function AuthScreens() {
 // ─────────────────────────────────────────────────────────────
 // Protected layout (sidebar + content)
 // ─────────────────────────────────────────────────────────────
+const VIEW_ROUTE_MAP = {
+  dashboard: "/dashboard",
+  projects: "/projects",
+  tasks: "/tasks",
+  users: "/users",
+  teams: "/teams",
+  roles: "/roles",
+  reports: "/projects",
+  upload: "/projects",
+  verification: "/projects",
+  deliverables: "/projects",
+  "ai-chat": "/projects",
+  "client-dashboard": "/client-dashboard",
+  "client-projects": "/client-projects",
+  "client-chat": "/client-projects",
+  "client-downloads": "/client-projects",
+};
+
 function AppLayout({ children }) {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
@@ -166,9 +189,14 @@ function AppLayout({ children }) {
     navigate("/login", { replace: true });
   };
 
+  const handleNavigate = (viewId) => {
+    const path = VIEW_ROUTE_MAP[viewId];
+    if (path) navigate(path);
+  };
+
   return (
     <div className="min-h-screen bg-background flex">
-      <SidebarNavigation user={user} onLogout={handleLogout} />
+      <SidebarNavigation user={user} onLogout={handleLogout} onNavigate={handleNavigate} />
       <div className="flex-1 ml-[240px] p-8">{children}</div>
     </div>
   );
@@ -233,6 +261,11 @@ function DeliverablesWrapper() {
 function ReportsWrapper() {
   const { projectId } = useParams();
   return <ReportsPage projectId={projectId} />;
+}
+
+function TaskDetailWrapper() {
+  const { taskId } = useParams();
+  return <TaskDetailPage taskId={taskId} />;
 }
 
 function ClientProjectsWrapper() {
@@ -349,6 +382,56 @@ export default function App() {
             <RequireAdmin>
               <AppLayout>
                 <ReportsWrapper />
+              </AppLayout>
+            </RequireAdmin>
+          }
+        />
+        <Route
+          path="/tasks"
+          element={
+            <RequireAdmin>
+              <AppLayout>
+                <TasksPage />
+              </AppLayout>
+            </RequireAdmin>
+          }
+        />
+        <Route
+          path="/tasks/:taskId"
+          element={
+            <RequireAdmin>
+              <AppLayout>
+                <TaskDetailWrapper />
+              </AppLayout>
+            </RequireAdmin>
+          }
+        />
+        <Route
+          path="/users"
+          element={
+            <RequireAdmin>
+              <AppLayout>
+                <UsersPage />
+              </AppLayout>
+            </RequireAdmin>
+          }
+        />
+        <Route
+          path="/teams"
+          element={
+            <RequireAdmin>
+              <AppLayout>
+                <TeamsDepartmentsPage />
+              </AppLayout>
+            </RequireAdmin>
+          }
+        />
+        <Route
+          path="/roles"
+          element={
+            <RequireAdmin>
+              <AppLayout>
+                <RolesPage />
               </AppLayout>
             </RequireAdmin>
           }

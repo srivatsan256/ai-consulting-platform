@@ -149,7 +149,7 @@ export const levelModuleService = {
 
 export const membershipService = {
   current: () => api.get("/memberships/current/"),
-  list: () => api.get("/memberships/"),
+  list: (params) => api.get("/memberships/", { params }),
   switchCompany: (companyId) => api.post("/memberships/switch/", { company_id: companyId }),
 };
 
@@ -161,6 +161,77 @@ export const subscriptionService = {
   features: () => api.get("/subscriptions/subscriptions/features/"),
   usage: () => api.get("/subscriptions/subscriptions/usage/"),
   quotas: () => api.get("/subscriptions/subscriptions/quotas/"),
+};
+
+export const taskService = {
+  list: (params) => api.get("/tasks/", { params }),
+  get: (id) => api.get(`/tasks/${id}/`),
+  create: (data) => api.post("/tasks/", data),
+  update: (id, data) => api.patch(`/tasks/${id}/`, data),
+  delete: (id) => api.delete(`/tasks/${id}/`),
+  complete: (id) => api.post(`/tasks/${id}/complete/`),
+  comments: (id) => api.get(`/tasks/${id}/task-comments/`),
+  addComment: (id, content) =>
+    api.post(`/tasks/${id}/task-comments/`, { content }),
+  attachments: (id) => api.get(`/tasks/${id}/attachments/`),
+  addAttachment: (id, formData) =>
+    api.post(`/tasks/${id}/attachments/`, formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    }),
+  deleteAttachment: (attachmentId) =>
+    api.delete(`/tasks/attachments/${attachmentId}/`),
+};
+
+export const userService = {
+  list: (params) => api.get("/accounts/users/", { params }),
+  get: (id) => api.get(`/accounts/users/${id}/`),
+  update: (id, data) => api.patch(`/accounts/users/${id}/`, data),
+  delete: (id) => api.delete(`/accounts/users/${id}/`),
+  activate: (id) => api.post(`/accounts/users/${id}/activate/`),
+  deactivate: (id) => api.post(`/accounts/users/${id}/deactivate/`),
+  bulkImport: (formData) =>
+    api.post("/accounts/users/bulk-import/", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    }),
+  bulkImportJson: (users) => api.post("/accounts/users/bulk-import/", { users }),
+  exportCsv: () =>
+    api.get("/accounts/users/export/", { responseType: "blob" }),
+  invitations: () => api.get("/memberships/invitations/"),
+  invite: (data) => api.post("/memberships/invite/", data),
+};
+
+export const teamService = {
+  list: (params) => api.get("/teams/", { params }),
+  create: (data) => api.post("/teams/", data),
+  update: (id, data) => api.patch(`/teams/${id}/`, data),
+  delete: (id) => api.delete(`/teams/${id}/`),
+  members: (params) => api.get("/teams/members/", { params }),
+  addMember: (data) => api.post("/teams/members/", data),
+  deleteMember: (id) => api.delete(`/teams/members/${id}/`),
+};
+
+export const departmentService = {
+  list: (params) => api.get("/departments/", { params }),
+  create: (data) => api.post("/departments/", data),
+  update: (id, data) => api.patch(`/departments/${id}/`, data),
+  delete: (id) => api.delete(`/departments/${id}/`),
+  members: (params) => api.get("/departments/members/", { params }),
+  addMember: (data) => api.post("/departments/members/", data),
+  deleteMember: (id) => api.delete(`/departments/members/${id}/`),
+};
+
+export const roleService = {
+  list: () => api.get("/roles/"),
+  create: (data) => api.post("/roles/", data),
+  update: (id, data) => api.patch(`/roles/${id}/`, data),
+  delete: (id) => api.delete(`/roles/${id}/`),
+  assign: (data) => api.post("/roles/assign/", data),
+  assignments: () => api.get("/roles/assignments/"),
+  mine: () => api.get("/roles/mine/"),
+};
+
+export const permissionService = {
+  list: () => api.get("/permissions/"),
 };
 
 export default api;

@@ -2022,3 +2022,5 @@ ERROR 2026-08-07 05:34:57,783 log 94881 8355668352 Service Unavailable: /api/com
 ERROR 2026-08-07 05:34:57,783 log 94881 8355668352 Service Unavailable: /api/companies/
 ERROR 2026-08-07 05:35:21,338 log 95188 8355668352 Service Unavailable: /api/companies/
 ERROR 2026-08-07 05:35:21,338 log 95188 8355668352 Service Unavailable: /api/companies/
+WARNING 2026-08-07 05:52:53,211 basehttp 93824 6205108224 "GET /api/memberships/ HTTP/1.1" 401 155
+WARNING 2026-08-07 05:52:53,211 basehttp 93824 6205108224 "GET /api/memberships/ HTTP/1.1" 401 155

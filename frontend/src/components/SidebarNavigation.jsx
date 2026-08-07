@@ -5,17 +5,26 @@ const roleBasedNavItems = {
   super_admin: [
     { id: "dashboard", label: "Platform Dashboard", icon: "dashboard" },
     { id: "projects", label: "All Projects", icon: "folder_open" },
+    { id: "tasks", label: "Tasks", icon: "checklist" },
+    { id: "users", label: "Users", icon: "group" },
+    { id: "teams", label: "Teams & Departments", icon: "account_tree" },
+    { id: "roles", label: "Roles & Permissions", icon: "admin_panel_settings" },
   ],
   // Company Admin
   company_admin: [
     { id: "dashboard", label: "Company Dashboard", icon: "dashboard" },
     { id: "projects", label: "Projects", icon: "folder_open" },
+    { id: "tasks", label: "Tasks", icon: "checklist" },
+    { id: "users", label: "Users", icon: "group" },
+    { id: "teams", label: "Teams & Departments", icon: "account_tree" },
+    { id: "roles", label: "Roles & Permissions", icon: "admin_panel_settings" },
     { id: "reports", label: "Company Reports", icon: "assessment" },
   ],
   // Project Manager
   project_manager: [
     { id: "dashboard", label: "Project Dashboard", icon: "dashboard" },
     { id: "projects", label: "Projects", icon: "folder_open" },
+    { id: "tasks", label: "Tasks", icon: "checklist" },
     { id: "upload", label: "Upload Documents", icon: "upload_file" },
     { id: "verification", label: "Verification", icon: "verified" },
     { id: "deliverables", label: "Deliverables", icon: "assignment_turned_in" },
@@ -128,7 +137,7 @@ const defaultClientNav = [
   { id: "client-downloads", label: "Downloads", icon: "download" },
 ];
 
-export default function SidebarNavigation({ activeView, setActiveView, role, user, onLogout }) {
+export default function SidebarNavigation({ activeView, setActiveView, role, user, onLogout, onNavigate }) {
   const assignedRole = user?.assigned_role;
   const roleKey = user?.role_key || (assignedRole
     ? assignedRole
@@ -209,7 +218,10 @@ export default function SidebarNavigation({ activeView, setActiveView, role, use
           return (
             <button
               key={item.id}
-              onClick={() => setActiveView(item.id)}
+              onClick={() => {
+                if (onNavigate) onNavigate(item.id);
+                else if (setActiveView) setActiveView(item.id);
+              }}
               className={`w-full flex items-center gap-3 px-4 py-3 transition-colors duration-200 ${
                 isActive
                   ? "bg-surface-container-highest/10 border-l-2 border-primary text-surface-bright font-bold"
