@@ -268,6 +268,27 @@ function TaskDetailWrapper() {
   return <TaskDetailPage taskId={taskId} />;
 }
 
+function DashboardWrapper() {
+  const navigate = useNavigate();
+  return (
+    <DashboardPage
+      onOpenProject={(id) => navigate(`/projects/${id}`)}
+      onNewProject={() => navigate("/projects")}
+      onViewAllProjects={() => navigate("/projects")}
+    />
+  );
+}
+
+function ProjectsWrapper() {
+  const navigate = useNavigate();
+  return <ProjectsPage onSelectProject={(id) => navigate(`/projects/${id}`)} />;
+}
+
+function ClientDashboardWrapper() {
+  const navigate = useNavigate();
+  return <ClientDashboard onSelectProject={(id) => navigate(`/client-projects/${id}`)} />;
+}
+
 function ClientProjectsWrapper() {
   const { projectId } = useParams();
   return <ClientProjectsPage projectId={projectId} />;
@@ -311,7 +332,7 @@ export default function App() {
           element={
             <RequireAuth>
               <AppLayout>
-                <DashboardPage />
+                <DashboardWrapper />
               </AppLayout>
             </RequireAuth>
           }
@@ -321,7 +342,7 @@ export default function App() {
           element={
             <RequireAdmin>
               <AppLayout>
-                <ProjectsPage />
+                <ProjectsWrapper />
               </AppLayout>
             </RequireAdmin>
           }
@@ -443,7 +464,7 @@ export default function App() {
           element={
             <RequireAuth>
               <AppLayout>
-                <ClientDashboard />
+                <ClientDashboardWrapper />
               </AppLayout>
             </RequireAuth>
           }
