@@ -1,6 +1,7 @@
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
+from django.core.files.uploadedfile import SimpleUploadedFile
 
 from core.tests_helpers import (
     authenticate,
@@ -9,7 +10,7 @@ from core.tests_helpers import (
     create_project,
     create_user,
 )
-from tasks.models import Task, TaskComment
+from tasks.models import Task, TaskAttachment, TaskComment
 
 
 class TaskModelTests(APITestCase):
@@ -170,3 +171,82 @@ class TaskCommentTests(APITestCase):
             format="json",
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+
+class TaskAttachmentTests(APITestCase):
+    def setUp(self):
+        self.user = create_user(username="uploader", email="uploader@example.com")
+        self.company = create_company(name="Attachment Corp")
+        create_member(self.user, self.company)
+        self.project = create_project(self.company, name="Attachment Project")
+        self.task = Task.objects.create(
+            project=self.project,
+            title="Attached task",
+            created_by=self.user,
+        )
+        self.attachments_url = reverse("task-attachments", args=[self.task.pk])
+        authenticate(self.client, self.user)
+
+    def test_requires_authentication(self):
+        self.client.credentials()
+        response = self.client.get(self.attachments_url)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_upload_attachment_via_task_action(self):
+        response = self.client.post(
+            self.attachments_url,
+            {"file": SimpleUploadedFile("spec.pdf", b"pdf-bytes")},
+            format="multipart",
+        )
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.data["original_name"], "spec.pdf")
+        attachment = TaskAttachment.objects.get(task=self.task)
+        self.assertEqual(attachment.original_name, "spec.pdf")
+        self.assertEqual(attachment.uploaded_by, self.user)
+        self.assertTrue(attachment.file.name.startswith("task_attachments/"))
+
+    def test_upload_requires_file(self):
+        response = self.client.post(
+            self.attachments_url,
+            {},
+            format="multipart",
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_list_attachments_via_task_action(self):
+        TaskAttachment.objects.create(
+            task=self.task,
+            file=SimpleUploadedFile("a.txt", b"data"),
+            original_name="a.txt",
+            uploaded_by=self.user,
+        )
+        response = self.client.get(self.attachments_url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 1)
+        self.assertIn("file_url", response.data[0])
+
+    def test_attachments_in_task_detail(self):
+        TaskAttachment.objects.create(
+            task=self.task,
+            file=SimpleUploadedFile("b.txt", b"more"),
+            original_name="b.txt",
+            uploaded_by=self.user,
+        )
+        response = self.client.get(reverse("task-detail", args=[self.task.pk]))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data["attachments"]), 1)
+
+    def test_delete_attachment_via_viewset(self):
+        attachment = TaskAttachment.objects.create(
+            task=self.task,
+            file=SimpleUploadedFile("c.txt", b"bye"),
+            original_name="c.txt",
+            uploaded_by=self.user,
+        )
+        response = self.client.delete(
+            reverse("taskattachment-detail", args=[attachment.pk])
+        )
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertFalse(
+            TaskAttachment.objects.filter(pk=attachment.pk).exists()
+        )

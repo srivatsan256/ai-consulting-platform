@@ -169,7 +169,7 @@ class CompanyMemberViewSet(viewsets.ModelViewSet):
             )
         return company
 
-    @action(detail=False, methods=["post"], url_path="invite")
+    @action(detail=False, methods=["post"], url_path="invite", url_name="invite")
     def invite_user(self, request):
         """
         Invite a user to the acting company.
@@ -191,7 +191,7 @@ class CompanyMemberViewSet(viewsets.ModelViewSet):
             status=status.HTTP_201_CREATED,
         )
 
-    @action(detail=False, methods=["get"], url_path="invitations")
+    @action(detail=False, methods=["get"], url_path="invitations", url_name="invitations")
     def list_invitations(self, request):
         """
         List invitations for the acting company.
@@ -207,6 +207,7 @@ class CompanyMemberViewSet(viewsets.ModelViewSet):
         detail=False,
         methods=["post"],
         url_path="invitations/accept",
+        url_name="accept-invitation",
         permission_classes=[AllowAny],
     )
     def accept_invitation(self, request):

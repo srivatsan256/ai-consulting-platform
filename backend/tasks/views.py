@@ -5,8 +5,12 @@ from rest_framework.response import Response
 from django.utils import timezone
 from drf_spectacular.utils import extend_schema, OpenApiTypes # type: ignore
 
-from .models import Task, TaskComment
-from .serializers import TaskDetailSerializer, TaskCommentSerializer
+from .models import Task, TaskComment, TaskAttachment
+from .serializers import (
+    TaskAttachmentSerializer,
+    TaskDetailSerializer,
+    TaskCommentSerializer,
+)
 from .filters import TaskFilter
 
 
@@ -97,6 +101,55 @@ class TaskViewSet(viewsets.ModelViewSet):
             serializer.data,
             status=status.HTTP_201_CREATED,
         )
+
+    @action(detail=True, methods=["get", "post"], url_path="attachments")
+    def attachments(self, request, pk=None):
+        task = self.get_object()
+        if request.method == "GET":
+            attachments = task.attachments.select_related("uploaded_by")
+            serializer = TaskAttachmentSerializer(
+                attachments,
+                many=True,
+                context={"request": request},
+            )
+            return Response(serializer.data)
+
+        file_obj = request.FILES.get("file")
+        if file_obj is None:
+            return Response(
+                {"detail": "A file is required."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        attachment = TaskAttachment.objects.create(
+            task=task,
+            file=file_obj,
+            original_name=file_obj.name,
+            file_size=file_obj.size or 0,
+            content_type=file_obj.content_type or "",
+            uploaded_by=request.user,
+        )
+        return Response(
+            TaskAttachmentSerializer(
+                attachment,
+                context={"request": request},
+            ).data,
+            status=status.HTTP_201_CREATED,
+        )
+
+
+class TaskAttachmentViewSet(viewsets.ModelViewSet):
+
+    serializer_class = TaskAttachmentSerializer
+
+    queryset = TaskAttachment.objects.select_related("task", "uploaded_by")
+
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return TaskAttachment.objects.filter(
+            task__project__is_active=True,
+        ).select_related("task", "uploaded_by")
 
 
 class TaskCommentViewSet(viewsets.ModelViewSet):

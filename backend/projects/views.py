@@ -36,7 +36,12 @@ class ProjectFilter(django_filters.FilterSet):
     def filter_by_tag(self, queryset, name, value):
         if not value:
             return queryset
-        return queryset.filter(tags__contains=[value])
+        match_ids = [
+            pk
+            for pk, tags in queryset.values_list("pk", "tags")
+            if value in (tags or [])
+        ]
+        return queryset.filter(pk__in=match_ids)
 
 
 class ProjectViewSet(viewsets.ModelViewSet):
@@ -63,7 +68,7 @@ class ProjectViewSet(viewsets.ModelViewSet):
         else:
             serializer.save()
 
-    @action(detail=False, methods=["get"], url_path="tags")
+    @action(detail=False, methods=["get"], url_path="tags", url_name="tags")
     def list_tags(self, request):
         """
         List distinct tags across the tenant's projects.
@@ -71,8 +76,8 @@ class ProjectViewSet(viewsets.ModelViewSet):
         """
         queryset = self.get_queryset()
         tags = set()
-        for project in queryset.only("tags"):
-            for tag in project.tags or []:
+        for row in queryset.values_list("tags", flat=True):
+            for tag in row or []:
                 if tag:
                     tags.add(str(tag))
         return Response(sorted(tags), status=status.HTTP_200_OK)

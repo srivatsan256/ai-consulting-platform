@@ -1922,3 +1922,103 @@ INFO 2026-08-07 05:05:23,120 autoreload 75677 8355668352 /Users/srivatsan/Deskto
 INFO 2026-08-07 05:05:23,120 autoreload 75677 8355668352 /Users/srivatsan/Desktop/ai-consulting-platform/backend/accounts/views.py changed, reloading.
 INFO 2026-08-07 05:05:23,495 autoreload 76803 8355668352 Watching for file changes with StatReloader
 INFO 2026-08-07 05:05:23,495 autoreload 76803 8355668352 Watching for file changes with StatReloader
+INFO 2026-08-07 05:05:26,130 autoreload 76803 8355668352 /Users/srivatsan/Desktop/ai-consulting-platform/backend/accounts/views.py changed, reloading.
+INFO 2026-08-07 05:05:26,130 autoreload 76803 8355668352 /Users/srivatsan/Desktop/ai-consulting-platform/backend/accounts/views.py changed, reloading.
+INFO 2026-08-07 05:05:26,467 autoreload 76920 8355668352 Watching for file changes with StatReloader
+INFO 2026-08-07 05:05:26,467 autoreload 76920 8355668352 Watching for file changes with StatReloader
+INFO 2026-08-07 05:05:30,021 autoreload 76920 8355668352 /Users/srivatsan/Desktop/ai-consulting-platform/backend/company_members/views.py changed, reloading.
+INFO 2026-08-07 05:05:30,021 autoreload 76920 8355668352 /Users/srivatsan/Desktop/ai-consulting-platform/backend/company_members/views.py changed, reloading.
+INFO 2026-08-07 05:05:30,386 autoreload 76976 8355668352 Watching for file changes with StatReloader
+INFO 2026-08-07 05:05:30,386 autoreload 76976 8355668352 Watching for file changes with StatReloader
+INFO 2026-08-07 05:05:32,923 autoreload 76976 8355668352 /Users/srivatsan/Desktop/ai-consulting-platform/backend/company_members/views.py changed, reloading.
+INFO 2026-08-07 05:05:32,923 autoreload 76976 8355668352 /Users/srivatsan/Desktop/ai-consulting-platform/backend/company_members/views.py changed, reloading.
+INFO 2026-08-07 05:05:33,287 autoreload 77036 8355668352 Watching for file changes with StatReloader
+INFO 2026-08-07 05:05:33,287 autoreload 77036 8355668352 Watching for file changes with StatReloader
+INFO 2026-08-07 05:05:36,858 autoreload 77036 8355668352 /Users/srivatsan/Desktop/ai-consulting-platform/backend/company_members/views.py changed, reloading.
+INFO 2026-08-07 05:05:36,858 autoreload 77036 8355668352 /Users/srivatsan/Desktop/ai-consulting-platform/backend/company_members/views.py changed, reloading.
+INFO 2026-08-07 05:05:37,220 autoreload 77101 8355668352 Watching for file changes with StatReloader
+INFO 2026-08-07 05:05:37,220 autoreload 77101 8355668352 Watching for file changes with StatReloader
+INFO 2026-08-07 05:05:40,779 autoreload 77101 8355668352 /Users/srivatsan/Desktop/ai-consulting-platform/backend/projects/views.py changed, reloading.
+INFO 2026-08-07 05:05:40,779 autoreload 77101 8355668352 /Users/srivatsan/Desktop/ai-consulting-platform/backend/projects/views.py changed, reloading.
+INFO 2026-08-07 05:05:41,134 autoreload 77144 8355668352 Watching for file changes with StatReloader
+INFO 2026-08-07 05:05:41,134 autoreload 77144 8355668352 Watching for file changes with StatReloader
+ERROR 2026-08-07 05:06:39,546 log 77799 8355668352 Internal Server Error: /api/projects/projects/
+ERROR 2026-08-07 05:06:39,546 log 77799 8355668352 Internal Server Error: /api/projects/projects/
+ERROR 2026-08-07 05:06:39,608 log 77799 8355668352 Internal Server Error: /api/projects/projects/
+ERROR 2026-08-07 05:06:39,608 log 77799 8355668352 Internal Server Error: /api/projects/projects/
+ERROR 2026-08-07 05:06:39,764 log 77799 8355668352 Internal Server Error: /api/projects/projects/tags/
+ERROR 2026-08-07 05:06:39,764 log 77799 8355668352 Internal Server Error: /api/projects/projects/tags/
+ERROR 2026-08-07 05:06:46,288 log 77925 8355668352 Internal Server Error: /api/projects/projects/
+ERROR 2026-08-07 05:06:46,288 log 77925 8355668352 Internal Server Error: /api/projects/projects/
+INFO 2026-08-07 05:07:16,795 autoreload 77144 8355668352 /Users/srivatsan/Desktop/ai-consulting-platform/backend/projects/views.py changed, reloading.
+INFO 2026-08-07 05:07:16,795 autoreload 77144 8355668352 /Users/srivatsan/Desktop/ai-consulting-platform/backend/projects/views.py changed, reloading.
+INFO 2026-08-07 05:07:17,183 autoreload 78338 8355668352 Watching for file changes with StatReloader
+INFO 2026-08-07 05:07:17,183 autoreload 78338 8355668352 Watching for file changes with StatReloader
+ERROR 2026-08-07 05:07:26,324 log 78364 8355668352 Internal Server Error: /api/projects/projects/
+ERROR 2026-08-07 05:07:26,324 log 78364 8355668352 Internal Server Error: /api/projects/projects/
+ERROR 2026-08-07 05:07:26,381 log 78364 8355668352 Internal Server Error: /api/projects/projects/
+ERROR 2026-08-07 05:07:26,381 log 78364 8355668352 Internal Server Error: /api/projects/projects/
+ERROR 2026-08-07 05:07:26,537 log 78364 8355668352 Internal Server Error: /api/projects/projects/tags/
+ERROR 2026-08-07 05:07:26,537 log 78364 8355668352 Internal Server Error: /api/projects/projects/tags/
+ERROR 2026-08-07 05:07:40,318 log 78581 8355668352 Internal Server Error: /api/projects/projects/
+ERROR 2026-08-07 05:07:40,318 log 78581 8355668352 Internal Server Error: /api/projects/projects/
+ERROR 2026-08-07 05:07:40,377 log 78581 8355668352 Internal Server Error: /api/projects/projects/
+ERROR 2026-08-07 05:07:40,377 log 78581 8355668352 Internal Server Error: /api/projects/projects/
+ERROR 2026-08-07 05:07:40,531 log 78581 8355668352 Internal Server Error: /api/projects/projects/tags/
+ERROR 2026-08-07 05:07:40,531 log 78581 8355668352 Internal Server Error: /api/projects/projects/tags/
+ERROR 2026-08-07 05:07:55,582 log 78741 8355668352 Internal Server Error: /api/projects/projects/
+ERROR 2026-08-07 05:07:55,582 log 78741 8355668352 Internal Server Error: /api/projects/projects/
+ERROR 2026-08-07 05:08:02,653 log 78822 8355668352 Internal Server Error: /api/projects/projects/
+ERROR 2026-08-07 05:08:02,653 log 78822 8355668352 Internal Server Error: /api/projects/projects/
+INFO 2026-08-07 05:09:03,101 autoreload 78338 8355668352 /Users/srivatsan/Desktop/ai-consulting-platform/backend/projects/views.py changed, reloading.
+INFO 2026-08-07 05:09:03,101 autoreload 78338 8355668352 /Users/srivatsan/Desktop/ai-consulting-platform/backend/projects/views.py changed, reloading.
+INFO 2026-08-07 05:09:03,453 autoreload 79618 8355668352 Watching for file changes with StatReloader
+INFO 2026-08-07 05:09:03,453 autoreload 79618 8355668352 Watching for file changes with StatReloader
+ERROR 2026-08-07 05:09:12,035 log 79636 8355668352 Internal Server Error: /api/projects/projects/tags/
+ERROR 2026-08-07 05:09:12,035 log 79636 8355668352 Internal Server Error: /api/projects/projects/tags/
+ERROR 2026-08-07 05:09:22,892 log 79816 8355668352 Internal Server Error: /api/projects/projects/tags/
+ERROR 2026-08-07 05:09:22,892 log 79816 8355668352 Internal Server Error: /api/projects/projects/tags/
+INFO 2026-08-07 05:09:28,597 autoreload 79618 8355668352 /Users/srivatsan/Desktop/ai-consulting-platform/backend/projects/views.py changed, reloading.
+INFO 2026-08-07 05:09:28,597 autoreload 79618 8355668352 /Users/srivatsan/Desktop/ai-consulting-platform/backend/projects/views.py changed, reloading.
+INFO 2026-08-07 05:09:29,052 autoreload 79969 8355668352 Watching for file changes with StatReloader
+INFO 2026-08-07 05:09:29,052 autoreload 79969 8355668352 Watching for file changes with StatReloader
+INFO 2026-08-07 05:10:43,225 autoreload 79969 8355668352 /Users/srivatsan/Desktop/ai-consulting-platform/backend/accounts/views.py changed, reloading.
+INFO 2026-08-07 05:10:43,225 autoreload 79969 8355668352 /Users/srivatsan/Desktop/ai-consulting-platform/backend/accounts/views.py changed, reloading.
+INFO 2026-08-07 05:10:43,587 autoreload 80808 8355668352 Watching for file changes with StatReloader
+INFO 2026-08-07 05:10:43,587 autoreload 80808 8355668352 Watching for file changes with StatReloader
+ERROR 2026-08-07 05:11:09,192 log 80989 8355668352 Service Unavailable: /api/companies/
+ERROR 2026-08-07 05:11:09,192 log 80989 8355668352 Service Unavailable: /api/companies/
+INFO 2026-08-07 05:32:30,206 autoreload 80808 8355668352 /Users/srivatsan/Desktop/ai-consulting-platform/backend/tasks/models.py changed, reloading.
+INFO 2026-08-07 05:32:30,206 autoreload 80808 8355668352 /Users/srivatsan/Desktop/ai-consulting-platform/backend/tasks/models.py changed, reloading.
+INFO 2026-08-07 05:32:30,681 autoreload 93308 8355668352 Watching for file changes with StatReloader
+INFO 2026-08-07 05:32:30,681 autoreload 93308 8355668352 Watching for file changes with StatReloader
+INFO 2026-08-07 05:32:40,543 autoreload 93308 8355668352 /Users/srivatsan/Desktop/ai-consulting-platform/backend/tasks/serializers.py changed, reloading.
+INFO 2026-08-07 05:32:40,543 autoreload 93308 8355668352 /Users/srivatsan/Desktop/ai-consulting-platform/backend/tasks/serializers.py changed, reloading.
+INFO 2026-08-07 05:32:40,863 autoreload 93461 8355668352 Watching for file changes with StatReloader
+INFO 2026-08-07 05:32:40,863 autoreload 93461 8355668352 Watching for file changes with StatReloader
+INFO 2026-08-07 05:32:45,422 autoreload 93461 8355668352 /Users/srivatsan/Desktop/ai-consulting-platform/backend/tasks/serializers.py changed, reloading.
+INFO 2026-08-07 05:32:45,422 autoreload 93461 8355668352 /Users/srivatsan/Desktop/ai-consulting-platform/backend/tasks/serializers.py changed, reloading.
+INFO 2026-08-07 05:32:45,742 autoreload 93529 8355668352 Watching for file changes with StatReloader
+INFO 2026-08-07 05:32:45,742 autoreload 93529 8355668352 Watching for file changes with StatReloader
+INFO 2026-08-07 05:32:48,265 autoreload 93529 8355668352 /Users/srivatsan/Desktop/ai-consulting-platform/backend/tasks/serializers.py changed, reloading.
+INFO 2026-08-07 05:32:48,265 autoreload 93529 8355668352 /Users/srivatsan/Desktop/ai-consulting-platform/backend/tasks/serializers.py changed, reloading.
+INFO 2026-08-07 05:32:48,616 autoreload 93596 8355668352 Watching for file changes with StatReloader
+INFO 2026-08-07 05:32:48,616 autoreload 93596 8355668352 Watching for file changes with StatReloader
+INFO 2026-08-07 05:32:53,215 autoreload 93596 8355668352 /Users/srivatsan/Desktop/ai-consulting-platform/backend/tasks/views.py changed, reloading.
+INFO 2026-08-07 05:32:53,215 autoreload 93596 8355668352 /Users/srivatsan/Desktop/ai-consulting-platform/backend/tasks/views.py changed, reloading.
+INFO 2026-08-07 05:32:53,545 autoreload 93663 8355668352 Watching for file changes with StatReloader
+INFO 2026-08-07 05:32:53,545 autoreload 93663 8355668352 Watching for file changes with StatReloader
+INFO 2026-08-07 05:32:59,142 autoreload 93663 8355668352 /Users/srivatsan/Desktop/ai-consulting-platform/backend/tasks/views.py changed, reloading.
+INFO 2026-08-07 05:32:59,142 autoreload 93663 8355668352 /Users/srivatsan/Desktop/ai-consulting-platform/backend/tasks/views.py changed, reloading.
+INFO 2026-08-07 05:32:59,478 autoreload 93749 8355668352 Watching for file changes with StatReloader
+INFO 2026-08-07 05:32:59,478 autoreload 93749 8355668352 Watching for file changes with StatReloader
+INFO 2026-08-07 05:33:04,037 autoreload 93749 8355668352 /Users/srivatsan/Desktop/ai-consulting-platform/backend/tasks/urls.py changed, reloading.
+INFO 2026-08-07 05:33:04,037 autoreload 93749 8355668352 /Users/srivatsan/Desktop/ai-consulting-platform/backend/tasks/urls.py changed, reloading.
+INFO 2026-08-07 05:33:04,397 autoreload 93824 8355668352 Watching for file changes with StatReloader
+INFO 2026-08-07 05:33:04,397 autoreload 93824 8355668352 Watching for file changes with StatReloader
+ERROR 2026-08-07 05:33:35,895 log 94090 8355668352 Service Unavailable: /api/companies/
+ERROR 2026-08-07 05:33:35,895 log 94090 8355668352 Service Unavailable: /api/companies/
+ERROR 2026-08-07 05:34:57,783 log 94881 8355668352 Service Unavailable: /api/companies/
+ERROR 2026-08-07 05:34:57,783 log 94881 8355668352 Service Unavailable: /api/companies/
+ERROR 2026-08-07 05:35:21,338 log 95188 8355668352 Service Unavailable: /api/companies/
+ERROR 2026-08-07 05:35:21,338 log 95188 8355668352 Service Unavailable: /api/companies/

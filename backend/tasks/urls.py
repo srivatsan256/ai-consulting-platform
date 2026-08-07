@@ -2,7 +2,7 @@ from django.urls import include, path
 
 from rest_framework.routers import DefaultRouter
 
-from .views import TaskViewSet, TaskCommentViewSet
+from .views import TaskViewSet, TaskCommentViewSet, TaskAttachmentViewSet
 
 router = DefaultRouter()
 
@@ -16,6 +16,12 @@ router.register(
     "comments",
     TaskCommentViewSet,
     basename="taskcomment",
+)
+
+router.register(
+    "attachments",
+    TaskAttachmentViewSet,
+    basename="taskattachment",
 )
 
 urlpatterns = [

@@ -1,9 +1,17 @@
 from django.contrib.auth import get_user_model
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from core.tests_helpers import authenticate, create_superuser, create_user
+from company_members.models import CompanyMember
+from core.tests_helpers import (
+    authenticate,
+    create_company,
+    create_member,
+    create_superuser,
+    create_user,
+)
 
 User = get_user_model()
 
@@ -33,6 +41,12 @@ class UserViewSetTests(APITestCase):
     def setUp(self):
         self.user = create_user(username="viewer", email="viewer@example.com")
         self.list_url = reverse("user-list")
+
+    def _manager(self):
+        admin = create_user(username="admin", email="admin@example.com")
+        company = create_company(name="Admin Corp")
+        create_member(admin, company, role_key="company_admin")
+        return admin, company
 
     def test_requires_authentication(self):
         response = self.client.get(self.list_url)
@@ -101,32 +115,189 @@ class UserViewSetTests(APITestCase):
         )
 
     def test_deactivate_user(self):
-        authenticate(self.client, self.user)
+        admin, company = self._manager()
+        authenticate(self.client, admin)
         target = create_user(username="deact", email="deact@example.com")
+        membership = create_member(
+            target,
+            company,
+            role_key="business_analyst",
+            is_primary=False,
+        )
         response = self.client.post(
             reverse("user-deactivate", args=[target.pk])
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         target.refresh_from_db()
+        membership.refresh_from_db()
         self.assertFalse(target.is_active)
+        self.assertFalse(membership.is_active)
 
     def test_activate_user(self):
-        authenticate(self.client, self.user)
+        admin, company = self._manager()
+        authenticate(self.client, admin)
         target = create_user(username="inactive", email="inactive@example.com")
         target.is_active = False
         target.save(update_fields=["is_active"])
+        membership = create_member(
+            target,
+            company,
+            role_key="business_analyst",
+            is_primary=False,
+        )
+        membership.is_active = False
+        membership.save(update_fields=["is_active"])
         response = self.client.post(
             reverse("user-activate", args=[target.pk])
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         target.refresh_from_db()
+        membership.refresh_from_db()
         self.assertTrue(target.is_active)
+        self.assertTrue(membership.is_active)
 
     def test_cannot_deactivate_self(self):
-        authenticate(self.client, self.user)
+        admin, _ = self._manager()
+        authenticate(self.client, admin)
         response = self.client.post(
-            reverse("user-deactivate", args=[self.user.pk])
+            reverse("user-deactivate", args=[admin.pk])
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.user.refresh_from_db()
-        self.assertTrue(self.user.is_active)
+        admin.refresh_from_db()
+        self.assertTrue(admin.is_active)
+
+    def test_non_manager_cannot_deactivate(self):
+        plain = create_user(username="plain", email="plain@example.com")
+        company = create_company(name="Plain Corp")
+        create_member(plain, company, role_key="business_analyst")
+        authenticate(self.client, plain)
+        target = create_user(username="deact2", email="deact2@example.com")
+        response = self.client.post(
+            reverse("user-deactivate", args=[target.pk])
+        )
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        target.refresh_from_db()
+        self.assertTrue(target.is_active)
+
+    def test_non_manager_cannot_activate(self):
+        plain = create_user(username="plain2", email="plain2@example.com")
+        company = create_company(name="Plain Corp 2")
+        create_member(plain, company, role_key="business_analyst")
+        authenticate(self.client, plain)
+        target = create_user(username="inactive2", email="inactive2@example.com")
+        target.is_active = False
+        target.save(update_fields=["is_active"])
+        response = self.client.post(
+            reverse("user-activate", args=[target.pk])
+        )
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_bulk_import_creates_users(self):
+        admin, company = self._manager()
+        authenticate(self.client, admin)
+        response = self.client.post(
+            reverse("user-bulk-import"),
+            {
+                "users": [
+                    {
+                        "email": "import1@example.com",
+                        "first_name": "Imp",
+                        "last_name": "One",
+                        "role": "business_analyst",
+                    },
+                    {
+                        "email": "import2@example.com",
+                        "first_name": "Imp",
+                        "last_name": "Two",
+                    },
+                ]
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data["created"]), 2)
+        user = User.objects.get(email="import1@example.com")
+        self.assertTrue(
+            CompanyMember.objects.filter(
+                user=user,
+                company=company,
+            ).exists()
+        )
+
+    def test_bulk_import_from_csv(self):
+        admin, _ = self._manager()
+        authenticate(self.client, admin)
+        csv_bytes = (
+            "email,first_name,last_name,role\n"
+            "csv1@example.com,CSV,One,business_analyst\n"
+        ).encode()
+        response = self.client.post(
+            reverse("user-bulk-import"),
+            {"file": SimpleUploadedFile("users.csv", csv_bytes)},
+            format="multipart",
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data["created"]), 1)
+        self.assertTrue(
+            User.objects.filter(email="csv1@example.com").exists()
+        )
+
+    def test_bulk_import_skips_existing_user(self):
+        admin, company = self._manager()
+        authenticate(self.client, admin)
+        existing = create_user(username="exists", email="exists@example.com")
+        response = self.client.post(
+            reverse("user-bulk-import"),
+            {"users": [{"email": "exists@example.com"}]},
+            format="json",
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data["skipped"]), 1)
+        self.assertTrue(
+            CompanyMember.objects.filter(
+                user=existing,
+                company=company,
+            ).exists()
+        )
+
+    def test_bulk_import_requires_manager(self):
+        authenticate(self.client, self.user)
+        response = self.client.post(
+            reverse("user-bulk-import"),
+            {"users": [{"email": "x@example.com"}]},
+            format="json",
+        )
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_bulk_import_reports_row_errors(self):
+        admin, _ = self._manager()
+        authenticate(self.client, admin)
+        response = self.client.post(
+            reverse("user-bulk-import"),
+            {"users": [{"first_name": "NoEmail"}, {"email": ""}]},
+            format="json",
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data["errors"]), 2)
+
+    def test_export_users_csv(self):
+        admin, company = self._manager()
+        create_member(
+            create_user(username="extra", email="extra@example.com"),
+            company,
+            role_key="business_analyst",
+            is_primary=False,
+        )
+        authenticate(self.client, admin)
+        response = self.client.get(reverse("user-export"))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response["Content-Type"], "text/csv")
+        content = response.content.decode()
+        self.assertIn("email,username,first_name", content)
+        self.assertIn(admin.email, content)
+        self.assertIn("extra@example.com", content)
+
+    def test_export_requires_manager(self):
+        authenticate(self.client, self.user)
+        response = self.client.get(reverse("user-export"))
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)

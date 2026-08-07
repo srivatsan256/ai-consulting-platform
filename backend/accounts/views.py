@@ -179,6 +179,7 @@ class UserViewSet(viewsets.ModelViewSet):
             seen.add(email)
 
             try:
+                was_created = False
                 with transaction.atomic():
                     user = User.objects.filter(email__iexact=email).first()
                     role = self._resolve_import_role(row.get("role"), default_role)
@@ -187,7 +188,7 @@ class UserViewSet(viewsets.ModelViewSet):
                         username = self._unique_username(
                             row.get("username") or email.split("@")[0]
                         )
-                        User.objects.create_user(
+                        user = User.objects.create_user(
                             username=username,
                             email=email,
                             first_name=(row.get("first_name") or "").strip(),
@@ -195,7 +196,7 @@ class UserViewSet(viewsets.ModelViewSet):
                             password=secrets.token_urlsafe(12),
                             is_active=_parse_bool(row.get("is_active"), True),
                         )
-                        created.append(email)
+                        was_created = True
                     else:
                         update_fields = {}
                         if row.get("first_name"):
@@ -209,7 +210,6 @@ class UserViewSet(viewsets.ModelViewSet):
                             )
                         if update_fields:
                             User.objects.filter(pk=user.pk).update(**update_fields)
-                        skipped.append(email)
 
                     CompanyMember.objects.get_or_create(
                         user=user,
@@ -220,6 +220,11 @@ class UserViewSet(viewsets.ModelViewSet):
                             "is_active": True,
                         },
                     )
+
+                if was_created:
+                    created.append(email)
+                else:
+                    skipped.append(email)
             except Exception as exc:  # noqa: BLE001
                 errors.append(
                     {"row": index, "email": email, "error": str(exc)}
@@ -238,7 +243,7 @@ class UserViewSet(viewsets.ModelViewSet):
             status=200,
         )
 
-    @action(detail=False, methods=["get"], url_path="export")
+    @action(detail=False, methods=["get"], url_path="export", url_name="export")
     def export_users(self, request):
         """
         Export users of the acting company as CSV.

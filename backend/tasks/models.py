@@ -134,3 +134,40 @@ class TaskComment(models.Model):
 
     def __str__(self):
         return f"Comment by {self.author} on {self.task}"
+
+
+class TaskAttachment(models.Model):
+    """
+    A file attached to a task.
+    """
+
+    task = models.ForeignKey(
+        Task,
+        on_delete=models.CASCADE,
+        related_name="attachments",
+    )
+
+    file = models.FileField(upload_to="task_attachments/")
+
+    original_name = models.CharField(max_length=255, blank=True)
+
+    file_size = models.PositiveIntegerField(default=0)
+
+    content_type = models.CharField(max_length=120, blank=True)
+
+    uploaded_by = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="task_attachments_uploaded",
+    )
+
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = "task_attachments"
+        ordering = ["-uploaded_at"]
+
+    def __str__(self):
+        return f"{self.original_name or self.file.name} @ {self.task}"

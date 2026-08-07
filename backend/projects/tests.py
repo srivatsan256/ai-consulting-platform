@@ -180,6 +180,66 @@ class ProjectPhaseAndMilestoneTests(APITestCase):
         self.assertEqual(names, ["First", "Second"])
 
 
+class ProjectTagsTests(APITestCase):
+    def setUp(self):
+        self.user = create_user(username="tagpm", email="tagpm@example.com")
+        self.company = create_company(name="Tag Corp")
+        create_member(self.user, self.company)
+        self.project = create_project(
+            self.company,
+            name="Tagged",
+            tags=["ai", "migration"],
+        )
+        authenticate(self.client, self.user)
+
+    def test_create_project_with_tags(self):
+        response = self.client.post(
+            reverse("project-list"),
+            {
+                "project_name": "Tagged New",
+                "tags": ["ai", "data"],
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.data["tags"], ["ai", "data"])
+
+    def test_patch_tags(self):
+        response = self.client.patch(
+            reverse("project-detail", args=[self.project.pk]),
+            {"tags": ["security"]},
+            format="json",
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.project.refresh_from_db()
+        self.assertEqual(self.project.tags, ["security"])
+
+    def test_filter_by_tag(self):
+        response = self.client.get(reverse("project-list"), {"tag": "ai"})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        names = [p["project_name"] for p in response.data["results"]]
+        self.assertIn("Tagged", names)
+
+    def test_filter_by_missing_tag_returns_empty(self):
+        response = self.client.get(
+            reverse("project-list"),
+            {"tag": "nonexistent"},
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data["results"]), 0)
+
+    def test_tags_are_tenant_scoped(self):
+        other_company = create_company(name="Other Tag Corp")
+        other_user = create_user(username="othertag", email="othertag@example.com")
+        create_member(other_user, other_company)
+        create_project(other_company, name="Other Tagged", tags=["private-tag"])
+        response = self.client.get(reverse("project-tags"))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn("ai", response.data)
+        self.assertIn("migration", response.data)
+        self.assertNotIn("private-tag", response.data)
+
+
 class LevelModuleTests(APITestCase):
     def setUp(self):
         self.user = create_user(username="levels", email="levels@example.com")
