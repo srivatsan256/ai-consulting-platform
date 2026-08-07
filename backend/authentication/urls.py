@@ -14,6 +14,7 @@ from authentication.views import (
     PasswordResetVerifyOTPAPIView,
     RefreshTokenAPIView,
     RegisterAPIView,
+    SessionViewSet,
     SwitchCompanyAPIView,
 )
 
@@ -22,6 +23,7 @@ app_name = "authentication"
 # Initialize DRF Router for ViewSets
 router = DefaultRouter()
 router.register(r"login-history", LoginHistoryViewSet, basename="login-history")
+router.register(r"sessions", SessionViewSet, basename="session")
 
 urlpatterns = [
     # Router URLs (Login History ViewSet)

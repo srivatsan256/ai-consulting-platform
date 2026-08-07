@@ -228,6 +228,86 @@ class SessionService:
         return count
 
     @staticmethod
+    def get_max_concurrent_sessions() -> int:
+        """
+        Return the maximum allowed concurrent sessions per user/company.
+
+        Resolution order: ``SystemSetting`` override, then the
+        ``MAX_CONCURRENT_SESSIONS`` Django setting. A value <= 0 disables
+        the limit.
+        """
+        from django.conf import settings
+
+        from settings_app.models import SystemSetting
+
+        default = getattr(settings, "MAX_CONCURRENT_SESSIONS", 5)
+        try:
+            return int(
+                SystemSetting.get_value(
+                    "auth.max_concurrent_sessions",
+                    default=default,
+                )
+            )
+        except (TypeError, ValueError):
+            return default
+
+    @staticmethod
+    @transaction.atomic
+    def enforce_concurrent_sessions(
+        *,
+        user: Any,
+        company: Any,
+    ) -> int:
+        """
+        Revoke the oldest active sessions until the user/company is back
+        within the configured concurrent-session limit.
+
+        The newest sessions (most recent ``login_at``) are always kept.
+
+        Returns
+        -------
+        int
+            Number of sessions revoked by this enforcement.
+        """
+        limit = SessionService.get_max_concurrent_sessions()
+        if limit <= 0:
+            return 0
+
+        active_ids = list(
+            UserSession.objects.active()
+            .filter(
+                user=user,
+                company=company,
+            )
+            .order_by("login_at")
+            .values_list("pk", flat=True)
+        )
+
+        excess = len(active_ids) - limit
+        if excess <= 0:
+            return 0
+
+        oldest_ids = active_ids[:excess]
+        count = UserSession.objects.filter(pk__in=oldest_ids).update(
+            is_active=False,
+            revoked_at=timezone.now(),
+            updated_at=timezone.now(),
+        )
+
+        AuditLogService.log(
+            company=company,
+            user=user,
+            action="SESSION_LIMIT_ENFORCED",
+            resource="UserSession",
+            metadata={
+                "limit": limit,
+                "revoked_sessions": count,
+            },
+        )
+
+        return count
+
+    @staticmethod
     def get_active_sessions(*, user: Any, company: Any = None):
         """
         Return active sessions for a user.

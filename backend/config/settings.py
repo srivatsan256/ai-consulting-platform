@@ -356,6 +356,12 @@ SIMPLE_JWT = {
         ("Bearer",),
 }
 
+# Maximum number of concurrent active sessions allowed per user per company.
+# Overridable at runtime via SystemSetting ``auth.max_concurrent_sessions``.
+MAX_CONCURRENT_SESSIONS = int(
+    os.environ.get("MAX_CONCURRENT_SESSIONS", "5")
+)
+
 
 # ==========================
 # Swagger / OpenAPI

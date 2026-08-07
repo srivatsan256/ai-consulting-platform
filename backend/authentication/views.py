@@ -1,5 +1,6 @@
 from rest_framework import status, viewsets
 from rest_framework import filters, serializers
+from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -8,8 +9,9 @@ from rest_framework_simplejwt.exceptions import InvalidToken, TokenError  # type
 from rest_framework_simplejwt.views import TokenObtainPairView  # type: ignore
 
 from authentication.models.login_history import LoginHistory
+from authentication.models import UserSession
 from authentication.permissions import CanViewLoginHistory
-from authentication.serializers import LoginHistorySerializer
+from authentication.serializers import LoginHistorySerializer, SessionSerializer
 
 from authentication.serializers import (
     ChangePasswordSerializer,
@@ -498,6 +500,179 @@ class LoginHistoryViewSet(viewsets.ReadOnlyModelViewSet):
                 "success": True,
                 "message": "Login history retrieved successfully.",
                 "data": response.data,
+            },
+            status=status.HTTP_200_OK,
+        )
+
+
+class SessionViewSet(viewsets.ReadOnlyModelViewSet):
+    """
+    Read + revoke endpoints for the current user's active sessions
+    (device-level session management).
+    """
+
+    serializer_class = SessionSerializer
+    permission_classes = [IsAuthenticated]
+
+    def _company(self):
+        tenant = getattr(self.request, "tenant", None)
+        return getattr(tenant, "company", None)
+
+    def _current_jti(self):
+        """
+        Return the refresh-token JTI of the caller's current session, parsed
+        from the ``X-Session-Refresh`` header. ``None`` when absent/invalid.
+        """
+        refresh_token = self.request.headers.get("X-Session-Refresh")
+        if not refresh_token:
+            return None
+        try:
+            from rest_framework_simplejwt.tokens import RefreshToken
+
+            return RefreshToken(refresh_token)["jti"]
+        except (TokenError, TypeError, ValueError):
+            return None
+
+    def get_queryset(self):
+        if getattr(self, "swagger_fake_view", False):
+            return UserSession.objects.none()
+
+        company = self._company()
+        if company is None:
+            return UserSession.objects.none()
+
+        return (
+            UserSession.objects.active()
+            .filter(
+                user=self.request.user,
+                company=company,
+            )
+            .order_by("-last_activity_at")
+        )
+
+    def list(self, request, *args, **kwargs):
+        """
+        List the current user's active sessions for the tenant company.
+        """
+
+        request.session_refresh_jti = self._current_jti()
+        response = super().list(request, *args, **kwargs)
+
+        return Response(
+            {
+                "success": True,
+                "message": "Sessions retrieved successfully.",
+                "data": response.data,
+            },
+            status=status.HTTP_200_OK,
+        )
+
+    def retrieve(self, request, *args, **kwargs):
+        """
+        Return a single session belonging to the current user.
+        """
+
+        request.session_refresh_jti = self._current_jti()
+        response = super().retrieve(request, *args, **kwargs)
+
+        return Response(
+            {
+                "success": True,
+                "message": "Session retrieved successfully.",
+                "data": response.data,
+            },
+            status=status.HTTP_200_OK,
+        )
+
+    @action(detail=True, methods=["post"])
+    def revoke(self, request, pk=None):
+        """
+        Revoke a single session belonging to the current user.
+        POST /api/auth/sessions/{id}/revoke/
+        """
+
+        from authentication.services.session_service import SessionService
+
+        session = self.get_object()
+
+        if session.refresh_token_jti == self._current_jti():
+            return Response(
+                {
+                    "success": False,
+                    "message": (
+                        "Cannot revoke the current session; use /api/auth/logout/ "
+                        "to sign out of this device."
+                    ),
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        SessionService.revoke_session(
+            session=session,
+            revoked_by=request.user,
+        )
+
+        return Response(
+            {
+                "success": True,
+                "message": "Session revoked successfully.",
+                "data": SessionSerializer(session).data,
+            },
+            status=status.HTTP_200_OK,
+        )
+
+    @action(detail=False, methods=["post"], url_path="revoke-all")
+    def revoke_all(self, request):
+        """
+        Revoke every other session, keeping the current device signed in.
+        POST /api/auth/sessions/revoke-all/
+        """
+
+        from authentication.services.session_service import SessionService
+
+        current_jti = self._current_jti()
+        if not current_jti:
+            return Response(
+                {
+                    "success": False,
+                    "message": (
+                        "Current session could not be identified; include the "
+                        "refresh token in the X-Session-Refresh header."
+                    ),
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        company = self._company()
+        try:
+            current_session = (
+                UserSession.objects.active()
+                .get(
+                    user=request.user,
+                    company=company,
+                    refresh_token_jti=current_jti,
+                )
+            )
+        except UserSession.DoesNotExist:
+            return Response(
+                {
+                    "success": False,
+                    "message": "Current session not found.",
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        revoked_count = SessionService.revoke_other_sessions(
+            current_session=current_session,
+        )
+
+        return Response(
+            {
+                "success": True,
+                "message": f"Revoked {revoked_count} other session(s).",
+                "data": {
+                    "revoked": revoked_count,
+                },
             },
             status=status.HTTP_200_OK,
         )

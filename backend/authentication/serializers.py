@@ -8,6 +8,7 @@ from rest_framework.exceptions import AuthenticationFailed
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer  # type: ignore
 
 from accounts.models import User
+from authentication.models import UserSession
 from authentication.models.login_history import LoginHistory
 from authentication.services.login_history import LoginHistoryService
 from companies.models import Company
@@ -320,6 +321,11 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
             device_type=device_type,
         )
 
+        SessionService.enforce_concurrent_sessions(
+            user=user,
+            company=membership.company,
+        )
+
 
 class LoginSerializer(serializers.Serializer):
     """
@@ -526,6 +532,39 @@ class LoginHistorySerializer(serializers.ModelSerializer):
             "ip_address",
             "user_agent",
             "created_at",
+        )
+
+        read_only_fields = fields
+
+
+class SessionSerializer(serializers.ModelSerializer):
+    """
+    Serializer for user sessions (device-level session management).
+    """
+
+    is_current = serializers.SerializerMethodField()
+
+    def get_is_current(self, obj) -> bool:
+        request = self.context.get("request")
+        if request is None:
+            return False
+        current_jti = getattr(request, "session_refresh_jti", None)
+        return bool(current_jti) and obj.refresh_token_jti == current_jti
+
+    class Meta:
+        model = UserSession
+        fields = (
+            "id",
+            "device_name",
+            "device_type",
+            "browser",
+            "operating_system",
+            "ip_address",
+            "login_at",
+            "last_activity_at",
+            "expires_at",
+            "is_active",
+            "is_current",
         )
 
         read_only_fields = fields

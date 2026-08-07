@@ -2,6 +2,7 @@ from django.contrib.auth import get_user_model
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
+from rest_framework_simplejwt.tokens import RefreshToken  # type: ignore
 
 from companies.models import Company
 from company_members.models import CompanyMember
@@ -280,3 +281,216 @@ class SessionManagementTests(APITestCase):
                 user=self.user,
             ).exists()
         )
+
+    # ------------------------------------------------------------------
+    # Concurrent session limit
+    # ------------------------------------------------------------------
+
+    def test_concurrent_session_limit_revokes_oldest(self):
+        from settings_app.models import SystemSetting
+
+        SystemSetting.set_value(
+            "auth.max_concurrent_sessions",
+            2,
+            category="security",
+        )
+        from authentication.models import UserSession
+
+        self._login()
+        self._login()
+        third = self._login()
+
+        active = UserSession.objects.active().filter(
+            user=self.user,
+            company=self.company,
+        )
+        self.assertEqual(active.count(), 2)
+
+        third_jti = RefreshToken(third["refresh"])["jti"]
+        self.assertTrue(
+            active.filter(refresh_token_jti=third_jti).exists(),
+            "The newest session must survive enforcement.",
+        )
+
+    def test_concurrent_limit_uses_system_setting(self):
+        from settings_app.models import SystemSetting
+
+        SystemSetting.set_value(
+            "auth.max_concurrent_sessions",
+            1,
+            category="security",
+        )
+        from authentication.models import UserSession
+
+        self._login()
+        self._login()
+
+        active = UserSession.objects.active().filter(
+            user=self.user,
+            company=self.company,
+        )
+        self.assertEqual(active.count(), 1)
+
+    # ------------------------------------------------------------------
+    # Session management endpoints
+    # ------------------------------------------------------------------
+
+    def _sessions_url(self):
+        return reverse("authentication:session-list")
+
+    def _auth_login(self):
+        tokens = self._login()
+        self.client.credentials(
+            HTTP_AUTHORIZATION=f"Bearer {tokens['access']}"
+        )
+        return tokens
+
+    def test_sessions_list_requires_authentication(self):
+        response = self.client.get(self._sessions_url())
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_sessions_list_returns_only_own_active_sessions(self):
+        from authentication.models import UserSession
+
+        self._auth_login()
+        self._auth_login()
+
+        response = self.client.get(self._sessions_url())
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertTrue(response.data["success"])
+        results = response.data["data"]["results"]
+        self.assertEqual(len(results), 2)
+
+        total = UserSession.objects.filter(user=self.user).count()
+        self.assertEqual(total, 2)
+
+    def test_sessions_list_does_not_leak_foreign_sessions(self):
+        other_user = User.objects.create_user(
+            username="other_user",
+            email="other_user@example.com",
+            password=self.password,
+        )
+        other_company = create_company(name="Other Corp")
+        create_member(other_user, other_company)
+
+        self.client.post(
+            self.login_url,
+            {"email": other_user.email, "password": self.password},
+            format="json",
+        )
+
+        self._auth_login()
+        response = self.client.get(self._sessions_url())
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        results = response.data["data"]["results"]
+        self.assertEqual(len(results), 1)
+
+    def test_revoke_single_session(self):
+        from authentication.models import UserSession
+
+        first = self._login()
+        second = self._login()
+
+        first_jti = RefreshToken(first["refresh"])["jti"]
+        target = UserSession.objects.get(refresh_token_jti=first_jti)
+
+        response = self.client.post(
+            reverse("authentication:session-revoke", args=[target.id]),
+            {},
+            format="json",
+            HTTP_AUTHORIZATION=f"Bearer {second['access']}",
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        target.refresh_from_db()
+        self.assertFalse(target.is_active)
+        self.assertIsNotNone(target.revoked_at)
+
+        other = UserSession.objects.get(
+            refresh_token_jti=RefreshToken(second["refresh"])["jti"]
+        )
+        self.assertTrue(other.is_active)
+
+    def test_revoke_current_session_rejected(self):
+        from authentication.models import UserSession
+
+        tokens = self._login()
+        session = UserSession.objects.get(user=self.user)
+
+        response = self.client.post(
+            reverse("authentication:session-revoke", args=[session.id]),
+            {},
+            format="json",
+            HTTP_AUTHORIZATION=f"Bearer {tokens['access']}",
+            HTTP_X_SESSION_REFRESH=tokens["refresh"],
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        session.refresh_from_db()
+        self.assertTrue(session.is_active)
+
+    def test_revoke_foreign_session_hidden(self):
+        from authentication.models import UserSession
+
+        other_user = User.objects.create_user(
+            username="other2",
+            email="other2@example.com",
+            password=self.password,
+        )
+        other_company = create_company(name="Other Corp 2")
+        create_member(other_user, other_company)
+
+        self.client.post(
+            self.login_url,
+            {"email": other_user.email, "password": self.password},
+            format="json",
+        )
+        foreign = UserSession.objects.get(user=other_user)
+
+        tokens = self._login()
+        response = self.client.post(
+            reverse("authentication:session-revoke", args=[foreign.id]),
+            {},
+            format="json",
+            HTTP_AUTHORIZATION=f"Bearer {tokens['access']}",
+        )
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        foreign.refresh_from_db()
+        self.assertTrue(foreign.is_active)
+
+    def test_revoke_all_requires_current_refresh_header(self):
+        self._login()
+        response = self.client.post(
+            reverse("authentication:session-revoke-all"),
+            {},
+            format="json",
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_revoke_all_keeps_current_session(self):
+        from authentication.models import UserSession
+
+        first = self._login()
+        second = self._login()
+        third = self._login()
+
+        first_jti = RefreshToken(first["refresh"])["jti"]
+        second_jti = RefreshToken(second["refresh"])["jti"]
+        third_jti = RefreshToken(third["refresh"])["jti"]
+
+        response = self.client.post(
+            reverse("authentication:session-revoke-all"),
+            {},
+            format="json",
+            HTTP_AUTHORIZATION=f"Bearer {third['access']}",
+            HTTP_X_SESSION_REFRESH=third["refresh"],
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["data"]["revoked"], 2)
+
+        current = UserSession.objects.get(refresh_token_jti=third_jti)
+        self.assertTrue(current.is_active)
+
+        first_s = UserSession.objects.get(refresh_token_jti=first_jti)
+        second_s = UserSession.objects.get(refresh_token_jti=second_jti)
+        self.assertFalse(first_s.is_active)
+        self.assertFalse(second_s.is_active)

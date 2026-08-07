@@ -3,7 +3,7 @@ from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from django.utils import timezone
-from drf_spectacular.utils import extend_schema
+from drf_spectacular.utils import extend_schema # type: ignore
 
 from .models import Workflow, WorkflowStep, WorkflowExecution
 from .serializers import (
@@ -40,6 +40,8 @@ class WorkflowViewSet(TenantScopedViewSetMixin, viewsets.ModelViewSet):
     ordering = ["-created_at"]
 
     permission_classes = [IsAuthenticated]
+
+    lookup_value_regex = r"[0-9]+"
 
     def get_queryset(self):
         return super().get_queryset().filter(

@@ -48,10 +48,10 @@ class UserViewSet(viewsets.ModelViewSet):
         company = getattr(tenant, "company", None)
         if company is None:
             return queryset.none()
-        return queryset.filter(
-            company_memberships__company=company,
-            company_memberships__is_active=True,
-        ).distinct()
+        queryset = queryset.filter(company_memberships__company=company)
+        if self.action == "list":
+            queryset = queryset.filter(company_memberships__is_active=True)
+        return queryset.distinct()
 
     # ------------------------------------------------------------------
     # Authorization helpers

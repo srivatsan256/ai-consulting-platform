@@ -2486,3 +2486,29 @@ INFO 2026-08-07 06:53:26,047 autoreload 49693 8355668352 /Users/srivatsan/Deskto
 INFO 2026-08-07 06:53:26,047 autoreload 49693 8355668352 /Users/srivatsan/Desktop/ai-consulting-platform/backend/settings_app/views.py changed, reloading.
 INFO 2026-08-07 06:53:26,562 autoreload 49838 8355668352 Watching for file changes with StatReloader
 INFO 2026-08-07 06:53:26,562 autoreload 49838 8355668352 Watching for file changes with StatReloader
+INFO 2026-08-07 07:08:56,398 autoreload 58520 8355668352 Watching for file changes with StatReloader
+INFO 2026-08-07 07:08:56,398 autoreload 58520 8355668352 Watching for file changes with StatReloader
+INFO 2026-08-07 07:09:11,419 autoreload 58520 8355668352 /Users/srivatsan/Desktop/ai-consulting-platform/backend/authentication/serializers.py changed, reloading.
+INFO 2026-08-07 07:09:11,419 autoreload 58520 8355668352 /Users/srivatsan/Desktop/ai-consulting-platform/backend/authentication/serializers.py changed, reloading.
+INFO 2026-08-07 07:09:11,845 autoreload 58682 8355668352 Watching for file changes with StatReloader
+INFO 2026-08-07 07:09:11,845 autoreload 58682 8355668352 Watching for file changes with StatReloader
+INFO 2026-08-07 07:09:22,688 autoreload 58682 8355668352 /Users/srivatsan/Desktop/ai-consulting-platform/backend/authentication/serializers.py changed, reloading.
+INFO 2026-08-07 07:09:22,688 autoreload 58682 8355668352 /Users/srivatsan/Desktop/ai-consulting-platform/backend/authentication/serializers.py changed, reloading.
+INFO 2026-08-07 07:09:23,120 autoreload 58814 8355668352 Watching for file changes with StatReloader
+INFO 2026-08-07 07:09:23,120 autoreload 58814 8355668352 Watching for file changes with StatReloader
+INFO 2026-08-07 07:09:29,276 autoreload 58814 8355668352 /Users/srivatsan/Desktop/ai-consulting-platform/backend/authentication/serializers.py changed, reloading.
+INFO 2026-08-07 07:09:29,276 autoreload 58814 8355668352 /Users/srivatsan/Desktop/ai-consulting-platform/backend/authentication/serializers.py changed, reloading.
+INFO 2026-08-07 07:09:29,627 autoreload 58916 8355668352 Watching for file changes with StatReloader
+INFO 2026-08-07 07:09:29,627 autoreload 58916 8355668352 Watching for file changes with StatReloader
+INFO 2026-08-07 07:09:45,597 autoreload 58916 8355668352 /Users/srivatsan/Desktop/ai-consulting-platform/backend/authentication/views.py changed, reloading.
+INFO 2026-08-07 07:09:45,597 autoreload 58916 8355668352 /Users/srivatsan/Desktop/ai-consulting-platform/backend/authentication/views.py changed, reloading.
+INFO 2026-08-07 07:09:46,096 autoreload 59044 8355668352 Watching for file changes with StatReloader
+INFO 2026-08-07 07:09:46,096 autoreload 59044 8355668352 Watching for file changes with StatReloader
+INFO 2026-08-07 07:09:53,874 autoreload 59044 8355668352 /Users/srivatsan/Desktop/ai-consulting-platform/backend/authentication/views.py changed, reloading.
+INFO 2026-08-07 07:09:53,874 autoreload 59044 8355668352 /Users/srivatsan/Desktop/ai-consulting-platform/backend/authentication/views.py changed, reloading.
+INFO 2026-08-07 07:09:54,362 autoreload 59129 8355668352 Watching for file changes with StatReloader
+INFO 2026-08-07 07:09:54,362 autoreload 59129 8355668352 Watching for file changes with StatReloader
+INFO 2026-08-07 07:10:06,627 autoreload 59129 8355668352 /Users/srivatsan/Desktop/ai-consulting-platform/backend/authentication/views.py changed, reloading.
+INFO 2026-08-07 07:10:06,627 autoreload 59129 8355668352 /Users/srivatsan/Desktop/ai-consulting-platform/backend/authentication/views.py changed, reloading.
+INFO 2026-08-07 07:10:06,901 autoreload 59269 8355668352 Watching for file changes with StatReloader
+INFO 2026-08-07 07:10:06,901 autoreload 59269 8355668352 Watching for file changes with StatReloader

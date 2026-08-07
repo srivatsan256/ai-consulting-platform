@@ -40,6 +40,13 @@ class UserModelTests(APITestCase):
 class UserViewSetTests(APITestCase):
     def setUp(self):
         self.user = create_user(username="viewer", email="viewer@example.com")
+        self.company = create_company(name="Viewer Corp")
+        create_member(
+            self.user,
+            self.company,
+            role_key="business_analyst",
+            is_primary=True,
+        )
         self.list_url = reverse("user-list")
 
     def _manager(self):
@@ -62,6 +69,19 @@ class UserViewSetTests(APITestCase):
         response = self.client.get(reverse("user-detail", args=[self.user.pk]))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["email"], self.user.email)
+
+    def test_authenticated_user_cannot_retrieve_foreign_user(self):
+        foreign = create_user(username="foreign", email="foreign@example.com")
+        other_company = create_company(name="Other Corp")
+        create_member(
+            foreign,
+            other_company,
+            role_key="business_analyst",
+            is_primary=True,
+        )
+        authenticate(self.client, self.user)
+        response = self.client.get(reverse("user-detail", args=[foreign.pk]))
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_create_user(self):
         authenticate(self.client, self.user)
@@ -93,7 +113,13 @@ class UserViewSetTests(APITestCase):
         self.assertEqual(self.user.first_name, "Updated")
 
     def test_search_filters_users(self):
-        create_user(username="other", email="other@example.com")
+        other_company = create_company(name="Other Corp")
+        create_member(
+            create_user(username="other", email="other@example.com"),
+            other_company,
+            role_key="business_analyst",
+            is_primary=True,
+        )
         authenticate(self.client, self.user)
         response = self.client.get(
             self.list_url,
@@ -172,6 +198,12 @@ class UserViewSetTests(APITestCase):
         create_member(plain, company, role_key="business_analyst")
         authenticate(self.client, plain)
         target = create_user(username="deact2", email="deact2@example.com")
+        create_member(
+            target,
+            company,
+            role_key="business_analyst",
+            is_primary=False,
+        )
         response = self.client.post(
             reverse("user-deactivate", args=[target.pk])
         )
@@ -185,6 +217,12 @@ class UserViewSetTests(APITestCase):
         create_member(plain, company, role_key="business_analyst")
         authenticate(self.client, plain)
         target = create_user(username="inactive2", email="inactive2@example.com")
+        create_member(
+            target,
+            company,
+            role_key="business_analyst",
+            is_primary=False,
+        )
         target.is_active = False
         target.save(update_fields=["is_active"])
         response = self.client.post(
