@@ -8,7 +8,7 @@ from core.tests_helpers import (
     create_member,
     create_user,
 )
-from departments.models import Department
+from departments.models import Department, DepartmentMember
 
 
 class DepartmentModelTests(APITestCase):

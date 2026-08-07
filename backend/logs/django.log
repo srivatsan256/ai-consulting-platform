@@ -1772,3 +1772,93 @@ INFO 2026-08-06 11:48:31,217 basehttp 89664 6186168320 "GET /api/docs/ HTTP/1.1"
 INFO 2026-08-06 11:48:31,217 basehttp 89664 6186168320 "GET /api/docs/ HTTP/1.1" 200 4659
 ERROR 2026-08-06 11:49:43,011 log 91049 8355668352 Service Unavailable: /api/companies/
 ERROR 2026-08-06 11:49:43,011 log 91049 8355668352 Service Unavailable: /api/companies/
+INFO 2026-08-07 04:11:28,509 autoreload 48143 8355668352 Watching for file changes with StatReloader
+INFO 2026-08-07 04:11:28,509 autoreload 48143 8355668352 Watching for file changes with StatReloader
+INFO 2026-08-07 04:44:31,854 autoreload 48143 8355668352 /Users/srivatsan/Desktop/ai-consulting-platform/backend/roles/models.py changed, reloading.
+INFO 2026-08-07 04:44:31,854 autoreload 48143 8355668352 /Users/srivatsan/Desktop/ai-consulting-platform/backend/roles/models.py changed, reloading.
+INFO 2026-08-07 04:44:32,199 autoreload 64173 8355668352 Watching for file changes with StatReloader
+INFO 2026-08-07 04:44:32,199 autoreload 64173 8355668352 Watching for file changes with StatReloader
+INFO 2026-08-07 04:45:03,544 autoreload 64173 8355668352 /Users/srivatsan/Desktop/ai-consulting-platform/backend/roles/serializers.py changed, reloading.
+INFO 2026-08-07 04:45:03,544 autoreload 64173 8355668352 /Users/srivatsan/Desktop/ai-consulting-platform/backend/roles/serializers.py changed, reloading.
+INFO 2026-08-07 04:45:03,857 autoreload 64538 8355668352 Watching for file changes with StatReloader
+INFO 2026-08-07 04:45:03,857 autoreload 64538 8355668352 Watching for file changes with StatReloader
+INFO 2026-08-07 04:45:14,554 autoreload 64538 8355668352 /Users/srivatsan/Desktop/ai-consulting-platform/backend/roles/views.py changed, reloading.
+INFO 2026-08-07 04:45:14,554 autoreload 64538 8355668352 /Users/srivatsan/Desktop/ai-consulting-platform/backend/roles/views.py changed, reloading.
+INFO 2026-08-07 04:45:14,874 autoreload 64638 8355668352 Watching for file changes with StatReloader
+INFO 2026-08-07 04:45:14,874 autoreload 64638 8355668352 Watching for file changes with StatReloader
+INFO 2026-08-07 04:45:18,409 autoreload 64638 8355668352 /Users/srivatsan/Desktop/ai-consulting-platform/backend/roles/views.py changed, reloading.
+INFO 2026-08-07 04:45:18,409 autoreload 64638 8355668352 /Users/srivatsan/Desktop/ai-consulting-platform/backend/roles/views.py changed, reloading.
+INFO 2026-08-07 04:45:18,830 autoreload 64695 8355668352 Watching for file changes with StatReloader
+INFO 2026-08-07 04:45:18,830 autoreload 64695 8355668352 Watching for file changes with StatReloader
+INFO 2026-08-07 04:45:23,420 autoreload 64695 8355668352 /Users/srivatsan/Desktop/ai-consulting-platform/backend/roles/views.py changed, reloading.
+INFO 2026-08-07 04:45:23,420 autoreload 64695 8355668352 /Users/srivatsan/Desktop/ai-consulting-platform/backend/roles/views.py changed, reloading.
+INFO 2026-08-07 04:45:23,745 autoreload 64750 8355668352 Watching for file changes with StatReloader
+INFO 2026-08-07 04:45:23,745 autoreload 64750 8355668352 Watching for file changes with StatReloader
+INFO 2026-08-07 04:45:35,489 autoreload 64750 8355668352 /Users/srivatsan/Desktop/ai-consulting-platform/backend/company_members/views.py changed, reloading.
+INFO 2026-08-07 04:45:35,489 autoreload 64750 8355668352 /Users/srivatsan/Desktop/ai-consulting-platform/backend/company_members/views.py changed, reloading.
+INFO 2026-08-07 04:45:35,800 autoreload 64861 8355668352 Watching for file changes with StatReloader
+INFO 2026-08-07 04:45:35,800 autoreload 64861 8355668352 Watching for file changes with StatReloader
+INFO 2026-08-07 04:45:40,372 autoreload 64861 8355668352 /Users/srivatsan/Desktop/ai-consulting-platform/backend/departments/models.py changed, reloading.
+INFO 2026-08-07 04:45:40,372 autoreload 64861 8355668352 /Users/srivatsan/Desktop/ai-consulting-platform/backend/departments/models.py changed, reloading.
+INFO 2026-08-07 04:45:40,676 autoreload 64916 8355668352 Watching for file changes with StatReloader
+INFO 2026-08-07 04:45:40,676 autoreload 64916 8355668352 Watching for file changes with StatReloader
+INFO 2026-08-07 04:45:44,220 autoreload 64916 8355668352 /Users/srivatsan/Desktop/ai-consulting-platform/backend/departments/serializers.py changed, reloading.
+INFO 2026-08-07 04:45:44,220 autoreload 64916 8355668352 /Users/srivatsan/Desktop/ai-consulting-platform/backend/departments/serializers.py changed, reloading.
+INFO 2026-08-07 04:45:44,536 autoreload 64970 8355668352 Watching for file changes with StatReloader
+INFO 2026-08-07 04:45:44,536 autoreload 64970 8355668352 Watching for file changes with StatReloader
+INFO 2026-08-07 04:45:53,214 autoreload 64970 8355668352 /Users/srivatsan/Desktop/ai-consulting-platform/backend/departments/serializers.py changed, reloading.
+INFO 2026-08-07 04:45:53,214 autoreload 64970 8355668352 /Users/srivatsan/Desktop/ai-consulting-platform/backend/departments/serializers.py changed, reloading.
+INFO 2026-08-07 04:45:53,522 autoreload 65074 8355668352 Watching for file changes with StatReloader
+INFO 2026-08-07 04:45:53,522 autoreload 65074 8355668352 Watching for file changes with StatReloader
+INFO 2026-08-07 04:46:16,517 autoreload 65074 8355668352 /Users/srivatsan/Desktop/ai-consulting-platform/backend/departments/views.py changed, reloading.
+INFO 2026-08-07 04:46:16,517 autoreload 65074 8355668352 /Users/srivatsan/Desktop/ai-consulting-platform/backend/departments/views.py changed, reloading.
+INFO 2026-08-07 04:46:16,844 autoreload 65282 8355668352 Watching for file changes with StatReloader
+INFO 2026-08-07 04:46:16,844 autoreload 65282 8355668352 Watching for file changes with StatReloader
+INFO 2026-08-07 04:46:22,436 autoreload 65282 8355668352 /Users/srivatsan/Desktop/ai-consulting-platform/backend/departments/views.py changed, reloading.
+INFO 2026-08-07 04:46:22,436 autoreload 65282 8355668352 /Users/srivatsan/Desktop/ai-consulting-platform/backend/departments/views.py changed, reloading.
+INFO 2026-08-07 04:46:22,767 autoreload 65352 8355668352 Watching for file changes with StatReloader
+INFO 2026-08-07 04:46:22,767 autoreload 65352 8355668352 Watching for file changes with StatReloader
+INFO 2026-08-07 04:46:26,307 autoreload 65352 8355668352 /Users/srivatsan/Desktop/ai-consulting-platform/backend/departments/urls.py changed, reloading.
+INFO 2026-08-07 04:46:26,307 autoreload 65352 8355668352 /Users/srivatsan/Desktop/ai-consulting-platform/backend/departments/urls.py changed, reloading.
+INFO 2026-08-07 04:46:26,623 autoreload 65405 8355668352 Watching for file changes with StatReloader
+INFO 2026-08-07 04:46:26,623 autoreload 65405 8355668352 Watching for file changes with StatReloader
+INFO 2026-08-07 04:47:55,227 autoreload 65405 8355668352 /Users/srivatsan/Desktop/ai-consulting-platform/backend/roles/services/service.py changed, reloading.
+INFO 2026-08-07 04:47:55,227 autoreload 65405 8355668352 /Users/srivatsan/Desktop/ai-consulting-platform/backend/roles/services/service.py changed, reloading.
+INFO 2026-08-07 04:47:55,562 autoreload 66332 8355668352 Watching for file changes with StatReloader
+INFO 2026-08-07 04:47:55,562 autoreload 66332 8355668352 Watching for file changes with StatReloader
+INFO 2026-08-07 04:47:58,088 autoreload 66332 8355668352 /Users/srivatsan/Desktop/ai-consulting-platform/backend/roles/views.py changed, reloading.
+INFO 2026-08-07 04:47:58,088 autoreload 66332 8355668352 /Users/srivatsan/Desktop/ai-consulting-platform/backend/roles/views.py changed, reloading.
+INFO 2026-08-07 04:47:58,442 autoreload 66376 8355668352 Watching for file changes with StatReloader
+INFO 2026-08-07 04:47:58,442 autoreload 66376 8355668352 Watching for file changes with StatReloader
+INFO 2026-08-07 04:48:03,011 autoreload 66376 8355668352 /Users/srivatsan/Desktop/ai-consulting-platform/backend/roles/views.py changed, reloading.
+INFO 2026-08-07 04:48:03,011 autoreload 66376 8355668352 /Users/srivatsan/Desktop/ai-consulting-platform/backend/roles/views.py changed, reloading.
+INFO 2026-08-07 04:48:03,398 autoreload 66432 8355668352 Watching for file changes with StatReloader
+INFO 2026-08-07 04:48:03,398 autoreload 66432 8355668352 Watching for file changes with StatReloader
+INFO 2026-08-07 04:48:06,941 autoreload 66432 8355668352 /Users/srivatsan/Desktop/ai-consulting-platform/backend/departments/views.py changed, reloading.
+INFO 2026-08-07 04:48:06,941 autoreload 66432 8355668352 /Users/srivatsan/Desktop/ai-consulting-platform/backend/departments/views.py changed, reloading.
+INFO 2026-08-07 04:48:07,272 autoreload 66486 8355668352 Watching for file changes with StatReloader
+INFO 2026-08-07 04:48:07,272 autoreload 66486 8355668352 Watching for file changes with StatReloader
+INFO 2026-08-07 04:48:10,847 autoreload 66486 8355668352 /Users/srivatsan/Desktop/ai-consulting-platform/backend/core/rbac/department_permissions.py changed, reloading.
+INFO 2026-08-07 04:48:10,847 autoreload 66486 8355668352 /Users/srivatsan/Desktop/ai-consulting-platform/backend/core/rbac/department_permissions.py changed, reloading.
+INFO 2026-08-07 04:48:11,189 autoreload 66540 8355668352 Watching for file changes with StatReloader
+INFO 2026-08-07 04:48:11,189 autoreload 66540 8355668352 Watching for file changes with StatReloader
+INFO 2026-08-07 04:48:15,757 autoreload 66540 8355668352 /Users/srivatsan/Desktop/ai-consulting-platform/backend/core/rbac/department_permissions.py changed, reloading.
+INFO 2026-08-07 04:48:15,757 autoreload 66540 8355668352 /Users/srivatsan/Desktop/ai-consulting-platform/backend/core/rbac/department_permissions.py changed, reloading.
+INFO 2026-08-07 04:48:16,115 autoreload 66597 8355668352 Watching for file changes with StatReloader
+INFO 2026-08-07 04:48:16,115 autoreload 66597 8355668352 Watching for file changes with StatReloader
+INFO 2026-08-07 04:48:17,645 autoreload 66597 8355668352 /Users/srivatsan/Desktop/ai-consulting-platform/backend/core/rbac/department_permissions.py changed, reloading.
+INFO 2026-08-07 04:48:17,645 autoreload 66597 8355668352 /Users/srivatsan/Desktop/ai-consulting-platform/backend/core/rbac/department_permissions.py changed, reloading.
+INFO 2026-08-07 04:48:17,980 autoreload 66641 8355668352 Watching for file changes with StatReloader
+INFO 2026-08-07 04:48:17,980 autoreload 66641 8355668352 Watching for file changes with StatReloader
+INFO 2026-08-07 04:48:20,523 autoreload 66641 8355668352 /Users/srivatsan/Desktop/ai-consulting-platform/backend/core/rbac/department_permissions.py changed, reloading.
+INFO 2026-08-07 04:48:20,523 autoreload 66641 8355668352 /Users/srivatsan/Desktop/ai-consulting-platform/backend/core/rbac/department_permissions.py changed, reloading.
+INFO 2026-08-07 04:48:20,880 autoreload 66657 8355668352 Watching for file changes with StatReloader
+INFO 2026-08-07 04:48:20,880 autoreload 66657 8355668352 Watching for file changes with StatReloader
+INFO 2026-08-07 04:49:58,750 autoreload 66657 8355668352 /Users/srivatsan/Desktop/ai-consulting-platform/backend/core/rbac/permissions.py changed, reloading.
+INFO 2026-08-07 04:49:58,750 autoreload 66657 8355668352 /Users/srivatsan/Desktop/ai-consulting-platform/backend/core/rbac/permissions.py changed, reloading.
+INFO 2026-08-07 04:49:59,081 autoreload 67433 8355668352 Watching for file changes with StatReloader
+INFO 2026-08-07 04:49:59,081 autoreload 67433 8355668352 Watching for file changes with StatReloader
+INFO 2026-08-07 04:50:04,728 autoreload 67433 8355668352 /Users/srivatsan/Desktop/ai-consulting-platform/backend/core/rbac/role_resolver.py changed, reloading.
+INFO 2026-08-07 04:50:04,728 autoreload 67433 8355668352 /Users/srivatsan/Desktop/ai-consulting-platform/backend/core/rbac/role_resolver.py changed, reloading.
+INFO 2026-08-07 04:50:05,086 autoreload 67729 8355668352 Watching for file changes with StatReloader
+INFO 2026-08-07 04:50:05,086 autoreload 67729 8355668352 Watching for file changes with StatReloader

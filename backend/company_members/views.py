@@ -59,6 +59,14 @@ class CompanyMemberViewSet(viewsets.ModelViewSet):
             )
 
         if target_user is None or not can_manage:
+            if (
+                not can_manage
+                and existing is not None
+                and existing.role is not None
+            ):
+                # Non-managers cannot grant themselves an arbitrary role; the
+                # membership is recorded with their current role.
+                serializer.validated_data["role"] = existing.role
             serializer.save(user=user)
         else:
             serializer.save(user=target_user)

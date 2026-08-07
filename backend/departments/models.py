@@ -88,3 +88,37 @@ class Department(models.Model):
 
     def __str__(self):
         return f"{self.company.name} - {self.name}"
+
+
+class DepartmentMember(models.Model):
+    """
+    Links a user to a department within a company.
+
+    This is the source of truth for department-based access: a user is
+    authorized to department-scoped data when an active ``DepartmentMember``
+    row exists, or when they are the department ``head`` / a company admin.
+    """
+
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="department_memberships",
+    )
+
+    department = models.ForeignKey(
+        Department,
+        on_delete=models.CASCADE,
+        related_name="members",
+    )
+
+    is_active = models.BooleanField(default=True)
+
+    joined_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = "department_members"
+        unique_together = ("user", "department")
+        ordering = ["department", "-joined_at"]
+
+    def __str__(self):
+        return f"{self.user.email} @ {self.department.name}"

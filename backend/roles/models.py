@@ -31,3 +31,59 @@ class Role(models.Model):
 
     def __str__(self):
         return self.display_name
+
+
+class RoleAssignment(models.Model):
+    """
+    Audit trail for user-role assignments within a company.
+
+    The source of truth for a user's current role is ``CompanyMember.role``;
+    this model records every assignment/change (who assigned which role to
+    whom, from what previous role) for authorization auditing.
+    """
+
+    user = models.ForeignKey(
+        "accounts.User",
+        on_delete=models.CASCADE,
+        related_name="role_assignments",
+    )
+
+    company = models.ForeignKey(
+        "companies.Company",
+        on_delete=models.CASCADE,
+        related_name="role_assignments",
+    )
+
+    role = models.ForeignKey(
+        Role,
+        on_delete=models.PROTECT,
+        related_name="role_assignments",
+        help_text="The role assigned to the user.",
+    )
+
+    previous_role = models.ForeignKey(
+        Role,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="+",
+        help_text="The role held before this assignment (null on first assignment).",
+    )
+
+    assigned_by = models.ForeignKey(
+        "accounts.User",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="+",
+        help_text="The user who performed the assignment.",
+    )
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = "role_assignments"
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return f"{self.user.email} -> {self.role.role_key} @ {self.company.company_name}"
