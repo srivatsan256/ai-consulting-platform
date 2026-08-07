@@ -40,6 +40,19 @@ class UserViewSet(viewsets.ModelViewSet):
     ordering_fields = ["email", "username", "created_at"]
     ordering = ["-created_at"]
 
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        if getattr(self.request.user, "is_superuser", False):
+            return queryset
+        tenant = getattr(self.request, "tenant", None)
+        company = getattr(tenant, "company", None)
+        if company is None:
+            return queryset.none()
+        return queryset.filter(
+            company_memberships__company=company,
+            company_memberships__is_active=True,
+        ).distinct()
+
     # ------------------------------------------------------------------
     # Authorization helpers
     # ------------------------------------------------------------------

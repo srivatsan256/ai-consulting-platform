@@ -8,9 +8,10 @@ from .serializers import ConversationSerializer, MessageSerializer
 from .filters import ConversationFilter
 from core.ai_service import generate_ai_response
 from core.vector_store import search_documents
+from core.tenant_scoping import TenantScopedViewSetMixin
 
 
-class ConversationViewSet(viewsets.ModelViewSet):
+class ConversationViewSet(TenantScopedViewSetMixin, viewsets.ModelViewSet):
 
     serializer_class = ConversationSerializer
 
@@ -34,9 +35,9 @@ class ConversationViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        return Conversation.objects.filter(
+        return super().get_queryset().filter(
             participants=self.request.user,
-        ).prefetch_related("participants")
+        )
 
     @action(detail=True, methods=["get", "post"])
     def messages(self, request, pk=None):
@@ -75,10 +76,14 @@ class ConversationViewSet(viewsets.ModelViewSet):
                 r.get("document", "") for r in kb_results
             ])
         project_context = ""
-        if project_id:
+        tenant = getattr(request, "tenant", None)
+        if project_id and tenant is not None and tenant.company is not None:
             from projects.models import Project
             try:
-                project = Project.objects.get(pk=project_id)
+                project = Project.objects.get(
+                    pk=project_id,
+                    company=tenant.company,
+                )
                 project_context = (
                     f"Project: {project.project_name}\n"
                     f"Description: {project.description}\n"
@@ -100,7 +105,7 @@ class ConversationViewSet(viewsets.ModelViewSet):
         conversation = None
         if conversation_id:
             try:
-                conversation = Conversation.objects.get(pk=conversation_id)
+                conversation = self.get_queryset().get(pk=conversation_id)
             except Conversation.DoesNotExist:
                 pass
         if not conversation:
@@ -129,7 +134,7 @@ class ConversationViewSet(viewsets.ModelViewSet):
         })
 
 
-class MessageViewSet(viewsets.ModelViewSet):
+class MessageViewSet(TenantScopedViewSetMixin, viewsets.ModelViewSet):
 
     serializer_class = MessageSerializer
 
@@ -138,6 +143,6 @@ class MessageViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        return Message.objects.filter(
+        return super().get_queryset().filter(
             conversation__participants=self.request.user,
-        ).select_related("sender")
+        )

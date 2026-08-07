@@ -83,6 +83,12 @@ class AnnouncementViewSet(viewsets.ModelViewSet):
                 models.Q(expires_at__isnull=True)
                 | models.Q(expires_at__gte=timezone.now())
             )
+            return queryset
+        if tenant is not None and tenant.company is not None:
+            queryset = queryset.filter(
+                models.Q(company=tenant.company)
+                | models.Q(company__isnull=True)
+            )
         return queryset
 
     def perform_create(self, serializer):

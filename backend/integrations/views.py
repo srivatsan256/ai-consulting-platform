@@ -6,9 +6,10 @@ from rest_framework.response import Response
 from .models import Integration
 from .serializers import IntegrationSerializer
 from .filters import IntegrationFilter
+from core.tenant_scoping import TenantScopedViewSetMixin
 
 
-class IntegrationViewSet(viewsets.ModelViewSet):
+class IntegrationViewSet(TenantScopedViewSetMixin, viewsets.ModelViewSet):
 
     serializer_class = IntegrationSerializer
 

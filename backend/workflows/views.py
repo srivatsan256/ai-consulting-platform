@@ -12,9 +12,10 @@ from .serializers import (
     WorkflowExecutionSerializer,
 )
 from .filters import WorkflowFilter
+from core.tenant_scoping import TenantScopedViewSetMixin
 
 
-class WorkflowViewSet(viewsets.ModelViewSet):
+class WorkflowViewSet(TenantScopedViewSetMixin, viewsets.ModelViewSet):
 
     serializer_class = WorkflowSerializer
 
@@ -41,9 +42,9 @@ class WorkflowViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        return Workflow.objects.filter(
+        return super().get_queryset().filter(
             project__is_active=True,
-        ).select_related("project", "created_by").prefetch_related("steps")
+        )
 
     @action(detail=True, methods=["post"])
     def activate(self, request, pk=None):
@@ -84,7 +85,7 @@ class WorkflowViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
 
-class WorkflowExecutionViewSet(viewsets.ModelViewSet):
+class WorkflowExecutionViewSet(TenantScopedViewSetMixin, viewsets.ModelViewSet):
 
     serializer_class = WorkflowExecutionSerializer
 
@@ -97,9 +98,9 @@ class WorkflowExecutionViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        return WorkflowExecution.objects.filter(
+        return super().get_queryset().filter(
             initiated_by=self.request.user,
-        ).select_related("workflow", "current_step", "initiated_by")
+        )
 
     @action(detail=True, methods=["post"])
     def complete(self, request, pk=None):

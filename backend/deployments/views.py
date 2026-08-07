@@ -7,9 +7,10 @@ from django.utils import timezone
 from .models import Deployment
 from .serializers import DeploymentSerializer
 from .filters import DeploymentFilter
+from core.tenant_scoping import TenantScopedViewSetMixin
 
 
-class DeploymentViewSet(viewsets.ModelViewSet):
+class DeploymentViewSet(TenantScopedViewSetMixin, viewsets.ModelViewSet):
 
     serializer_class = DeploymentSerializer
 

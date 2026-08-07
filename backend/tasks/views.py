@@ -12,9 +12,10 @@ from .serializers import (
     TaskCommentSerializer,
 )
 from .filters import TaskFilter
+from core.tenant_scoping import TenantScopedViewSetMixin
 
 
-class TaskViewSet(viewsets.ModelViewSet):
+class TaskViewSet(TenantScopedViewSetMixin, viewsets.ModelViewSet):
 
     serializer_class = TaskDetailSerializer
 
@@ -138,7 +139,7 @@ class TaskViewSet(viewsets.ModelViewSet):
         )
 
 
-class TaskAttachmentViewSet(viewsets.ModelViewSet):
+class TaskAttachmentViewSet(TenantScopedViewSetMixin, viewsets.ModelViewSet):
 
     serializer_class = TaskAttachmentSerializer
 
@@ -147,12 +148,12 @@ class TaskAttachmentViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        return TaskAttachment.objects.filter(
+        return super().get_queryset().filter(
             task__project__is_active=True,
-        ).select_related("task", "uploaded_by")
+        )
 
 
-class TaskCommentViewSet(viewsets.ModelViewSet):
+class TaskCommentViewSet(TenantScopedViewSetMixin, viewsets.ModelViewSet):
 
     serializer_class = TaskCommentSerializer
 
@@ -161,6 +162,6 @@ class TaskCommentViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        return TaskComment.objects.filter(
+        return super().get_queryset().filter(
             task__project__is_active=True,
         ).select_related("author", "task")

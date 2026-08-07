@@ -7,9 +7,10 @@ from django.utils import timezone
 from .models import Review, ReviewComment
 from .serializers import ReviewSerializer, ReviewCommentSerializer
 from .filters import ReviewFilter
+from core.tenant_scoping import TenantScopedViewSetMixin
 
 
-class ReviewViewSet(viewsets.ModelViewSet):
+class ReviewViewSet(TenantScopedViewSetMixin, viewsets.ModelViewSet):
 
     serializer_class = ReviewSerializer
 

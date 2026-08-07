@@ -4,9 +4,10 @@ from rest_framework.permissions import IsAuthenticated
 from .models import ProjectMember
 from .serializers import ProjectMemberSerializer
 from .filters import ProjectMemberFilter
+from core.tenant_scoping import TenantScopedViewSetMixin
 
 
-class ProjectMemberViewSet(viewsets.ModelViewSet):
+class ProjectMemberViewSet(TenantScopedViewSetMixin, viewsets.ModelViewSet):
     queryset = ProjectMember.objects.select_related(
         "project",
         "user",

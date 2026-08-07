@@ -19,9 +19,10 @@ from core.ai_service import (
 from core.rule_engine import validate_document
 from core.document_processor import extract_text_from_uploaded_file
 from core.vector_store import add_document as add_to_vector_store
+from core.tenant_scoping import TenantScopedViewSetMixin
 
 
-class DocumentViewSet(viewsets.ModelViewSet):
+class DocumentViewSet(TenantScopedViewSetMixin, viewsets.ModelViewSet):
 
     queryset = Document.objects.select_related(
         "project",

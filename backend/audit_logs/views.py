@@ -4,9 +4,10 @@ from rest_framework.permissions import IsAuthenticated
 from .models import AuditLog
 from .serializers import AuditLogSerializer
 from .filters import AuditLogFilter
+from core.tenant_scoping import TenantScopedViewSetMixin
 
 
-class AuditLogViewSet(viewsets.ReadOnlyModelViewSet):
+class AuditLogViewSet(TenantScopedViewSetMixin, viewsets.ReadOnlyModelViewSet):
 
     serializer_class = AuditLogSerializer
 

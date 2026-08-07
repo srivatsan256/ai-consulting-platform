@@ -10,6 +10,7 @@ from core.constants import API_VERSION
 from .models import MonitoringAlert, SystemMetric
 from .serializers import MonitoringAlertSerializer, SystemMetricSerializer
 from .filters import MonitoringAlertFilter, SystemMetricFilter
+from core.tenant_scoping import TenantScopedViewSetMixin
 
 
 class HealthCheckAPIView(APIView):
@@ -39,7 +40,7 @@ class HealthCheckAPIView(APIView):
         )
 
 
-class MonitoringAlertViewSet(viewsets.ModelViewSet):
+class MonitoringAlertViewSet(TenantScopedViewSetMixin, viewsets.ModelViewSet):
 
     serializer_class = MonitoringAlertSerializer
 
@@ -83,7 +84,7 @@ class MonitoringAlertViewSet(viewsets.ModelViewSet):
         return Response({"message": "Alert resolved."})
 
 
-class SystemMetricViewSet(viewsets.ModelViewSet):
+class SystemMetricViewSet(TenantScopedViewSetMixin, viewsets.ModelViewSet):
 
     serializer_class = SystemMetricSerializer
 

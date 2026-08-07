@@ -7,9 +7,10 @@ from django.utils import timezone
 from .models import SecurityChecklist, VulnerabilityReport
 from .serializers import SecurityChecklistSerializer, VulnerabilityReportSerializer
 from .filters import SecurityChecklistFilter, VulnerabilityReportFilter
+from core.tenant_scoping import TenantScopedViewSetMixin
 
 
-class SecurityChecklistViewSet(viewsets.ModelViewSet):
+class SecurityChecklistViewSet(TenantScopedViewSetMixin, viewsets.ModelViewSet):
 
     serializer_class = SecurityChecklistSerializer
 
@@ -56,7 +57,7 @@ class SecurityChecklistViewSet(viewsets.ModelViewSet):
         return Response({"message": "Checklist failed."})
 
 
-class VulnerabilityReportViewSet(viewsets.ModelViewSet):
+class VulnerabilityReportViewSet(TenantScopedViewSetMixin, viewsets.ModelViewSet):
 
     serializer_class = VulnerabilityReportSerializer
 

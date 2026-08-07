@@ -7,9 +7,10 @@ from django.utils import timezone
 from .models import Risk
 from .serializers import RiskSerializer
 from .filters import RiskFilter
+from core.tenant_scoping import TenantScopedViewSetMixin
 
 
-class RiskViewSet(viewsets.ModelViewSet):
+class RiskViewSet(TenantScopedViewSetMixin, viewsets.ModelViewSet):
 
     serializer_class = RiskSerializer
 

@@ -7,9 +7,10 @@ from django.utils import timezone
 from .models import Issue, IssueComment
 from .serializers import IssueSerializer, IssueCommentSerializer
 from .filters import IssueFilter
+from core.tenant_scoping import TenantScopedViewSetMixin
 
 
-class IssueViewSet(viewsets.ModelViewSet):
+class IssueViewSet(TenantScopedViewSetMixin, viewsets.ModelViewSet):
 
     serializer_class = IssueSerializer
 

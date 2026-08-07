@@ -11,9 +11,10 @@ from core.vector_store import (
     search_documents,
     delete_document,
 )
+from core.tenant_scoping import TenantScopedViewSetMixin
 
 
-class KnowledgeBaseViewSet(viewsets.ModelViewSet):
+class KnowledgeBaseViewSet(TenantScopedViewSetMixin, viewsets.ModelViewSet):
 
     serializer_class = KnowledgeBaseSerializer
 

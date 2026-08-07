@@ -4,9 +4,10 @@ from rest_framework.permissions import IsAuthenticated
 from .models import DocumentTemplate
 from .serializers import DocumentTemplateSerializer
 from .filters import DocumentTemplateFilter
+from core.tenant_scoping import TenantScopedViewSetMixin
 
 
-class DocumentTemplateViewSet(viewsets.ModelViewSet):
+class DocumentTemplateViewSet(TenantScopedViewSetMixin, viewsets.ModelViewSet):
 
     serializer_class = DocumentTemplateSerializer
 

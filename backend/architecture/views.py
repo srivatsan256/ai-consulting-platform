@@ -4,9 +4,10 @@ from rest_framework.permissions import IsAuthenticated
 from .models import ArchitectureDiagram, TechnologyStack
 from .serializers import ArchitectureDiagramSerializer, TechnologyStackSerializer
 from .filters import ArchitectureDiagramFilter, TechnologyStackFilter
+from core.tenant_scoping import TenantScopedViewSetMixin
 
 
-class ArchitectureDiagramViewSet(viewsets.ModelViewSet):
+class ArchitectureDiagramViewSet(TenantScopedViewSetMixin, viewsets.ModelViewSet):
 
     serializer_class = ArchitectureDiagramSerializer
 
@@ -33,7 +34,7 @@ class ArchitectureDiagramViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
 
 
-class TechnologyStackViewSet(viewsets.ModelViewSet):
+class TechnologyStackViewSet(TenantScopedViewSetMixin, viewsets.ModelViewSet):
 
     serializer_class = TechnologyStackSerializer
 

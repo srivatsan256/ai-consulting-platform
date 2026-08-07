@@ -9,9 +9,10 @@ from .serializers import ReportSerializer
 from .filters import ReportFilter
 from core.ai_service import generate_verification_report, keyword_extraction, language_analysis
 from core.rule_engine import validate_document
+from core.tenant_scoping import TenantScopedViewSetMixin
 
 
-class ReportViewSet(viewsets.ModelViewSet):
+class ReportViewSet(TenantScopedViewSetMixin, viewsets.ModelViewSet):
 
     serializer_class = ReportSerializer
 

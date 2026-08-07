@@ -6,9 +6,10 @@ from rest_framework.response import Response
 from .models import Meeting, MeetingMinutes
 from .serializers import MeetingSerializer, MeetingMinutesSerializer
 from .filters import MeetingFilter
+from core.tenant_scoping import TenantScopedViewSetMixin
 
 
-class MeetingViewSet(viewsets.ModelViewSet):
+class MeetingViewSet(TenantScopedViewSetMixin, viewsets.ModelViewSet):
 
     serializer_class = MeetingSerializer
 
@@ -35,9 +36,9 @@ class MeetingViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        return Meeting.objects.filter(
+        return super().get_queryset().filter(
             participants=self.request.user,
-        ).select_related("project", "organizer").prefetch_related("participants")
+        )
 
     @action(detail=True, methods=["post"])
     def complete(self, request, pk=None):

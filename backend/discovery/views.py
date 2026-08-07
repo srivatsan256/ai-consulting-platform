@@ -9,9 +9,10 @@ from .filters import DiscoveryFilter
 from core.ai_service import analyze_proposal, generate_project_proposal
 from core.document_processor import extract_text_from_uploaded_file
 from core.vector_store import add_document as add_to_vector_store
+from core.tenant_scoping import TenantScopedViewSetMixin
 
 
-class DiscoveryViewSet(viewsets.ModelViewSet):
+class DiscoveryViewSet(TenantScopedViewSetMixin, viewsets.ModelViewSet):
 
     serializer_class = DiscoverySerializer
     permission_classes = [IsAuthenticated]

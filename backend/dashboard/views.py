@@ -4,9 +4,10 @@ from rest_framework.permissions import IsAuthenticated
 from .models import DashboardWidget
 from .serializers import DashboardWidgetSerializer
 from .filters import DashboardWidgetFilter
+from core.tenant_scoping import TenantScopedViewSetMixin
 
 
-class DashboardWidgetViewSet(viewsets.ModelViewSet):
+class DashboardWidgetViewSet(TenantScopedViewSetMixin, viewsets.ModelViewSet):
 
     serializer_class = DashboardWidgetSerializer
 
@@ -20,9 +21,9 @@ class DashboardWidgetViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        return DashboardWidget.objects.filter(
+        return super().get_queryset().filter(
             owner=self.request.user,
-        ).select_related("owner", "project")
+        )
 
     ordering_fields = [
         "position",

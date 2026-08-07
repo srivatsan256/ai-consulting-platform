@@ -7,9 +7,10 @@ from django.utils import timezone
 from .models import Approval
 from .serializers import ApprovalSerializer
 from .filters import ApprovalFilter
+from core.tenant_scoping import TenantScopedViewSetMixin
 
 
-class ApprovalViewSet(viewsets.ModelViewSet):
+class ApprovalViewSet(TenantScopedViewSetMixin, viewsets.ModelViewSet):
 
     serializer_class = ApprovalSerializer
 
