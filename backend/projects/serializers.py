@@ -100,6 +100,7 @@ class ProjectSerializer(serializers.ModelSerializer):
             "readiness_score",
             "verification_report",
             "documents",
+            "tags",
             "is_active",
             "created_at",
             "updated_at",

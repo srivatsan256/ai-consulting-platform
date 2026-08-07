@@ -1,11 +1,19 @@
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.exceptions import PermissionDenied
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
-from .models import CompanyMember
-from .serializers import CompanyMemberSerializer, SwitchCompanySerializer
+from .models import CompanyMember, UserInvitation
+from .serializers import (
+    AcceptInvitationSerializer,
+    CompanyMemberSerializer,
+    InviteUserSerializer,
+    SwitchCompanySerializer,
+    UserInvitationSerializer,
+)
 from .permissions import IsCompanyMember
+from .services.service import InvitationService
 
 
 class CompanyMemberViewSet(viewsets.ModelViewSet):
@@ -125,3 +133,117 @@ class CompanyMemberViewSet(viewsets.ModelViewSet):
 
         serializer = CompanyMemberSerializer(tenant.membership)
         return Response(serializer.data)
+
+    # ------------------------------------------------------------------
+    # Invitations
+    # ------------------------------------------------------------------
+
+    def _tenant_company(self):
+        tenant = getattr(self.request, "tenant", None)
+        return getattr(tenant, "company", None)
+
+    def _can_manage(self, company):
+        user = self.request.user
+        if getattr(user, "is_superuser", False):
+            return True
+        if company is None:
+            return False
+        from core.rbac.permissions import is_manager_role
+
+        membership = (
+            CompanyMember.objects.filter(
+                user=user,
+                company=company,
+                is_active=True,
+            )
+            .select_related("role")
+            .first()
+        )
+        return membership is not None and is_manager_role(membership.role)
+
+    def _require_manager(self):
+        company = self._tenant_company()
+        if not self._can_manage(company):
+            raise PermissionDenied(
+                "Only company managers can manage invitations."
+            )
+        return company
+
+    @action(detail=False, methods=["post"], url_path="invite")
+    def invite_user(self, request):
+        """
+        Invite a user to the acting company.
+        POST /api/memberships/invite/
+        """
+        company = self._require_manager()
+
+        serializer = InviteUserSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        invitation = InvitationService(request.user).create_invitation(
+            email=serializer.validated_data["email"],
+            company=company,
+            role=serializer.validated_data["role"],
+            department=serializer.validated_data.get("department"),
+        )
+        return Response(
+            UserInvitationSerializer(invitation).data,
+            status=status.HTTP_201_CREATED,
+        )
+
+    @action(detail=False, methods=["get"], url_path="invitations")
+    def list_invitations(self, request):
+        """
+        List invitations for the acting company.
+        GET /api/memberships/invitations/
+        """
+        company = self._require_manager()
+
+        queryset = UserInvitation.objects.filter(company=company)
+        serializer = UserInvitationSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    @action(
+        detail=False,
+        methods=["post"],
+        url_path="invitations/accept",
+        permission_classes=[AllowAny],
+    )
+    def accept_invitation(self, request):
+        """
+        Accept an invitation and create the user account.
+        POST /api/memberships/invitations/accept/
+        """
+        serializer = AcceptInvitationSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        user, invitation = InvitationService().accept_invitation(
+            token=serializer.validated_data["token"],
+            first_name=serializer.validated_data["first_name"],
+            last_name=serializer.validated_data["last_name"],
+            password=serializer.validated_data["password"],
+        )
+
+        from authentication.serializers import CurrentUserSerializer
+        from authentication.services.service import AuthenticationService
+
+        tokens = AuthenticationService(request).create_tokens(user)
+        return Response(
+            {
+                "success": True,
+                "message": "Invitation accepted. Account created.",
+                "refresh": tokens["refresh"],
+                "access": tokens["access"],
+                "user": CurrentUserSerializer(user).data,
+                "company": {
+                    "id": invitation.company_id,
+                    "name": invitation.company.company_name,
+                },
+                "role": {
+                    "id": invitation.role_id,
+                    "name": invitation.role.display_name,
+                    "key": invitation.role.role_key,
+                },
+            },
+            status=status.HTTP_201_CREATED,
+        )

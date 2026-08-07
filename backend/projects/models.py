@@ -107,6 +107,12 @@ class Project(models.Model):
 
     is_active = models.BooleanField(default=True)
 
+    tags = models.JSONField(
+        default=list,
+        blank=True,
+        help_text="List of tag strings for categorizing the project",
+    )
+
     created_at = models.DateTimeField(auto_now_add=True)
 
     updated_at = models.DateTimeField(auto_now=True)

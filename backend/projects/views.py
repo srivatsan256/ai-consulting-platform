@@ -1,5 +1,7 @@
 from django.shortcuts import get_object_or_404
+import django_filters
 from rest_framework import status, viewsets
+from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -22,14 +24,30 @@ from .services.chat_service import answer_question
 from .services.deliverables_service import generate_deliverables
 
 
+class ProjectFilter(django_filters.FilterSet):
+    """Filter set for projects, including free-form tag search."""
+
+    tag = django_filters.CharFilter(method="filter_by_tag")
+
+    class Meta:
+        model = Project
+        fields = ["status", "priority", "company", "project_manager", "tag"]
+
+    def filter_by_tag(self, queryset, name, value):
+        if not value:
+            return queryset
+        return queryset.filter(tags__contains=[value])
+
+
 class ProjectViewSet(viewsets.ModelViewSet):
     queryset = Project.objects.select_related("company", "project_manager")
     serializer_class = ProjectSerializer
     permission_classes = [IsAuthenticated]
-    filterset_fields = ["status", "priority", "company", "project_manager"]
+    filterset_class = ProjectFilter
     search_fields = ["project_name", "description"]
     ordering_fields = ["project_name", "start_date", "created_at", "status"]
     ordering = ["-created_at"]
+    lookup_value_regex = r"[0-9]+"
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -44,6 +62,20 @@ class ProjectViewSet(viewsets.ModelViewSet):
             serializer.save(company=company)
         else:
             serializer.save()
+
+    @action(detail=False, methods=["get"], url_path="tags")
+    def list_tags(self, request):
+        """
+        List distinct tags across the tenant's projects.
+        GET /api/projects/tags/
+        """
+        queryset = self.get_queryset()
+        tags = set()
+        for project in queryset.only("tags"):
+            for tag in project.tags or []:
+                if tag:
+                    tags.add(str(tag))
+        return Response(sorted(tags), status=status.HTTP_200_OK)
 
 
 class ProjectPhaseViewSet(viewsets.ModelViewSet):
