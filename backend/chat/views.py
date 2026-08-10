@@ -7,6 +7,7 @@ from .models import Conversation, Message
 from .serializers import ConversationSerializer, MessageSerializer
 from .filters import ConversationFilter
 from core.ai_service import generate_ai_response
+from core.enforcement import TenantEnforcement
 from core.vector_store import search_documents
 from core.tenant_scoping import TenantScopedViewSetMixin
 
@@ -61,6 +62,7 @@ class ConversationViewSet(TenantScopedViewSetMixin, viewsets.ModelViewSet):
 
     @action(detail=False, methods=["post"])
     def ai_chat(self, request):
+        TenantEnforcement.check_ai_quota(request)
         message = request.data.get("message", "")
         conversation_id = request.data.get("conversation_id")
         project_id = request.data.get("project_id")
@@ -127,6 +129,7 @@ class ConversationViewSet(TenantScopedViewSetMixin, viewsets.ModelViewSet):
             conversation=conversation,
             content=ai_reply,
         )
+        TenantEnforcement.record_usage(request, "ai_requests_per_month")
         return Response({
             "conversation_id": conversation.pk,
             "reply": ai_reply,

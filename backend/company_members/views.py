@@ -178,6 +178,15 @@ class CompanyMemberViewSet(viewsets.ModelViewSet):
         """
         company = self._require_manager()
 
+        from subscriptions.services.usage_service import QuotaService
+
+        if QuotaService.get_active_subscription(company) is not None:
+            QuotaService.check(
+                company,
+                "users",
+                QuotaService.count_active_users(company),
+            )
+
         serializer = InviteUserSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 

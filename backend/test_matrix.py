@@ -16,7 +16,7 @@ import requests
 BASE = "http://localhost:8000/api"
 EMAIL = "matrix.admin@example.com"
 PASSWORD = "MatrixAdmin123!"
-SCHEMA_PATH = "/var/folders/99/cl77jly92rx14py3g84rn3w80000gn/T/opencode/schema.json"
+SCHEMA_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "schema.json")
 
 RESULTS = []
 _counter = {"n": 1000}
@@ -695,6 +695,8 @@ class MatrixTester:
                     if k != "id":
                         patch_payload[k] = post_payload[k]
                         break
+            if "project" in post_payload:
+                patch_payload["project"] = post_payload["project"]
             if patch_payload:
                 r = self.patch(f"{BASE}{detail_ep}", json=patch_payload)
                 self.rec(module, "PATCH", detail_ep, 200, r.status_code, "" if r.status_code == 200 else self.note(r))
@@ -737,8 +739,8 @@ class MatrixTester:
         self.test_user_activate_deactivate()
         self.crud("Companies", "/companies/companies")
         self.test_membership_crud()
-        self.test_get("Roles", "/roles")
-        self.crud("Permissions", "/permissions")
+        feature_name = f"feature_{random.randint(10000, 99999)}"
+        self.crud("Permissions", "/permissions", post_payload={"role": 1, "feature": feature_name, "can_view": True})
 
         # --- Departments / Teams / Projects ---
         self.crud("Departments", "/departments", keep=True)

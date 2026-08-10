@@ -137,6 +137,13 @@ class KnowledgeBaseViewSet(TenantScopedViewSetMixin, viewsets.ModelViewSet):
                 {"error": "No file provided."},
                 status=status.HTTP_400_BAD_REQUEST,
             )
+        from file_management.services.storage import (
+            enforce_plan_storage_quota,
+            enforce_storage_quota,
+        )
+
+        enforce_storage_quota(kb.project.company, uploaded.size or 0)
+        enforce_plan_storage_quota(kb.project.company, uploaded.size or 0)
         attachment = KBAttachment.objects.create(
             knowledge_base=kb,
             file=uploaded,

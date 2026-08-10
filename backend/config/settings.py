@@ -134,6 +134,14 @@ MIDDLEWARE = [
 
     "core.middleware.company_middleware.CompanyMiddleware",
 
+    "core.middleware.tenant_isolation_middleware.TenantIsolationMiddleware",
+
+    # Security headers
+    "core.middleware.security_headers_middleware.SecurityHeadersMiddleware",
+
+    # XSS protection
+    "core.middleware.xss_middleware.XSSProtectionMiddleware",
+
     "core.middleware.maintenance_middleware.MaintenanceModeMiddleware",
 
     "django.contrib.messages.middleware.MessageMiddleware",

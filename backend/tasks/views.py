@@ -122,11 +122,15 @@ class TaskViewSet(TenantScopedViewSetMixin, viewsets.ModelViewSet):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        from file_management.services.storage import enforce_storage_quota
+        from file_management.services.storage import (
+            enforce_plan_storage_quota,
+            enforce_storage_quota,
+        )
 
         tenant = getattr(request, "tenant", None)
         if tenant and tenant.company:
             enforce_storage_quota(tenant.company, file_obj.size or 0)
+            enforce_plan_storage_quota(tenant.company, file_obj.size or 0)
 
         attachment = TaskAttachment.objects.create(
             task=task,

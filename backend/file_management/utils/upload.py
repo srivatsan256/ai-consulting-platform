@@ -14,7 +14,7 @@ from projects.models import ProjectDocument
 
 from ..models import FileCategory, FilePermission
 from ..services.scanner import run_virus_scan
-from ..services.storage import enforce_storage_quota
+from ..services.storage import enforce_plan_storage_quota, enforce_storage_quota
 
 
 def create_project_document(
@@ -33,6 +33,7 @@ def create_project_document(
     default ``manage`` permission for the uploader.
     """
     enforce_storage_quota(project.company, file_obj.size or 0)
+    enforce_plan_storage_quota(project.company, file_obj.size or 0)
 
     category = None
     if category_id:

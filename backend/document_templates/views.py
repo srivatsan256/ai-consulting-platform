@@ -32,3 +32,18 @@ class DocumentTemplateViewSet(TenantScopedViewSetMixin, viewsets.ModelViewSet):
     ordering = ["-created_at"]
 
     permission_classes = [IsAuthenticated]
+
+    def perform_create(self, serializer):
+        self._validate_tenant_scoped_fks(serializer.validated_data)
+        project = serializer.validated_data.get("project")
+        file_obj = serializer.validated_data.get("file")
+        if project is not None:
+            from file_management.services.storage import (
+                enforce_plan_storage_quota,
+                enforce_storage_quota,
+            )
+
+            size = getattr(file_obj, "size", 0) or 0
+            enforce_storage_quota(project.company, size)
+            enforce_plan_storage_quota(project.company, size)
+        serializer.save()

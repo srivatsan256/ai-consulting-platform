@@ -171,6 +171,28 @@ class UserViewSet(viewsets.ModelViewSet):
                 status=400,
             )
 
+        from subscriptions.services.usage_service import QuotaService
+
+        if QuotaService.get_active_subscription(company) is not None:
+            member_emails = {
+                (email or "").lower()
+                for email in CompanyMember.objects.filter(
+                    company=company,
+                ).values_list("user__email", flat=True)
+            }
+            prospective_new = sum(
+                1
+                for row in rows
+                if (row.get("email") or "").strip().lower()
+                and (row.get("email") or "").strip().lower()
+                not in member_emails
+            )
+            QuotaService.check(
+                company,
+                "users",
+                QuotaService.count_active_users(company) + prospective_new,
+            )
+
         default_role = self._default_import_role()
         created = []
         skipped = []

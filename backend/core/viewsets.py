@@ -62,5 +62,18 @@ class BaseTenantViewSet(CompanyQuerySetMixin, viewsets.ModelViewSet):
         return success_response(message=f"{self.__class__.__name__} deleted successfully.")
 
     def perform_destroy(self, instance):
-        instance.is_deleted = True
-        instance.save()
+        """
+        Soft-delete when the model supports it; otherwise hard-delete.
+        """
+        if hasattr(instance, "soft_delete"):
+            instance.soft_delete(user=getattr(self.request, "user", None))
+            return
+        if hasattr(instance, "is_deleted"):
+            from django.utils import timezone
+
+            instance.is_deleted = True
+            if hasattr(instance, "deleted_at"):
+                instance.deleted_at = timezone.now()
+            instance.save()
+            return
+        instance.delete()

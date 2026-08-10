@@ -136,6 +136,25 @@ class QuotaService:
         return getattr(subscription.plan, f"max_{resource}", None)
 
     @staticmethod
+    def count_active_users(company: "Company") -> int:
+        """
+        Active tenant headcount: active company members plus pending
+        invitations. Used to enforce the plan's ``max_users`` limit for
+        both direct membership creation and invitation flows.
+        """
+        from company_members.models import CompanyMember, UserInvitation
+
+        members = CompanyMember.objects.filter(
+            company=company,
+            is_active=True,
+        ).count()
+        pending = UserInvitation.objects.filter(
+            company=company,
+            status="pending",
+        ).count()
+        return members + pending
+
+    @staticmethod
     def check(company: "Company", resource: str, current_count: int) -> bool:
         """
         Raise a ``ValidationError`` when ``current_count`` meets or exceeds

@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.db import models
+from django.utils import timezone
 
 
 class TimeStampedModel(models.Model):
@@ -39,16 +40,92 @@ class AuditModel(TimeStampedModel):
         abstract = True
 
 
-class SoftDeleteModel(models.Model):
+class SoftDeleteQuerySet(models.QuerySet):
     """
-    Soft delete support.
+    QuerySet helpers for soft-deleted rows.
     """
 
-    is_deleted = models.BooleanField(default=False)
+    def alive(self):
+        return self.filter(is_deleted=False)
+
+    def deleted(self):
+        return self.filter(is_deleted=True)
+
+    def soft_delete(self):
+        return self.update(is_deleted=True, deleted_at=timezone.now())
+
+    def restore(self):
+        return self.update(is_deleted=False, deleted_at=None)
+
+
+class SoftDeleteManager(models.Manager):
+    """
+    Default manager that hides soft-deleted rows.
+    """
+
+    def get_queryset(self):
+        return SoftDeleteQuerySet(self.model, using=self._db).alive()
+
+    def with_deleted(self):
+        return SoftDeleteQuerySet(self.model, using=self._db)
+
+    def deleted_only(self):
+        return SoftDeleteQuerySet(self.model, using=self._db).deleted()
+
+
+class SoftDeleteModel(models.Model):
+    """
+    Soft delete support with restore helpers.
+    """
+
+    is_deleted = models.BooleanField(default=False, db_index=True)
     deleted_at = models.DateTimeField(null=True, blank=True)
+
+    objects = SoftDeleteManager()
+    all_objects = models.Manager()
 
     class Meta:
         abstract = True
+
+    def soft_delete(self, user=None):
+        """
+        Mark this row as deleted without removing it from the database.
+        """
+        if self.is_deleted:
+            return self
+        self.is_deleted = True
+        self.deleted_at = timezone.now()
+        update_fields = ["is_deleted", "deleted_at"]
+        if hasattr(self, "updated_by_id") and user is not None:
+            self.updated_by = user
+            update_fields.append("updated_by")
+        if hasattr(self, "updated_at"):
+            update_fields.append("updated_at")
+        self.save(update_fields=update_fields)
+        try:
+            from core.audit import record_soft_delete
+
+            record_soft_delete(self, user=user)
+        except Exception:  # noqa: BLE001 — audit must never block delete
+            pass
+        return self
+
+    def restore(self, user=None):
+        """
+        Reverse a soft delete.
+        """
+        if not self.is_deleted:
+            return self
+        self.is_deleted = False
+        self.deleted_at = None
+        update_fields = ["is_deleted", "deleted_at"]
+        if hasattr(self, "updated_by_id") and user is not None:
+            self.updated_by = user
+            update_fields.append("updated_by")
+        if hasattr(self, "updated_at"):
+            update_fields.append("updated_at")
+        self.save(update_fields=update_fields)
+        return self
 
 
 class MembershipBaseModel(TimeStampedModel):

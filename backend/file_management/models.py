@@ -38,7 +38,20 @@ def company_storage_usage(company):
         ).aggregate(total=Sum("file_size"))["total"]
         or 0
     )
-    return int(docs) + int(attachments) + int(kb_attachments)
+    from document_templates.models import DocumentTemplate
+
+    templates = (
+        DocumentTemplate.objects.filter(project__company=company).aggregate(
+            total=Sum("file_size")
+        )["total"]
+        or 0
+    )
+    return (
+        int(docs)
+        + int(attachments)
+        + int(kb_attachments)
+        + int(templates)
+    )
 
 
 class FileCategory(models.Model):

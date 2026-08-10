@@ -61,3 +61,24 @@ def enforce_storage_quota(company: "Company", extra_bytes: int = 0) -> None:
             f"{format_bytes(projected)} but the limit is "
             f"{format_bytes(quota.quota_limit_bytes)}."
         )
+
+
+def enforce_plan_storage_quota(company: "Company", extra_bytes: int = 0) -> None:
+    """
+    Enforce the tenant's subscription plan ``max_storage_gb`` against the
+    bytes already stored for the company plus ``extra_bytes``.
+
+    Fail-open when the tenant has no active subscription (no plan, no
+    defined limit).
+    """
+    from subscriptions.services.usage_service import QuotaService
+
+    if QuotaService.get_active_subscription(company) is None:
+        return
+
+    from file_management.models import company_storage_usage
+
+    total_gb = (company_storage_usage(company) + int(extra_bytes or 0)) / (
+        1024 ** 3
+    )
+    QuotaService.check(company, "storage_gb", total_gb)
