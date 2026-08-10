@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Workflow, WorkflowStep, WorkflowExecution
+from .models import Workflow, WorkflowHistory, WorkflowStep, WorkflowExecution
 
 
 class WorkflowStepSerializer(serializers.ModelSerializer):
@@ -8,6 +8,41 @@ class WorkflowStepSerializer(serializers.ModelSerializer):
     class Meta:
         model = WorkflowStep
         exclude = ("workflow",)
+
+
+class WorkflowHistorySerializer(serializers.ModelSerializer):
+
+    actor_name = serializers.SerializerMethodField()
+
+    step_name = serializers.CharField(source="step.name", read_only=True)
+
+    event_type_display = serializers.CharField(
+        source="get_event_type_display",
+        read_only=True,
+    )
+
+    class Meta:
+        model = WorkflowHistory
+        fields = [
+            "id",
+            "workflow",
+            "workflow_execution",
+            "step",
+            "step_name",
+            "actor",
+            "actor_name",
+            "event_type",
+            "event_type_display",
+            "message",
+            "metadata",
+            "created_at",
+        ]
+        read_only_fields = fields
+
+    def get_actor_name(self, obj):
+        if obj.actor_id:
+            return obj.actor.get_full_name() or obj.actor.email
+        return "System"
 
 
 class WorkflowExecutionSerializer(serializers.ModelSerializer):
@@ -48,16 +83,25 @@ class WorkflowSerializer(serializers.ModelSerializer):
         read_only=True,
     )
 
+    project_name = serializers.CharField(
+        source="project.project_name",
+        read_only=True,
+    )
+
+    execution_count = serializers.IntegerField(read_only=True)
+
     class Meta:
         model = Workflow
         fields = [
             "id",
             "project",
+            "project_name",
             "name",
             "description",
             "status",
             "trigger_event",
             "steps",
+            "execution_count",
             "created_by",
             "created_by_name",
             "created_at",

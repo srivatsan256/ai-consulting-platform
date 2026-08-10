@@ -6,6 +6,8 @@ const roleBasedNavItems = {
     { id: "dashboard", label: "Platform Dashboard", icon: "dashboard" },
     { id: "projects", label: "All Projects", icon: "folder_open" },
     { id: "tasks", label: "Tasks", icon: "checklist" },
+    { id: "files", label: "File Management", icon: "folder_managed" },
+    { id: "workflows", label: "Workflows", icon: "account_tree" },
     { id: "users", label: "Users", icon: "group" },
     { id: "teams", label: "Teams & Departments", icon: "account_tree" },
     { id: "roles", label: "Roles & Permissions", icon: "admin_panel_settings" },
@@ -15,6 +17,8 @@ const roleBasedNavItems = {
     { id: "dashboard", label: "Company Dashboard", icon: "dashboard" },
     { id: "projects", label: "Projects", icon: "folder_open" },
     { id: "tasks", label: "Tasks", icon: "checklist" },
+    { id: "files", label: "File Management", icon: "folder_managed" },
+    { id: "workflows", label: "Workflows", icon: "account_tree" },
     { id: "users", label: "Users", icon: "group" },
     { id: "teams", label: "Teams & Departments", icon: "account_tree" },
     { id: "roles", label: "Roles & Permissions", icon: "admin_panel_settings" },
@@ -28,6 +32,8 @@ const roleBasedNavItems = {
     { id: "upload", label: "Upload Documents", icon: "upload_file" },
     { id: "verification", label: "Verification", icon: "verified" },
     { id: "deliverables", label: "Deliverables", icon: "assignment_turned_in" },
+    { id: "files", label: "File Management", icon: "folder_managed" },
+    { id: "workflows", label: "Workflows", icon: "account_tree" },
   ],
   // Business Analyst
   business_analyst: [

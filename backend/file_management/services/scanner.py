@@ -18,7 +18,7 @@ from typing import TYPE_CHECKING
 from django.conf import settings
 from django.utils import timezone as dj_timezone
 
-from .models import FileScan
+from file_management.models import FileScan
 
 if TYPE_CHECKING:
     from projects.models import ProjectDocument

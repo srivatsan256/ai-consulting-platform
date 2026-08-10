@@ -234,4 +234,59 @@ export const permissionService = {
   list: () => api.get("/permissions/"),
 };
 
+export const fileManagementService = {
+  files: (params) => api.get("/file-management/files/", { params }),
+  getFile: (id) => api.get(`/file-management/files/${id}/`),
+  upload: (formData) =>
+    api.post("/file-management/files/", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    }),
+  updateFile: (id, data) => api.patch(`/file-management/files/${id}/`, data),
+  deleteFile: (id) => api.delete(`/file-management/files/${id}/`),
+  rescan: (id) => api.post(`/file-management/files/${id}/rescan/`),
+  download: (id) =>
+    api.get(`/file-management/files/${id}/download/`, {
+      responseType: "blob",
+    }),
+  categories: (params) =>
+    api.get("/file-management/categories/", { params }),
+  createCategory: (data) => api.post("/file-management/categories/", data),
+  updateCategory: (id, data) =>
+    api.patch(`/file-management/categories/${id}/`, data),
+  deleteCategory: (id) => api.delete(`/file-management/categories/${id}/`),
+  quota: () => api.get("/file-management/quota/"),
+  updateQuota: (id, data) =>
+    api.patch(`/file-management/quota/${id}/`, data),
+  scans: (params) => api.get("/file-management/scans/", { params }),
+  rescanScan: (id) => api.post(`/file-management/scans/${id}/rescan/`),
+  permissions: (params) =>
+    api.get("/file-management/permissions/", { params }),
+  createPermission: (data) =>
+    api.post("/file-management/permissions/", data),
+  updatePermission: (id, data) =>
+    api.patch(`/file-management/permissions/${id}/`, data),
+  deletePermission: (id) => api.delete(`/file-management/permissions/${id}/`),
+};
+
+export const workflowService = {
+  list: (params) => api.get("/workflows/", { params }),
+  get: (id) => api.get(`/workflows/${id}/`),
+  create: (data) => api.post("/workflows/", data),
+  update: (id, data) => api.patch(`/workflows/${id}/`, data),
+  delete: (id) => api.delete(`/workflows/${id}/`),
+  activate: (id) => api.post(`/workflows/${id}/activate/`),
+  deactivate: (id) => api.post(`/workflows/${id}/deactivate/`),
+  addStep: (id, data) => api.post(`/workflows/${id}/add_step/`, data),
+  executions: (workflowId) =>
+    api.get(`/workflows/${workflowId}/workflow-executions/`),
+  workflowHistory: (workflowId) =>
+    api.get(`/workflows/${workflowId}/workflow-history/`),
+  executionHistory: (executionId) =>
+    api.get(`/workflows/executions/${executionId}/history/`),
+  completeExecution: (executionId) =>
+    api.post(`/workflows/executions/${executionId}/complete/`),
+  failExecution: (executionId) =>
+    api.post(`/workflows/executions/${executionId}/fail/`),
+};
+
 export default api;

@@ -9,7 +9,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from .models import FilePermission
+from file_management.models import FilePermission
 
 if TYPE_CHECKING:
     from accounts.models import User

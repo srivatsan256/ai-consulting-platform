@@ -2594,3 +2594,63 @@ INFO 2026-08-10 06:07:39,982 autoreload 91884 8338481536 /Users/srivatsan/Deskto
 INFO 2026-08-10 06:07:39,982 autoreload 91884 8338481536 /Users/srivatsan/Desktop/ai-consulting-platform/backend/config/settings.py changed, reloading.
 INFO 2026-08-10 06:07:40,492 autoreload 15828 8338481536 Watching for file changes with StatReloader
 INFO 2026-08-10 06:07:40,492 autoreload 15828 8338481536 Watching for file changes with StatReloader
+INFO 2026-08-10 06:09:50,636 autoreload 15828 8338481536 /Users/srivatsan/Desktop/ai-consulting-platform/backend/config/urls.py changed, reloading.
+INFO 2026-08-10 06:09:50,636 autoreload 15828 8338481536 /Users/srivatsan/Desktop/ai-consulting-platform/backend/config/urls.py changed, reloading.
+INFO 2026-08-10 06:09:51,094 autoreload 16968 8338481536 Watching for file changes with StatReloader
+INFO 2026-08-10 06:09:51,094 autoreload 16968 8338481536 Watching for file changes with StatReloader
+INFO 2026-08-10 06:09:55,732 autoreload 16968 8338481536 /Users/srivatsan/Desktop/ai-consulting-platform/backend/projects/views.py changed, reloading.
+INFO 2026-08-10 06:09:55,732 autoreload 16968 8338481536 /Users/srivatsan/Desktop/ai-consulting-platform/backend/projects/views.py changed, reloading.
+INFO 2026-08-10 06:09:56,151 autoreload 17021 8338481536 Watching for file changes with StatReloader
+INFO 2026-08-10 06:09:56,151 autoreload 17021 8338481536 Watching for file changes with StatReloader
+INFO 2026-08-10 06:10:02,689 autoreload 17021 8338481536 /Users/srivatsan/Desktop/ai-consulting-platform/backend/tasks/views.py changed, reloading.
+INFO 2026-08-10 06:10:02,689 autoreload 17021 8338481536 /Users/srivatsan/Desktop/ai-consulting-platform/backend/tasks/views.py changed, reloading.
+INFO 2026-08-10 06:10:03,063 autoreload 17109 8338481536 Watching for file changes with StatReloader
+INFO 2026-08-10 06:10:03,063 autoreload 17109 8338481536 Watching for file changes with StatReloader
+INFO 2026-08-10 06:10:13,687 autoreload 17109 8338481536 /Users/srivatsan/Desktop/ai-consulting-platform/backend/workflows/models.py changed, reloading.
+INFO 2026-08-10 06:10:13,687 autoreload 17109 8338481536 /Users/srivatsan/Desktop/ai-consulting-platform/backend/workflows/models.py changed, reloading.
+INFO 2026-08-10 06:10:14,051 autoreload 17202 8338481536 Watching for file changes with StatReloader
+INFO 2026-08-10 06:10:14,051 autoreload 17202 8338481536 Watching for file changes with StatReloader
+INFO 2026-08-10 06:10:38,083 autoreload 17202 8338481536 /Users/srivatsan/Desktop/ai-consulting-platform/backend/workflows/models.py changed, reloading.
+INFO 2026-08-10 06:10:38,083 autoreload 17202 8338481536 /Users/srivatsan/Desktop/ai-consulting-platform/backend/workflows/models.py changed, reloading.
+INFO 2026-08-10 06:10:38,388 autoreload 17403 8338481536 Watching for file changes with StatReloader
+INFO 2026-08-10 06:10:38,388 autoreload 17403 8338481536 Watching for file changes with StatReloader
+INFO 2026-08-10 06:10:54,158 autoreload 17403 8338481536 /Users/srivatsan/Desktop/ai-consulting-platform/backend/workflows/serializers.py changed, reloading.
+INFO 2026-08-10 06:10:54,158 autoreload 17403 8338481536 /Users/srivatsan/Desktop/ai-consulting-platform/backend/workflows/serializers.py changed, reloading.
+INFO 2026-08-10 06:10:54,473 autoreload 17562 8338481536 Watching for file changes with StatReloader
+INFO 2026-08-10 06:10:54,473 autoreload 17562 8338481536 Watching for file changes with StatReloader
+INFO 2026-08-10 06:10:59,969 autoreload 17562 8338481536 /Users/srivatsan/Desktop/ai-consulting-platform/backend/workflows/filters.py changed, reloading.
+INFO 2026-08-10 06:10:59,969 autoreload 17562 8338481536 /Users/srivatsan/Desktop/ai-consulting-platform/backend/workflows/filters.py changed, reloading.
+INFO 2026-08-10 06:11:00,273 autoreload 17626 8338481536 Watching for file changes with StatReloader
+INFO 2026-08-10 06:11:00,273 autoreload 17626 8338481536 Watching for file changes with StatReloader
+INFO 2026-08-10 06:11:19,131 autoreload 17626 8338481536 /Users/srivatsan/Desktop/ai-consulting-platform/backend/workflows/views.py changed, reloading.
+INFO 2026-08-10 06:11:19,131 autoreload 17626 8338481536 /Users/srivatsan/Desktop/ai-consulting-platform/backend/workflows/views.py changed, reloading.
+INFO 2026-08-10 06:11:19,624 autoreload 17779 8338481536 Watching for file changes with StatReloader
+INFO 2026-08-10 06:11:19,624 autoreload 17779 8338481536 Watching for file changes with StatReloader
+INFO 2026-08-10 06:11:37,546 autoreload 17779 8338481536 /Users/srivatsan/Desktop/ai-consulting-platform/backend/workflows/admin.py changed, reloading.
+INFO 2026-08-10 06:11:37,546 autoreload 17779 8338481536 /Users/srivatsan/Desktop/ai-consulting-platform/backend/workflows/admin.py changed, reloading.
+INFO 2026-08-10 06:11:37,974 autoreload 17936 8338481536 Watching for file changes with StatReloader
+INFO 2026-08-10 06:11:37,974 autoreload 17936 8338481536 Watching for file changes with StatReloader
+INFO 2026-08-10 06:11:42,441 autoreload 17936 8338481536 /Users/srivatsan/Desktop/ai-consulting-platform/backend/workflows/admin.py changed, reloading.
+INFO 2026-08-10 06:11:42,441 autoreload 17936 8338481536 /Users/srivatsan/Desktop/ai-consulting-platform/backend/workflows/admin.py changed, reloading.
+INFO 2026-08-10 06:11:42,799 autoreload 18001 8338481536 Watching for file changes with StatReloader
+INFO 2026-08-10 06:11:42,799 autoreload 18001 8338481536 Watching for file changes with StatReloader
+INFO 2026-08-10 06:11:46,243 autoreload 18001 8338481536 /Users/srivatsan/Desktop/ai-consulting-platform/backend/workflows/admin.py changed, reloading.
+INFO 2026-08-10 06:11:46,243 autoreload 18001 8338481536 /Users/srivatsan/Desktop/ai-consulting-platform/backend/workflows/admin.py changed, reloading.
+INFO 2026-08-10 06:11:46,557 autoreload 18039 8338481536 Watching for file changes with StatReloader
+INFO 2026-08-10 06:11:46,557 autoreload 18039 8338481536 Watching for file changes with StatReloader
+INFO 2026-08-10 06:12:12,574 autoreload 18039 8338481536 /Users/srivatsan/Desktop/ai-consulting-platform/backend/workflows/services/service.py changed, reloading.
+INFO 2026-08-10 06:12:12,574 autoreload 18039 8338481536 /Users/srivatsan/Desktop/ai-consulting-platform/backend/workflows/services/service.py changed, reloading.
+INFO 2026-08-10 06:12:12,952 autoreload 18284 8338481536 Watching for file changes with StatReloader
+INFO 2026-08-10 06:12:12,952 autoreload 18284 8338481536 Watching for file changes with StatReloader
+INFO 2026-08-10 06:12:36,865 autoreload 18284 8338481536 /Users/srivatsan/Desktop/ai-consulting-platform/backend/file_management/services/access.py changed, reloading.
+INFO 2026-08-10 06:12:36,865 autoreload 18284 8338481536 /Users/srivatsan/Desktop/ai-consulting-platform/backend/file_management/services/access.py changed, reloading.
+INFO 2026-08-10 06:12:37,373 autoreload 18522 8338481536 Watching for file changes with StatReloader
+INFO 2026-08-10 06:12:37,373 autoreload 18522 8338481536 Watching for file changes with StatReloader
+INFO 2026-08-10 06:20:49,370 autoreload 18522 8338481536 /Users/srivatsan/Desktop/ai-consulting-platform/backend/workflows/serializers.py changed, reloading.
+INFO 2026-08-10 06:20:49,370 autoreload 18522 8338481536 /Users/srivatsan/Desktop/ai-consulting-platform/backend/workflows/serializers.py changed, reloading.
+INFO 2026-08-10 06:20:49,854 autoreload 22445 8338481536 Watching for file changes with StatReloader
+INFO 2026-08-10 06:20:49,854 autoreload 22445 8338481536 Watching for file changes with StatReloader
+INFO 2026-08-10 06:21:51,975 autoreload 22445 8338481536 /Users/srivatsan/Desktop/ai-consulting-platform/backend/file_management/views.py changed, reloading.
+INFO 2026-08-10 06:21:51,975 autoreload 22445 8338481536 /Users/srivatsan/Desktop/ai-consulting-platform/backend/file_management/views.py changed, reloading.
+INFO 2026-08-10 06:21:52,314 autoreload 23155 8338481536 Watching for file changes with StatReloader
+INFO 2026-08-10 06:21:52,314 autoreload 23155 8338481536 Watching for file changes with StatReloader

@@ -312,22 +312,25 @@ class ProjectDocumentUploadView(APIView):
             )
 
         doc_type = (request.data.get("doc_type") or "OTHER").upper()
-        try:
-            level = int(request.data.get("level") or project.current_level or 1)
-        except (TypeError, ValueError):
-            level = max(1, project.current_level or 1)
 
-        doc = ProjectDocument.objects.create(
+        from file_management.utils.upload import create_project_document
+
+        doc = create_project_document(
             project=project,
-            file=file,
+            file_obj=file,
             original_name=file.name,
             doc_type=doc_type,
-            level=max(1, level),
-            uploaded_by=request.user,
+            level=request.data.get("level") or project.current_level or 1,
+            category_id=request.data.get("file_category"),
+            user=request.user,
         )
 
         extract_text(doc)
         result = verify_document(doc)
+
+        scan_status = None
+        if hasattr(doc, "scan") and doc.scan:
+            scan_status = doc.scan.status
 
         return Response(
             {
@@ -340,6 +343,7 @@ class ProjectDocumentUploadView(APIView):
                     "score": result["score"],
                     "missing_requirements": result["missing_keywords"],
                 },
+                "scan_status": scan_status,
             },
             status=status.HTTP_201_CREATED,
         )

@@ -142,3 +142,78 @@ class WorkflowExecution(models.Model):
 
     def __str__(self):
         return f"{self.workflow.name} - {self.status}"
+
+
+class WorkflowHistory(models.Model):
+    """
+    Immutable event log for workflow executions.
+
+    Records every meaningful transition (start, step started/completed,
+    approval decisions, terminal states) so teams can audit what happened,
+    when and by whom.
+    """
+
+    EVENT_TYPES = [
+        ("started", "Started"),
+        ("step_started", "Step Started"),
+        ("step_completed", "Step Completed"),
+        ("approval_requested", "Approval Requested"),
+        ("approved", "Approved"),
+        ("rejected", "Rejected"),
+        ("completed", "Completed"),
+        ("failed", "Failed"),
+        ("cancelled", "Cancelled"),
+        ("resumed", "Resumed"),
+        ("comment", "Comment"),
+    ]
+
+    workflow_execution = models.ForeignKey(
+        WorkflowExecution,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name="history",
+    )
+
+    workflow = models.ForeignKey(
+        Workflow,
+        on_delete=models.CASCADE,
+        related_name="history",
+    )
+
+    step = models.ForeignKey(
+        WorkflowStep,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="history",
+    )
+
+    actor = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="workflow_history",
+    )
+
+    event_type = models.CharField(
+        max_length=30,
+        choices=EVENT_TYPES,
+    )
+
+    message = models.TextField(blank=True)
+
+    metadata = models.JSONField(
+        default=dict,
+        blank=True,
+    )
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = "workflow_history"
+        ordering = ["created_at"]
+
+    def __str__(self):
+        return f"{self.workflow.name} [{self.event_type}]"

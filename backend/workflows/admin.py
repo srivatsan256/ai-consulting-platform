@@ -1,11 +1,18 @@
 from django.contrib import admin
 
-from .models import Workflow, WorkflowStep, WorkflowExecution
+from .models import Workflow, WorkflowHistory, WorkflowStep, WorkflowExecution
 
 
 class WorkflowStepInline(admin.TabularInline):
     model = WorkflowStep
     extra = 0
+
+
+class WorkflowHistoryInline(admin.TabularInline):
+    model = WorkflowHistory
+    extra = 0
+    fields = ("event_type", "actor", "message", "created_at")
+    readonly_fields = ("event_type", "actor", "message", "created_at")
 
 
 @admin.register(Workflow)
@@ -29,7 +36,7 @@ class WorkflowAdmin(admin.ModelAdmin):
         "description",
     )
 
-    inlines = [WorkflowStepInline]
+    inlines = [WorkflowStepInline, WorkflowHistoryInline]
 
 
 @admin.register(WorkflowStep)
@@ -62,3 +69,20 @@ class WorkflowExecutionAdmin(admin.ModelAdmin):
     list_filter = (
         "status",
     )
+
+
+@admin.register(WorkflowHistory)
+class WorkflowHistoryAdmin(admin.ModelAdmin):
+
+    list_display = (
+        "workflow",
+        "workflow_execution",
+        "event_type",
+        "actor",
+        "step",
+        "created_at",
+    )
+
+    list_filter = ("event_type",)
+
+    search_fields = ("message",)

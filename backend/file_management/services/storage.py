@@ -12,7 +12,7 @@ from typing import TYPE_CHECKING
 
 from rest_framework.exceptions import ValidationError
 
-from .models import StorageQuota
+from file_management.models import StorageQuota
 
 if TYPE_CHECKING:
     from companies.models import Company

@@ -55,6 +55,8 @@ class StorageQuotaViewSet(TenantScopedViewSetMixin, viewsets.ModelViewSet):
 
     serializer_class = StorageQuotaSerializer
 
+    queryset = StorageQuota.objects.all()
+
     http_method_names = ["get", "put", "patch"]
 
     permission_classes = [IsAuthenticated]

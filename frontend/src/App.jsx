@@ -31,6 +31,8 @@ import TaskDetailPage from "./pages/TaskDetailPage";
 import UsersPage from "./pages/UsersPage";
 import TeamsDepartmentsPage from "./pages/TeamsDepartmentsPage";
 import RolesPage from "./pages/RolesPage";
+import FileManagementPage from "./pages/FileManagementPage";
+import WorkflowsPage from "./pages/WorkflowsPage";
 
 import ClientDashboard from "./pages/ClientDashboard";
 import ClientProjectsPage from "./pages/ClientProjectsPage";
@@ -170,6 +172,8 @@ const VIEW_ROUTE_MAP = {
   users: "/users",
   teams: "/teams",
   roles: "/roles",
+  files: "/file-management",
+  workflows: "/workflows",
   reports: "/projects",
   upload: "/projects",
   verification: "/projects",
@@ -204,6 +208,8 @@ function AppLayout({ children }) {
     if (path.startsWith("/users")) return "users";
     if (path.startsWith("/teams")) return "teams";
     if (path.startsWith("/roles")) return "roles";
+    if (path.startsWith("/file-management")) return "files";
+    if (path.startsWith("/workflows")) return "workflows";
     if (path.startsWith("/client-dashboard")) return "client-dashboard";
     if (path.startsWith("/client-projects")) return "client-projects";
     return "";
@@ -483,6 +489,26 @@ export default function App() {
             <RequireAdmin>
               <AppLayout>
                 <RolesPage />
+              </AppLayout>
+            </RequireAdmin>
+          }
+        />
+        <Route
+          path="/file-management"
+          element={
+            <RequireAdmin>
+              <AppLayout>
+                <FileManagementPage />
+              </AppLayout>
+            </RequireAdmin>
+          }
+        />
+        <Route
+          path="/workflows"
+          element={
+            <RequireAdmin>
+              <AppLayout>
+                <WorkflowsPage />
               </AppLayout>
             </RequireAdmin>
           }
