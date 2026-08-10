@@ -2586,3 +2586,11 @@ INFO 2026-08-10 05:01:23,268 basehttp 76163 6208565248 "OPTIONS /api/auth/login/
 INFO 2026-08-10 05:01:23,268 basehttp 76163 6208565248 "OPTIONS /api/auth/login/ HTTP/1.1" 200 0
 WARNING 2026-08-10 05:01:23,522 basehttp 76163 6208565248 "POST /api/auth/login/ HTTP/1.1" 401 137
 WARNING 2026-08-10 05:01:23,522 basehttp 76163 6208565248 "POST /api/auth/login/ HTTP/1.1" 401 137
+INFO 2026-08-10 05:13:48,605 autoreload 76163 8338481536 /Users/srivatsan/Desktop/ai-consulting-platform/backend/projects/models.py changed, reloading.
+INFO 2026-08-10 05:13:48,605 autoreload 76163 8338481536 /Users/srivatsan/Desktop/ai-consulting-platform/backend/projects/models.py changed, reloading.
+INFO 2026-08-10 05:13:49,116 autoreload 91884 8338481536 Watching for file changes with StatReloader
+INFO 2026-08-10 05:13:49,116 autoreload 91884 8338481536 Watching for file changes with StatReloader
+INFO 2026-08-10 06:07:39,982 autoreload 91884 8338481536 /Users/srivatsan/Desktop/ai-consulting-platform/backend/config/settings.py changed, reloading.
+INFO 2026-08-10 06:07:39,982 autoreload 91884 8338481536 /Users/srivatsan/Desktop/ai-consulting-platform/backend/config/settings.py changed, reloading.
+INFO 2026-08-10 06:07:40,492 autoreload 15828 8338481536 Watching for file changes with StatReloader
+INFO 2026-08-10 06:07:40,492 autoreload 15828 8338481536 Watching for file changes with StatReloader

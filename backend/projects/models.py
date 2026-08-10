@@ -228,9 +228,19 @@ class ProjectDocument(models.Model):
 
     file = models.FileField(upload_to="project_documents/")
 
+    file_size = models.PositiveBigIntegerField(default=0)
+
     original_name = models.CharField(max_length=255, blank=True)
 
     doc_type = models.CharField(max_length=20, default="OTHER")
+
+    file_category = models.ForeignKey(
+        "file_management.FileCategory",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="files",
+    )
 
     level = models.PositiveIntegerField(default=1)
 
