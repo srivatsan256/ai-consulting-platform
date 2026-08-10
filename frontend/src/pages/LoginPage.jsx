@@ -1,17 +1,11 @@
 import React, { useState } from "react";
-import { ROLES_DATA } from "../constants/roles";
 
 export default function LoginPage({ onLogin, onShowSignup, onForgotPassword }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("admin");
-  const [showRoleSelector, setShowRoleSelector] = useState(false);
-  const [selectedUserRole, setSelectedUserRole] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-
-  const adminRoles = Object.entries(ROLES_DATA).filter(([_, data]) => data.role === "admin");
-  const clientRoles = Object.entries(ROLES_DATA).filter(([_, data]) => data.role === "client");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -23,23 +17,15 @@ export default function LoginPage({ onLogin, onShowSignup, onForgotPassword }) {
       const message =
         err?.response?.data?.detail ||
         err?.response?.data?.message ||
-        "Invalid email or password. Try a demo account from the list below.";
+        "Invalid email or password.";
       setError(message);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleRoleSelect = (roleKey) => {
-    const roleData = ROLES_DATA[roleKey];
-    setEmail(roleData.email);
-    setPassword("password123");
-    setSelectedUserRole(roleData);
-    setShowRoleSelector(false);
-  };
-
   const handleSSOLogin = async () => {
-    // Simulate SSO login using a seeded demo account
+    // Simulate SSO login using a seeded account
     const ssoEmail = role === "client" ? "client_admin@acmecorp.com" : "companyadmin@requirementai.com";
     setEmail(ssoEmail);
     setPassword("password123");
@@ -48,7 +34,7 @@ export default function LoginPage({ onLogin, onShowSignup, onForgotPassword }) {
     try {
       await onLogin(ssoEmail, "password123", role);
     } catch (err) {
-      setError(err?.response?.data?.detail || "SSO login failed. Try a demo account below.");
+      setError(err?.response?.data?.detail || "SSO login failed. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -210,14 +196,9 @@ export default function LoginPage({ onLogin, onShowSignup, onForgotPassword }) {
                     Signing in...
                   </>
                 ) : (
-                  <>
-                    {selectedUserRole
-                      ? `Sign In as ${selectedUserRole.assigned_role}`
-                      : role === "admin"
-                      ? "Sign In as Consultant"
-                      : "Sign In as Client"}
-                    <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
-                  </>
+                  role === "admin"
+                    ? "Sign In as Consultant"
+                    : "Sign In as Client"
                 )}
               </button>
             </form>
@@ -274,89 +255,6 @@ export default function LoginPage({ onLogin, onShowSignup, onForgotPassword }) {
                 Create an account
               </button>
             </p>
-          </div>
-
-          {/* Quick Access Demo Accounts */}
-          <div className="mt-6 bg-white rounded-2xl soft-shadow border border-outline-variant/20 p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="font-headline-sm text-sm font-bold text-on-surface">Demo Accounts</h3>
-              <button
-                type="button"
-                onClick={() => setShowRoleSelector(!showRoleSelector)}
-                className="text-primary text-xs font-medium hover:underline"
-              >
-                {showRoleSelector ? "Hide" : "View All Roles"}
-              </button>
-            </div>
-
-            {showRoleSelector && (
-              <div className="space-y-4">
-                {/* Admin Roles */}
-                <div>
-                  <p className="text-[10px] font-label-md uppercase tracking-wider text-on-surface-variant mb-2">
-                    Consulting Team Roles
-                  </p>
-                  <div className="grid grid-cols-2 gap-2">
-                    {adminRoles.slice(0, 6).map(([key, data]) => (
-                      <button
-                        key={key}
-                        onClick={() => handleRoleSelect(key)}
-                        className="text-left p-2 rounded-lg border border-outline-variant/20 hover:border-primary/50 hover:bg-primary/5 transition-all"
-                      >
-                        <p className="text-[11px] font-medium text-on-surface truncate">{data.assigned_role}</p>
-                        <p className="text-[10px] text-on-surface-variant truncate">{data.name}</p>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Client Roles */}
-                <div>
-                  <p className="text-[10px] font-label-md uppercase tracking-wider text-on-surface-variant mb-2">
-                    Client Roles
-                  </p>
-                  <div className="grid grid-cols-2 gap-2">
-                    {clientRoles.map(([key, data]) => (
-                      <button
-                        key={key}
-                        onClick={() => handleRoleSelect(key)}
-                        className="text-left p-2 rounded-lg border border-outline-variant/20 hover:border-primary/50 hover:bg-primary/5 transition-all"
-                      >
-                        <p className="text-[11px] font-medium text-on-surface truncate">{data.assigned_role}</p>
-                        <p className="text-[10px] text-on-surface-variant truncate">{data.name}</p>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {!showRoleSelector && (
-              <div className="grid grid-cols-2 gap-3">
-                {adminRoles.slice(0, 4).map(([key, data]) => (
-                  <button
-                    key={key}
-                    onClick={() => handleRoleSelect(key)}
-                    className="text-left p-3 rounded-lg border border-outline-variant/20 hover:border-primary/50 hover:bg-primary/5 transition-all"
-                  >
-                    <p className="text-xs font-bold text-on-surface">{data.assigned_role}</p>
-                    <p className="text-[10px] text-on-surface-variant mt-0.5">{data.email}</p>
-                    <div className="flex flex-wrap gap-1 mt-2">
-                      {data.access_checklist.slice(0, 2).map((item, i) => (
-                        <span key={i} className="text-[9px] px-1.5 py-0.5 bg-surface-container-low rounded text-on-surface-variant">
-                          {item}
-                        </span>
-                      ))}
-                      {data.access_checklist.length > 2 && (
-                        <span className="text-[9px] px-1.5 py-0.5 bg-primary/10 text-primary rounded">
-                          +{data.access_checklist.length - 2} more
-                        </span>
-                      )}
-                    </div>
-                  </button>
-                ))}
-              </div>
-            )}
           </div>
         </div>
       </div>
