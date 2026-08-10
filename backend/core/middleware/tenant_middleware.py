@@ -14,6 +14,7 @@ and the service layer.
 
 from core.middleware.tenant_context import TenantContext
 from core.services.tenant_resolution_service import TenantResolutionService
+from core.tenant.context import clear_current_tenant
 
 
 class TenantMiddleware:
@@ -23,6 +24,10 @@ class TenantMiddleware:
     The ``X-Company-ID`` header is whitelisted per-request so it cannot
     be used to forge a context on public endpoints; an unauthenticated
     request always receives an empty ``TenantContext``.
+
+    The thread-local current tenant is cleared after the response so a
+    request's tenant never leaks into the next request served by the
+    same worker/thread.
     """
 
     def __init__(self, get_response):
@@ -36,4 +41,7 @@ class TenantMiddleware:
             context = TenantContext()
 
         request.tenant = context
-        return self.get_response(request)
+        try:
+            return self.get_response(request)
+        finally:
+            clear_current_tenant()

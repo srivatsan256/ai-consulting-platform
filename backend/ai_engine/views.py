@@ -8,12 +8,13 @@ from .serializers import AIAssessmentSerializer, AIUseCaseSerializer
 from .filters import AIAssessmentFilter
 from core.ai_service import get_llm_client
 from core.enforcement import TenantEnforcement
+from core.tenant_scoping import TenantScopedViewSetMixin
 from core.vector_store import add_document as add_to_vector_store
 from core.prompt_manager import render_prompt, get_prompt
 from projects.models import Project
 
 
-class AIAssessmentViewSet(viewsets.ModelViewSet):
+class AIAssessmentViewSet(TenantScopedViewSetMixin, viewsets.ModelViewSet):
 
     serializer_class = AIAssessmentSerializer
 
@@ -39,13 +40,6 @@ class AIAssessmentViewSet(viewsets.ModelViewSet):
     ordering = ["-created_at"]
 
     permission_classes = [IsAuthenticated]
-
-    def get_queryset(self):
-        queryset = super().get_queryset()
-        tenant = getattr(self.request, "tenant", None)
-        if tenant and tenant.company:
-            return queryset.filter(project__company=tenant.company)
-        return queryset.none()
 
     def _get_project_context(self, project):
         parts = [
@@ -91,6 +85,7 @@ class AIAssessmentViewSet(viewsets.ModelViewSet):
     def ai_analyze(self, request, pk=None):
         TenantEnforcement.require_subscription(request)
         TenantEnforcement.require_feature(request, "custom_rag")
+        TenantEnforcement.check_ai_quota(request)
         assessment = self.get_object()
         project = assessment.project
         project_context = self._get_project_context(project)
@@ -141,6 +136,7 @@ class AIAssessmentViewSet(viewsets.ModelViewSet):
     def ai_recommend(self, request, pk=None):
         TenantEnforcement.require_subscription(request)
         TenantEnforcement.require_feature(request, "custom_rag")
+        TenantEnforcement.check_ai_quota(request)
         assessment = self.get_object()
         project = assessment.project
         project_context = self._get_project_context(project)
@@ -192,7 +188,7 @@ class AIAssessmentViewSet(viewsets.ModelViewSet):
             )
 
 
-class AIUseCaseViewSet(viewsets.ModelViewSet):
+class AIUseCaseViewSet(TenantScopedViewSetMixin, viewsets.ModelViewSet):
 
     serializer_class = AIUseCaseSerializer
 
@@ -212,12 +208,3 @@ class AIUseCaseViewSet(viewsets.ModelViewSet):
     ]
 
     ordering = ["-created_at"]
-
-    def get_queryset(self):
-        queryset = super().get_queryset()
-        tenant = getattr(self.request, "tenant", None)
-        if tenant and tenant.company:
-            return queryset.filter(
-                assessment__project__company=tenant.company,
-            )
-        return queryset.none()

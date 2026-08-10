@@ -98,6 +98,14 @@ class ProjectPhaseViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(project__company=company)
         return queryset
 
+    def perform_create(self, serializer):
+        _validate_project_in_tenant(self.request, serializer.validated_data.get("project"))
+        serializer.save()
+
+    def perform_update(self, serializer):
+        _validate_project_in_tenant(self.request, serializer.validated_data.get("project"))
+        serializer.save()
+
 
 class MilestoneViewSet(viewsets.ModelViewSet):
     queryset = Milestone.objects.select_related("project")
@@ -115,6 +123,14 @@ class MilestoneViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(project__company=company)
         return queryset
 
+    def perform_create(self, serializer):
+        _validate_project_in_tenant(self.request, serializer.validated_data.get("project"))
+        serializer.save()
+
+    def perform_update(self, serializer):
+        _validate_project_in_tenant(self.request, serializer.validated_data.get("project"))
+        serializer.save()
+
 
 def _tenant_company(request):
     tenant = getattr(request, "tenant", None)
@@ -126,6 +142,15 @@ def _tenant_company(request):
     if membership is not None:
         return membership.company
     return None
+
+
+def _validate_project_in_tenant(request, project):
+    """Reject writes that reference a project outside the request tenant."""
+    company = _tenant_company(request)
+    if company is not None and (project is None or project.company_id != company.pk):
+        from rest_framework.exceptions import PermissionDenied
+
+        raise PermissionDenied("Project does not belong to your company.")
 
 
 def _tenant_scoped_project(request, pk):

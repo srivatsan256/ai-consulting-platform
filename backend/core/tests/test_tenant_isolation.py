@@ -656,6 +656,45 @@ class TestAuditLogsIsolation(TenantIsolationBase, _EndpointTestMixin):
         return a, b
 
 
+class TestAIAssessmentWriteIsolation(TenantIsolationBase):
+    """
+    A POST that points a tenant-scoped FK at another company's row must be
+    rejected at write time, even though list/detail reads are already scoped.
+    """
+
+    def _create(self, project):
+        return self.client.post(
+            "/api/ai-engine/assessments/",
+            {"project": project.pk},
+            format="json",
+        )
+
+    def test_create_with_own_project_succeeds(self):
+        response = self._create(self.project_a)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_create_with_foreign_project_rejected(self):
+        response = self._create(self.project_b)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertFalse(
+            response.json().get("success", True),
+            "The API should not silently accept a cross-tenant FK.",
+        )
+
+    def test_update_steering_project_to_foreign_company_rejected(self):
+        from ai_engine.models import AIAssessment
+
+        own = AIAssessment.objects.create(project=self.project_a)
+        response = self.client.patch(
+            f"/api/ai-engine/assessments/{own.pk}/",
+            {"project": self.project_b.pk},
+            format="json",
+        )
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        own.refresh_from_db()
+        self.assertEqual(own.project_id, self.project_a.pk)
+
+
 class TestDocumentTemplatesIsolation(TenantIsolationBase, _EndpointTestMixin):
     list_url = "/api/document-templates/"
     detail_url = staticmethod(lambda pk: f"/api/document-templates/{pk}/")

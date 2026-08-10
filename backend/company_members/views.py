@@ -51,6 +51,7 @@ class CompanyMemberViewSet(viewsets.ModelViewSet):
                 )
 
         can_manage = bool(user.is_superuser)  # type: ignore
+        existing = None
         if not can_manage and company is not None:
             existing = (
                 CompanyMember.objects.filter(

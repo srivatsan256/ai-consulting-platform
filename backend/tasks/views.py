@@ -63,12 +63,12 @@ class TaskViewSet(TenantScopedViewSetMixin, viewsets.ModelViewSet):
         )
 
     def perform_create(self, serializer):
-        task = serializer.save()
-        self._notify_assignee(task)
+        super().perform_create(serializer)
+        self._notify_assignee(serializer.instance)
 
     def perform_update(self, serializer):
-        task = serializer.save()
-        self._notify_assignee(task)
+        super().perform_update(serializer)
+        self._notify_assignee(serializer.instance)
 
     @action(detail=True, methods=["post"])
     def complete(self, request, pk=None):

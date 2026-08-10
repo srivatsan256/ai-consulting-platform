@@ -35,6 +35,9 @@ from __future__ import annotations
 
 from typing import Optional, TYPE_CHECKING
 
+from django.db import models
+from rest_framework.exceptions import PermissionDenied
+
 if TYPE_CHECKING:
     from django.db.models import Model, QuerySet
 
@@ -126,3 +129,43 @@ class TenantScopedViewSetMixin:
             tenant.company,
             lookup_path=self.tenant_lookup_path,
         )
+
+    def _validate_tenant_scoped_fks(self, data):
+        """
+        Reject writes that point a tenant-scoped foreign key at an object
+        owned by another company.
+
+        Reads already flow through the scoped ``get_queryset``, but
+        list-create/update accept FK ids directly, so a POST body could
+        reference a ``project``/``task``/``meeting``/... that belongs to a
+        different tenant. This closes that cross-tenant write vector for
+        every viewset using the mixin.
+        """
+        tenant = getattr(self.request, "tenant", None)
+        company = getattr(tenant, "company", None)
+        if company is None:
+            return
+
+        for field_name, value in data.items():
+            if value is None or not isinstance(value, models.Model):
+                continue
+            path = detect_tenant_lookup_path(value.__class__)
+            if path is None:
+                continue
+            node = value
+            for lookup in path.split("__"):
+                node = getattr(node, lookup, None)
+                if node is None:
+                    break
+            if node is not None and node.pk != company.pk:
+                raise PermissionDenied(
+                    f"{field_name} does not belong to your company."
+                )
+
+    def perform_create(self, serializer):
+        self._validate_tenant_scoped_fks(serializer.validated_data)
+        return super().perform_create(serializer)
+
+    def perform_update(self, serializer):
+        self._validate_tenant_scoped_fks(serializer.validated_data)
+        return super().perform_update(serializer)

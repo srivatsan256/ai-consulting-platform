@@ -147,11 +147,14 @@ class ProjectSerializer(serializers.ModelSerializer):
         company = None
 
         if user and user.is_authenticated:
-            from company_members.models import CompanyMember
+            tenant = getattr(request, "tenant", None)
+            company = getattr(tenant, "company", None)
+            if company is None:
+                from company_members.models import CompanyMember
 
-            membership = CompanyMember.objects.primary_for_user(user)
-            if membership:
-                company = membership.company
+                membership = CompanyMember.objects.primary_for_user(user)
+                if membership:
+                    company = membership.company
 
         if company is None:
             raise serializers.ValidationError(

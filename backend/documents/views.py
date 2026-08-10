@@ -20,6 +20,7 @@ from core.rule_engine import validate_document
 from core.document_processor import extract_text_from_uploaded_file
 from core.vector_store import add_document as add_to_vector_store
 from core.tenant_scoping import TenantScopedViewSetMixin
+from core.enforcement import TenantEnforcement
 
 
 class DocumentViewSet(TenantScopedViewSetMixin, viewsets.ModelViewSet):
@@ -76,6 +77,7 @@ class DocumentViewSet(TenantScopedViewSetMixin, viewsets.ModelViewSet):
                 {"error": "Document has no content to analyze."},
                 status=status.HTTP_400_BAD_REQUEST,
             )
+        TenantEnforcement.check_ai_quota(request)
         try:
             result = analyze_document(text)
             keywords = keyword_extraction(text)
@@ -88,6 +90,7 @@ class DocumentViewSet(TenantScopedViewSetMixin, viewsets.ModelViewSet):
                     "project_id": document.project_id,
                 },
             )
+            TenantEnforcement.record_usage(request, "ai_requests_per_month")
             return Response({
                 "analysis": result["analysis"],
                 "keywords": keywords,
@@ -212,14 +215,30 @@ class DocumentViewSet(TenantScopedViewSetMixin, viewsets.ModelViewSet):
 
     @action(detail=False, methods=["get"])
     def download_project_zip(self, request):
+        from projects.models import Project
+
         project_id = request.query_params.get("project_id")
         if not project_id:
             return Response(
                 {"error": "project_id is required."},
                 status=status.HTTP_400_BAD_REQUEST,
             )
+        tenant = getattr(request, "tenant", None)
+        company = getattr(tenant, "company", None)
+        if company is None:
+            return Response(
+                {"error": "No company associated with this user."},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+        try:
+            project = Project.objects.get(pk=project_id, company=company)
+        except Project.DoesNotExist:
+            return Response(
+                {"error": "No documents found for this project."},
+                status=status.HTTP_404_NOT_FOUND,
+            )
         documents = Document.objects.filter(
-            project_id=project_id,
+            project=project,
         ).select_related("project")
         if not documents.exists():
             return Response(

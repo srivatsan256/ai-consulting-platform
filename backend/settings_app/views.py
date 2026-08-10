@@ -1,6 +1,6 @@
 from django.db import models
 from rest_framework import viewsets
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.exceptions import PermissionDenied
 
 from .models import SystemSetting, UserProfile, Announcement
@@ -30,6 +30,16 @@ class SystemSettingViewSet(viewsets.ModelViewSet):
     ordering = ["category", "key"]
 
     permission_classes = [IsAuthenticated]
+
+    def get_permissions(self):
+        """
+        Platform settings are readable by any authenticated user but only
+        writable by staff users. This prevents a tenant from tampering with
+        global configuration (including sensitive values).
+        """
+        if self.action in ("create", "update", "partial_update", "destroy"):
+            return [IsAdminUser()]
+        return super().get_permissions()
 
 
 class UserProfileViewSet(viewsets.ModelViewSet):

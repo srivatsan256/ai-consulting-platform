@@ -44,6 +44,7 @@ class KnowledgeBaseViewSet(TenantScopedViewSetMixin, viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
 
     def perform_create(self, serializer):
+        self._validate_tenant_scoped_fks(serializer.validated_data)
         kb = serializer.save(created_by=self.request.user)
         if kb.is_published and kb.content:
             metadata = {
@@ -60,6 +61,7 @@ class KnowledgeBaseViewSet(TenantScopedViewSetMixin, viewsets.ModelViewSet):
             )
 
     def perform_update(self, serializer):
+        self._validate_tenant_scoped_fks(serializer.validated_data)
         kb = serializer.save(updated_by=self.request.user)
         if kb.is_published and kb.content:
             metadata = {

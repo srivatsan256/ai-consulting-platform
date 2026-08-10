@@ -2654,3 +2654,195 @@ INFO 2026-08-10 06:21:51,975 autoreload 22445 8338481536 /Users/srivatsan/Deskto
 INFO 2026-08-10 06:21:51,975 autoreload 22445 8338481536 /Users/srivatsan/Desktop/ai-consulting-platform/backend/file_management/views.py changed, reloading.
 INFO 2026-08-10 06:21:52,314 autoreload 23155 8338481536 Watching for file changes with StatReloader
 INFO 2026-08-10 06:21:52,314 autoreload 23155 8338481536 Watching for file changes with StatReloader
+INFO 2026-08-10 06:35:37,154 basehttp 23155 6158872576 "OPTIONS /api/auth/register/ HTTP/1.1" 200 0
+INFO 2026-08-10 06:35:37,154 basehttp 23155 6158872576 "OPTIONS /api/auth/register/ HTTP/1.1" 200 0
+ERROR 2026-08-10 06:35:37,729 log 23155 6158872576 Internal Server Error: /api/auth/register/
+ERROR 2026-08-10 06:35:37,729 log 23155 6158872576 Internal Server Error: /api/auth/register/
+ERROR 2026-08-10 06:35:37,730 basehttp 23155 6158872576 "POST /api/auth/register/ HTTP/1.1" 500 116
+ERROR 2026-08-10 06:35:37,730 basehttp 23155 6158872576 "POST /api/auth/register/ HTTP/1.1" 500 116
+ERROR 2026-08-10 06:38:30,658 log 23155 6175698944 Internal Server Error: /api/auth/register/
+ERROR 2026-08-10 06:38:30,658 log 23155 6175698944 Internal Server Error: /api/auth/register/
+ERROR 2026-08-10 06:38:30,658 basehttp 23155 6175698944 "POST /api/auth/register/ HTTP/1.1" 500 116
+ERROR 2026-08-10 06:38:30,658 basehttp 23155 6175698944 "POST /api/auth/register/ HTTP/1.1" 500 116
+ERROR 2026-08-10 06:39:23,353 log 30795 8338481536 Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/Users/srivatsan/Desktop/ai-consulting-platform/backend/venv/lib/python3.14/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Users/srivatsan/Desktop/ai-consulting-platform/backend/venv/lib/python3.14/site-packages/django/utils/deprecation.py", line 133, in __call__
+    response = self.process_request(request)
+  File "/Users/srivatsan/Desktop/ai-consulting-platform/backend/venv/lib/python3.14/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/Users/srivatsan/Desktop/ai-consulting-platform/backend/venv/lib/python3.14/site-packages/django/http/request.py", line 151, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+ERROR 2026-08-10 06:39:23,353 log 30795 8338481536 Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/Users/srivatsan/Desktop/ai-consulting-platform/backend/venv/lib/python3.14/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Users/srivatsan/Desktop/ai-consulting-platform/backend/venv/lib/python3.14/site-packages/django/utils/deprecation.py", line 133, in __call__
+    response = self.process_request(request)
+  File "/Users/srivatsan/Desktop/ai-consulting-platform/backend/venv/lib/python3.14/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/Users/srivatsan/Desktop/ai-consulting-platform/backend/venv/lib/python3.14/site-packages/django/http/request.py", line 151, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+ERROR 2026-08-10 06:39:26,985 log 30845 8338481536 Internal Server Error: /api/auth/register/
+ERROR 2026-08-10 06:39:26,985 log 30845 8338481536 Internal Server Error: /api/auth/register/
+INFO 2026-08-10 06:41:14,745 basehttp 23155 6192525312 "POST /api/auth/register/ HTTP/1.1" 201 891
+INFO 2026-08-10 06:41:14,745 basehttp 23155 6192525312 "POST /api/auth/register/ HTTP/1.1" 201 891
+INFO 2026-08-10 06:41:56,811 basehttp 23155 6175698944 "POST /api/auth/register/ HTTP/1.1" 201 876
+INFO 2026-08-10 06:41:56,811 basehttp 23155 6175698944 "POST /api/auth/register/ HTTP/1.1" 201 876
+WARNING 2026-08-10 06:41:56,858 basehttp 23155 6175698944 "GET /api/companies/context/ HTTP/1.1" 404 17015
+WARNING 2026-08-10 06:41:56,858 basehttp 23155 6175698944 "GET /api/companies/context/ HTTP/1.1" 404 17015
+INFO 2026-08-10 06:41:57,164 basehttp 23155 6226178048 "GET /api/subscriptions/subscriptions/quotas/ HTTP/1.1" 200 25
+INFO 2026-08-10 06:41:57,164 basehttp 23155 6226178048 "GET /api/subscriptions/subscriptions/quotas/ HTTP/1.1" 200 25
+INFO 2026-08-10 06:41:57,169 basehttp 23155 6209351680 "GET /api/subscriptions/subscriptions/usage/ HTTP/1.1" 200 13
+INFO 2026-08-10 06:41:57,169 basehttp 23155 6192525312 "GET /api/subscriptions/subscriptions/features/ HTTP/1.1" 200 2
+INFO 2026-08-10 06:41:57,169 basehttp 23155 6192525312 "GET /api/subscriptions/subscriptions/features/ HTTP/1.1" 200 2
+INFO 2026-08-10 06:41:57,169 basehttp 23155 6209351680 "GET /api/subscriptions/subscriptions/usage/ HTTP/1.1" 200 13
+INFO 2026-08-10 06:41:57,175 basehttp 23155 6243004416 "GET /api/projects/ HTTP/1.1" 200 2
+INFO 2026-08-10 06:41:57,175 basehttp 23155 6243004416 "GET /api/projects/ HTTP/1.1" 200 2
+INFO 2026-08-10 06:41:57,329 basehttp 23155 6243004416 "GET /api/projects/ HTTP/1.1" 200 2
+INFO 2026-08-10 06:41:57,329 basehttp 23155 6243004416 "GET /api/projects/ HTTP/1.1" 200 2
+INFO 2026-08-10 06:42:00,788 basehttp 23155 6243004416 "GET /api/projects/ HTTP/1.1" 200 2
+INFO 2026-08-10 06:42:00,788 basehttp 23155 6243004416 "GET /api/projects/ HTTP/1.1" 200 2
+INFO 2026-08-10 06:42:00,948 basehttp 23155 6243004416 "GET /api/projects/ HTTP/1.1" 200 2
+INFO 2026-08-10 06:42:00,948 basehttp 23155 6243004416 "GET /api/projects/ HTTP/1.1" 200 2
+INFO 2026-08-10 06:42:03,686 basehttp 23155 6243004416 "GET /api/projects/ HTTP/1.1" 200 2
+INFO 2026-08-10 06:42:03,686 basehttp 23155 6243004416 "GET /api/projects/ HTTP/1.1" 200 2
+INFO 2026-08-10 06:42:03,843 basehttp 23155 6243004416 "GET /api/projects/ HTTP/1.1" 200 2
+INFO 2026-08-10 06:42:03,843 basehttp 23155 6243004416 "GET /api/projects/ HTTP/1.1" 200 2
+INFO 2026-08-10 06:42:06,920 basehttp 23155 6243004416 "GET /api/projects/ HTTP/1.1" 200 2
+INFO 2026-08-10 06:42:06,920 basehttp 23155 6243004416 "GET /api/projects/ HTTP/1.1" 200 2
+INFO 2026-08-10 06:42:07,076 basehttp 23155 6243004416 "GET /api/projects/ HTTP/1.1" 200 2
+INFO 2026-08-10 06:42:07,076 basehttp 23155 6243004416 "GET /api/projects/ HTTP/1.1" 200 2
+INFO 2026-08-10 06:42:08,582 basehttp 23155 6243004416 "GET /api/projects/ HTTP/1.1" 200 2
+INFO 2026-08-10 06:42:08,582 basehttp 23155 6243004416 "GET /api/projects/ HTTP/1.1" 200 2
+INFO 2026-08-10 06:42:08,733 basehttp 23155 6243004416 "GET /api/projects/ HTTP/1.1" 200 2
+INFO 2026-08-10 06:42:08,733 basehttp 23155 6243004416 "GET /api/projects/ HTTP/1.1" 200 2
+INFO 2026-08-10 06:42:17,789 basehttp 23155 6243004416 "GET /api/projects/ HTTP/1.1" 200 2
+INFO 2026-08-10 06:42:17,789 basehttp 23155 6243004416 "GET /api/projects/ HTTP/1.1" 200 2
+INFO 2026-08-10 06:42:18,848 basehttp 23155 6175698944 "GET /api/projects/ HTTP/1.1" 200 2
+INFO 2026-08-10 06:42:18,848 basehttp 23155 6175698944 "GET /api/projects/ HTTP/1.1" 200 2
+INFO 2026-08-10 06:42:19,126 basehttp 23155 6175698944 "GET /api/projects/ HTTP/1.1" 200 2
+INFO 2026-08-10 06:42:19,126 basehttp 23155 6175698944 "GET /api/projects/ HTTP/1.1" 200 2
+INFO 2026-08-10 06:42:19,287 basehttp 23155 6175698944 "GET /api/projects/ HTTP/1.1" 200 2
+INFO 2026-08-10 06:42:19,287 basehttp 23155 6175698944 "GET /api/projects/ HTTP/1.1" 200 2
+WARNING 2026-08-10 06:42:23,406 basehttp 23155 6175698944 "POST /api/auth/login/ HTTP/1.1" 401 137
+WARNING 2026-08-10 06:42:23,406 basehttp 23155 6175698944 "POST /api/auth/login/ HTTP/1.1" 401 137
+INFO 2026-08-10 07:26:14,139 autoreload 23155 8338481536 /Users/srivatsan/Desktop/ai-consulting-platform/backend/core/tenant_scoping.py changed, reloading.
+INFO 2026-08-10 07:26:14,139 autoreload 23155 8338481536 /Users/srivatsan/Desktop/ai-consulting-platform/backend/core/tenant_scoping.py changed, reloading.
+INFO 2026-08-10 07:26:14,640 autoreload 52231 8338481536 Watching for file changes with StatReloader
+INFO 2026-08-10 07:26:14,640 autoreload 52231 8338481536 Watching for file changes with StatReloader
+INFO 2026-08-10 07:26:32,734 autoreload 52231 8338481536 /Users/srivatsan/Desktop/ai-consulting-platform/backend/core/tenant_scoping.py changed, reloading.
+INFO 2026-08-10 07:26:32,734 autoreload 52231 8338481536 /Users/srivatsan/Desktop/ai-consulting-platform/backend/core/tenant_scoping.py changed, reloading.
+INFO 2026-08-10 07:26:33,207 autoreload 52384 8338481536 Watching for file changes with StatReloader
+INFO 2026-08-10 07:26:33,207 autoreload 52384 8338481536 Watching for file changes with StatReloader
+INFO 2026-08-10 07:26:36,896 autoreload 52384 8338481536 /Users/srivatsan/Desktop/ai-consulting-platform/backend/core/tenant_scoping.py changed, reloading.
+INFO 2026-08-10 07:26:36,896 autoreload 52384 8338481536 /Users/srivatsan/Desktop/ai-consulting-platform/backend/core/tenant_scoping.py changed, reloading.
+INFO 2026-08-10 07:26:37,257 autoreload 52440 8338481536 Watching for file changes with StatReloader
+INFO 2026-08-10 07:26:37,257 autoreload 52440 8338481536 Watching for file changes with StatReloader
+INFO 2026-08-10 07:27:02,389 autoreload 52440 8338481536 /Users/srivatsan/Desktop/ai-consulting-platform/backend/tasks/views.py changed, reloading.
+INFO 2026-08-10 07:27:02,389 autoreload 52440 8338481536 /Users/srivatsan/Desktop/ai-consulting-platform/backend/tasks/views.py changed, reloading.
+INFO 2026-08-10 07:27:02,827 autoreload 52632 8338481536 Watching for file changes with StatReloader
+INFO 2026-08-10 07:27:02,827 autoreload 52632 8338481536 Watching for file changes with StatReloader
+INFO 2026-08-10 07:27:27,107 autoreload 52632 8338481536 /Users/srivatsan/Desktop/ai-consulting-platform/backend/workflows/views.py changed, reloading.
+INFO 2026-08-10 07:27:27,107 autoreload 52632 8338481536 /Users/srivatsan/Desktop/ai-consulting-platform/backend/workflows/views.py changed, reloading.
+INFO 2026-08-10 07:27:27,436 autoreload 52815 8338481536 Watching for file changes with StatReloader
+INFO 2026-08-10 07:27:27,436 autoreload 52815 8338481536 Watching for file changes with StatReloader
+INFO 2026-08-10 07:28:03,847 autoreload 52815 8338481536 /Users/srivatsan/Desktop/ai-consulting-platform/backend/workflows/views.py changed, reloading.
+INFO 2026-08-10 07:28:03,847 autoreload 52815 8338481536 /Users/srivatsan/Desktop/ai-consulting-platform/backend/workflows/views.py changed, reloading.
+INFO 2026-08-10 07:28:04,208 autoreload 53110 8338481536 Watching for file changes with StatReloader
+INFO 2026-08-10 07:28:04,208 autoreload 53110 8338481536 Watching for file changes with StatReloader
+INFO 2026-08-10 07:28:22,138 autoreload 53110 8338481536 /Users/srivatsan/Desktop/ai-consulting-platform/backend/knowledge_base/views.py changed, reloading.
+INFO 2026-08-10 07:28:22,138 autoreload 53110 8338481536 /Users/srivatsan/Desktop/ai-consulting-platform/backend/knowledge_base/views.py changed, reloading.
+INFO 2026-08-10 07:28:22,542 autoreload 53248 8338481536 Watching for file changes with StatReloader
+INFO 2026-08-10 07:28:22,542 autoreload 53248 8338481536 Watching for file changes with StatReloader
+INFO 2026-08-10 07:28:31,260 autoreload 53248 8338481536 /Users/srivatsan/Desktop/ai-consulting-platform/backend/knowledge_base/views.py changed, reloading.
+INFO 2026-08-10 07:28:31,260 autoreload 53248 8338481536 /Users/srivatsan/Desktop/ai-consulting-platform/backend/knowledge_base/views.py changed, reloading.
+INFO 2026-08-10 07:28:31,625 autoreload 53330 8338481536 Watching for file changes with StatReloader
+INFO 2026-08-10 07:28:31,625 autoreload 53330 8338481536 Watching for file changes with StatReloader
+INFO 2026-08-10 07:29:05,004 autoreload 53330 8338481536 /Users/srivatsan/Desktop/ai-consulting-platform/backend/projects/serializers.py changed, reloading.
+INFO 2026-08-10 07:29:05,004 autoreload 53330 8338481536 /Users/srivatsan/Desktop/ai-consulting-platform/backend/projects/serializers.py changed, reloading.
+INFO 2026-08-10 07:29:05,464 autoreload 53586 8338481536 Watching for file changes with StatReloader
+INFO 2026-08-10 07:29:05,464 autoreload 53586 8338481536 Watching for file changes with StatReloader
+INFO 2026-08-10 07:29:23,529 autoreload 53586 8338481536 /Users/srivatsan/Desktop/ai-consulting-platform/backend/documents/views.py changed, reloading.
+INFO 2026-08-10 07:29:23,529 autoreload 53586 8338481536 /Users/srivatsan/Desktop/ai-consulting-platform/backend/documents/views.py changed, reloading.
+INFO 2026-08-10 07:29:23,918 autoreload 53738 8338481536 Watching for file changes with StatReloader
+INFO 2026-08-10 07:29:23,918 autoreload 53738 8338481536 Watching for file changes with StatReloader
+INFO 2026-08-10 07:29:34,649 autoreload 53738 8338481536 /Users/srivatsan/Desktop/ai-consulting-platform/backend/company_members/views.py changed, reloading.
+INFO 2026-08-10 07:29:34,649 autoreload 53738 8338481536 /Users/srivatsan/Desktop/ai-consulting-platform/backend/company_members/views.py changed, reloading.
+INFO 2026-08-10 07:29:35,066 autoreload 53833 8338481536 Watching for file changes with StatReloader
+INFO 2026-08-10 07:29:35,066 autoreload 53833 8338481536 Watching for file changes with StatReloader
+INFO 2026-08-10 07:29:58,291 autoreload 53833 8338481536 /Users/srivatsan/Desktop/ai-consulting-platform/backend/core/middleware/tenant_middleware.py changed, reloading.
+INFO 2026-08-10 07:29:58,291 autoreload 53833 8338481536 /Users/srivatsan/Desktop/ai-consulting-platform/backend/core/middleware/tenant_middleware.py changed, reloading.
+INFO 2026-08-10 07:29:58,676 autoreload 54029 8338481536 Watching for file changes with StatReloader
+INFO 2026-08-10 07:29:58,676 autoreload 54029 8338481536 Watching for file changes with StatReloader
+INFO 2026-08-10 07:30:24,807 autoreload 54029 8338481536 /Users/srivatsan/Desktop/ai-consulting-platform/backend/core/services/tenant_resolution_service.py changed, reloading.
+INFO 2026-08-10 07:30:24,807 autoreload 54029 8338481536 /Users/srivatsan/Desktop/ai-consulting-platform/backend/core/services/tenant_resolution_service.py changed, reloading.
+INFO 2026-08-10 07:30:25,197 autoreload 54221 8338481536 Watching for file changes with StatReloader
+INFO 2026-08-10 07:30:25,197 autoreload 54221 8338481536 Watching for file changes with StatReloader
+INFO 2026-08-10 07:30:40,046 autoreload 54221 8338481536 /Users/srivatsan/Desktop/ai-consulting-platform/backend/core/services/tenant_resolution_service.py changed, reloading.
+INFO 2026-08-10 07:30:40,046 autoreload 54221 8338481536 /Users/srivatsan/Desktop/ai-consulting-platform/backend/core/services/tenant_resolution_service.py changed, reloading.
+INFO 2026-08-10 07:30:40,384 autoreload 54345 8338481536 Watching for file changes with StatReloader
+INFO 2026-08-10 07:30:40,384 autoreload 54345 8338481536 Watching for file changes with StatReloader
+INFO 2026-08-10 07:30:54,231 autoreload 54345 8338481536 /Users/srivatsan/Desktop/ai-consulting-platform/backend/authentication/services/jwt.py changed, reloading.
+INFO 2026-08-10 07:30:54,231 autoreload 54345 8338481536 /Users/srivatsan/Desktop/ai-consulting-platform/backend/authentication/services/jwt.py changed, reloading.
+INFO 2026-08-10 07:30:54,580 autoreload 54467 8338481536 Watching for file changes with StatReloader
+INFO 2026-08-10 07:30:54,580 autoreload 54467 8338481536 Watching for file changes with StatReloader
+INFO 2026-08-10 07:31:14,564 autoreload 54467 8338481536 /Users/srivatsan/Desktop/ai-consulting-platform/backend/settings_app/views.py changed, reloading.
+INFO 2026-08-10 07:31:14,564 autoreload 54467 8338481536 /Users/srivatsan/Desktop/ai-consulting-platform/backend/settings_app/views.py changed, reloading.
+INFO 2026-08-10 07:31:14,899 autoreload 54618 8338481536 Watching for file changes with StatReloader
+INFO 2026-08-10 07:31:14,899 autoreload 54618 8338481536 Watching for file changes with StatReloader
+INFO 2026-08-10 07:31:39,049 autoreload 54618 8338481536 /Users/srivatsan/Desktop/ai-consulting-platform/backend/settings_app/views.py changed, reloading.
+INFO 2026-08-10 07:31:39,049 autoreload 54618 8338481536 /Users/srivatsan/Desktop/ai-consulting-platform/backend/settings_app/views.py changed, reloading.
+INFO 2026-08-10 07:31:39,468 autoreload 54811 8338481536 Watching for file changes with StatReloader
+INFO 2026-08-10 07:31:39,468 autoreload 54811 8338481536 Watching for file changes with StatReloader
+INFO 2026-08-10 07:32:00,513 autoreload 54811 8338481536 /Users/srivatsan/Desktop/ai-consulting-platform/backend/projects/views.py changed, reloading.
+INFO 2026-08-10 07:32:00,513 autoreload 54811 8338481536 /Users/srivatsan/Desktop/ai-consulting-platform/backend/projects/views.py changed, reloading.
+INFO 2026-08-10 07:32:00,960 autoreload 55004 8338481536 Watching for file changes with StatReloader
+INFO 2026-08-10 07:32:00,960 autoreload 55004 8338481536 Watching for file changes with StatReloader
+INFO 2026-08-10 07:32:25,221 autoreload 55004 8338481536 /Users/srivatsan/Desktop/ai-consulting-platform/backend/projects/views.py changed, reloading.
+INFO 2026-08-10 07:32:25,221 autoreload 55004 8338481536 /Users/srivatsan/Desktop/ai-consulting-platform/backend/projects/views.py changed, reloading.
+INFO 2026-08-10 07:32:25,718 autoreload 55208 8338481536 Watching for file changes with StatReloader
+INFO 2026-08-10 07:32:25,718 autoreload 55208 8338481536 Watching for file changes with StatReloader
+INFO 2026-08-10 07:33:36,247 autoreload 55208 8338481536 /Users/srivatsan/Desktop/ai-consulting-platform/backend/projects/views.py changed, reloading.
+INFO 2026-08-10 07:33:36,247 autoreload 55208 8338481536 /Users/srivatsan/Desktop/ai-consulting-platform/backend/projects/views.py changed, reloading.
+INFO 2026-08-10 07:33:36,726 autoreload 55749 8338481536 Watching for file changes with StatReloader
+INFO 2026-08-10 07:33:36,726 autoreload 55749 8338481536 Watching for file changes with StatReloader
+INFO 2026-08-10 07:35:43,524 autoreload 55749 8338481536 /Users/srivatsan/Desktop/ai-consulting-platform/backend/core/enforcement.py changed, reloading.
+INFO 2026-08-10 07:35:43,524 autoreload 55749 8338481536 /Users/srivatsan/Desktop/ai-consulting-platform/backend/core/enforcement.py changed, reloading.
+INFO 2026-08-10 07:35:44,089 autoreload 56724 8338481536 Watching for file changes with StatReloader
+INFO 2026-08-10 07:35:44,089 autoreload 56724 8338481536 Watching for file changes with StatReloader
+INFO 2026-08-10 07:36:00,118 autoreload 56724 8338481536 /Users/srivatsan/Desktop/ai-consulting-platform/backend/file_management/models.py changed, reloading.
+INFO 2026-08-10 07:36:00,118 autoreload 56724 8338481536 /Users/srivatsan/Desktop/ai-consulting-platform/backend/file_management/models.py changed, reloading.
+INFO 2026-08-10 07:36:00,450 autoreload 56860 8338481536 Watching for file changes with StatReloader
+INFO 2026-08-10 07:36:00,450 autoreload 56860 8338481536 Watching for file changes with StatReloader
+INFO 2026-08-10 07:36:16,382 autoreload 56860 8338481536 /Users/srivatsan/Desktop/ai-consulting-platform/backend/file_management/models.py changed, reloading.
+INFO 2026-08-10 07:36:16,382 autoreload 56860 8338481536 /Users/srivatsan/Desktop/ai-consulting-platform/backend/file_management/models.py changed, reloading.
+INFO 2026-08-10 07:36:16,750 autoreload 56996 8338481536 Watching for file changes with StatReloader
+INFO 2026-08-10 07:36:16,750 autoreload 56996 8338481536 Watching for file changes with StatReloader
+INFO 2026-08-10 07:36:41,919 autoreload 56996 8338481536 /Users/srivatsan/Desktop/ai-consulting-platform/backend/ai_engine/views.py changed, reloading.
+INFO 2026-08-10 07:36:41,919 autoreload 56996 8338481536 /Users/srivatsan/Desktop/ai-consulting-platform/backend/ai_engine/views.py changed, reloading.
+INFO 2026-08-10 07:36:42,403 autoreload 57189 8338481536 Watching for file changes with StatReloader
+INFO 2026-08-10 07:36:42,403 autoreload 57189 8338481536 Watching for file changes with StatReloader
+INFO 2026-08-10 07:37:08,697 autoreload 57189 8338481536 /Users/srivatsan/Desktop/ai-consulting-platform/backend/ai_engine/views.py changed, reloading.
+INFO 2026-08-10 07:37:08,697 autoreload 57189 8338481536 /Users/srivatsan/Desktop/ai-consulting-platform/backend/ai_engine/views.py changed, reloading.
+INFO 2026-08-10 07:37:09,140 autoreload 57368 8338481536 Watching for file changes with StatReloader
+INFO 2026-08-10 07:37:09,140 autoreload 57368 8338481536 Watching for file changes with StatReloader
+INFO 2026-08-10 07:37:39,480 autoreload 57368 8338481536 /Users/srivatsan/Desktop/ai-consulting-platform/backend/documents/views.py changed, reloading.
+INFO 2026-08-10 07:37:39,480 autoreload 57368 8338481536 /Users/srivatsan/Desktop/ai-consulting-platform/backend/documents/views.py changed, reloading.
+INFO 2026-08-10 07:37:39,936 autoreload 57627 8338481536 Watching for file changes with StatReloader
+INFO 2026-08-10 07:37:39,936 autoreload 57627 8338481536 Watching for file changes with StatReloader
+INFO 2026-08-10 07:37:59,031 autoreload 57627 8338481536 /Users/srivatsan/Desktop/ai-consulting-platform/backend/documents/views.py changed, reloading.
+INFO 2026-08-10 07:37:59,031 autoreload 57627 8338481536 /Users/srivatsan/Desktop/ai-consulting-platform/backend/documents/views.py changed, reloading.
+INFO 2026-08-10 07:37:59,465 autoreload 57785 8338481536 Watching for file changes with StatReloader
+INFO 2026-08-10 07:37:59,465 autoreload 57785 8338481536 Watching for file changes with StatReloader
+INFO 2026-08-10 08:00:25,877 autoreload 57785 8338481536 /Users/srivatsan/Desktop/ai-consulting-platform/backend/ai_engine/views.py changed, reloading.
+INFO 2026-08-10 08:00:25,877 autoreload 57785 8338481536 /Users/srivatsan/Desktop/ai-consulting-platform/backend/ai_engine/views.py changed, reloading.
+INFO 2026-08-10 08:00:26,264 autoreload 67286 8338481536 Watching for file changes with StatReloader
+INFO 2026-08-10 08:00:26,264 autoreload 67286 8338481536 Watching for file changes with StatReloader
+INFO 2026-08-10 08:00:51,710 autoreload 67286 8338481536 /Users/srivatsan/Desktop/ai-consulting-platform/backend/ai_engine/views.py changed, reloading.
+INFO 2026-08-10 08:00:51,710 autoreload 67286 8338481536 /Users/srivatsan/Desktop/ai-consulting-platform/backend/ai_engine/views.py changed, reloading.
+INFO 2026-08-10 08:00:52,193 autoreload 67583 8338481536 Watching for file changes with StatReloader
+INFO 2026-08-10 08:00:52,193 autoreload 67583 8338481536 Watching for file changes with StatReloader

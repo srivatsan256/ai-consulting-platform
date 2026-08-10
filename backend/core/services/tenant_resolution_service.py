@@ -88,17 +88,21 @@ class TenantResolutionService:
         membership = self._resolve_membership(user=user, company_id=company_id)
 
         if membership is None:
-            return TenantContext()
+            context = TenantContext()
+            self._sync_context(context)
+            return context
 
         subscription = self._resolve_subscription(company=membership.company)
 
-        return TenantContext(
+        context = TenantContext(
             company=membership.company,
             membership=membership,
             role=membership.role,
             subscription=subscription,
             features=self._resolve_features(subscription),
         )
+        self._sync_context(context)
+        return context
 
     # ------------------------------------------------------------------
     # Resolution steps
@@ -140,6 +144,7 @@ class TenantResolutionService:
         memberships = (
             CompanyMember.objects.filter(user=user, is_active=True)
             .select_related("company", "role")
+            .filter(company__is_active=True)
             .order_by("-is_primary", "-joined_at")
         )
 

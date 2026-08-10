@@ -57,18 +57,31 @@ class CustomJWTAuthentication(JWTAuthentication):
         resolve a tenant for token-authenticated requests. Resolve it here
         (after the user is known) so ``request.tenant`` is available to
         permissions, views and services.
+
+        The ``X-Company-ID`` header overrides the token's ``company_id``
+        claim, letting multi-company users address another company without
+        re-login.
         """
         result = super().authenticate(request)
 
         if result is not None:
             user, validated_token = result
             from core.services.tenant_resolution_service import (
+                COMPANY_ID_HEADER,
                 TenantResolutionService,
             )
 
+            company_id = validated_token.get("company_id")
+            header_value = request.headers.get(COMPANY_ID_HEADER)
+            if header_value:
+                try:
+                    company_id = int(header_value)
+                except (TypeError, ValueError):
+                    pass
+
             request.tenant = TenantResolutionService().resolve_for_user(
                 user=user,
-                company_id=validated_token.get("company_id"),
+                company_id=company_id,
             )
 
         return result

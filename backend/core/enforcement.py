@@ -82,6 +82,44 @@ class TenantEnforcement:
         return tenant
 
     @staticmethod
+    def check_ai_quota(request):
+        """
+        Enforce the tenant's monthly AI-request limit (``ai_requests_per_month``)
+        using the current billing-month usage. Fail-open without a plan.
+        """
+        from subscriptions.services.usage_service import UsageService
+
+        tenant = getattr(request, "tenant", None)
+        if tenant and tenant.company:
+            TenantEnforcement.check_quota(
+                request,
+                "ai_requests_per_month",
+                UsageService.get_period_usage(
+                    tenant.company,
+                    "ai_requests_per_month",
+                ),
+            )
+        return tenant
+
+    @staticmethod
+    def check_storage_quota(request, additional_bytes=0):
+        """
+        Enforce the tenant's storage limit (``storage_gb``) accounting for the
+        bytes already stored plus ``additional_bytes``. Fail-open without a plan.
+        """
+        from file_management.models import company_storage_usage
+
+        tenant = getattr(request, "tenant", None)
+        if tenant and tenant.company:
+            total_bytes = company_storage_usage(tenant.company) + additional_bytes
+            TenantEnforcement.check_quota(
+                request,
+                "storage_gb",
+                total_bytes / (1024 ** 3),
+            )
+        return tenant
+
+    @staticmethod
     def record_usage(request, feature, quantity=1):
         """
         Record usage for ``feature`` against the request's tenant.

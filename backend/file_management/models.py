@@ -12,9 +12,13 @@ DEFAULT_STORAGE_QUOTA_BYTES = 5 * 1024 ** 3  # 5 GB
 def company_storage_usage(company):
     """
     Total bytes stored for a company across managed files
-    (project documents and task attachments).
+    (project documents, task attachments, KB attachments and document
+    templates).
     """
     from tasks.models import TaskAttachment
+    from django.apps import apps
+
+    KBAttachment = apps.get_model("knowledge_base", "KBAttachment")
 
     docs = (
         ProjectDocument.objects.filter(project__company=company).aggregate(
@@ -28,7 +32,13 @@ def company_storage_usage(company):
         )["total"]
         or 0
     )
-    return int(docs) + int(attachments)
+    kb_attachments = (
+        KBAttachment.objects.filter(
+            knowledge_base__project__company=company
+        ).aggregate(total=Sum("file_size"))["total"]
+        or 0
+    )
+    return int(docs) + int(attachments) + int(kb_attachments)
 
 
 class FileCategory(models.Model):

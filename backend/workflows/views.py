@@ -142,6 +142,7 @@ class WorkflowExecutionViewSet(TenantScopedViewSetMixin, viewsets.ModelViewSet):
         )
 
     def perform_create(self, serializer):
+        self._validate_tenant_scoped_fks(serializer.validated_data)
         execution = serializer.save(initiated_by=self.request.user)
         log_workflow_event(
             workflow=execution.workflow,
