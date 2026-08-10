@@ -261,7 +261,10 @@ export default function SidebarNavigation({ activeView, setActiveView, role, use
       <div className="mt-auto p-4 space-y-2">
         {user?.permissions?.upload && (
           <button
-            onClick={() => setActiveView("upload")}
+            onClick={() => {
+              if (onNavigate) onNavigate("upload");
+              else if (setActiveView) setActiveView("upload");
+            }}
             className="w-full py-3 px-4 bg-primary text-on-primary rounded-xl font-bold flex items-center justify-center gap-2 hover:opacity-90 transition-all shadow-lg shadow-primary/20"
           >
             <span className="material-symbols-outlined text-[18px]">upload_file</span>

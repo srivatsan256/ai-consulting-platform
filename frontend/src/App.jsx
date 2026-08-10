@@ -5,6 +5,7 @@ import {
   Route,
   Navigate,
   useNavigate,
+  useLocation,
   useParams,
 } from "react-router-dom";
 import { useAuth } from "./context/AuthContext.jsx";
@@ -183,6 +184,7 @@ const VIEW_ROUTE_MAP = {
 function AppLayout({ children }) {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleLogout = () => {
     logout();
@@ -194,9 +196,28 @@ function AppLayout({ children }) {
     if (path) navigate(path);
   };
 
+  const activeView = React.useMemo(() => {
+    const path = location.pathname;
+    if (path.startsWith("/dashboard")) return "dashboard";
+    if (path.startsWith("/projects")) return "projects";
+    if (path.startsWith("/tasks")) return "tasks";
+    if (path.startsWith("/users")) return "users";
+    if (path.startsWith("/teams")) return "teams";
+    if (path.startsWith("/roles")) return "roles";
+    if (path.startsWith("/client-dashboard")) return "client-dashboard";
+    if (path.startsWith("/client-projects")) return "client-projects";
+    return "";
+  }, [location.pathname]);
+
   return (
     <div className="min-h-screen bg-background flex">
-      <SidebarNavigation user={user} onLogout={handleLogout} onNavigate={handleNavigate} />
+      <SidebarNavigation
+        user={user}
+        role={user?.role}
+        activeView={activeView}
+        onLogout={handleLogout}
+        onNavigate={handleNavigate}
+      />
       <div className="flex-1 ml-[240px] p-8">{children}</div>
     </div>
   );
@@ -235,32 +256,38 @@ function RoleHome() {
 // ─────────────────────────────────────────────────────────────
 function ProjectDetailWrapper() {
   const { projectId } = useParams();
-  return <ProjectDetailPage projectId={projectId} />;
+  const navigate = useNavigate();
+  return <ProjectDetailPage projectId={projectId} onBack={() => navigate(-1)} />;
 }
 
 function UploadWrapper() {
   const { projectId } = useParams();
-  return <UploadPage projectId={projectId} />;
+  const navigate = useNavigate();
+  return <UploadPage projectId={projectId} onSelectProject={(id) => navigate(`/projects/${id}`)} />;
 }
 
 function VerificationWrapper() {
   const { projectId } = useParams();
-  return <VerificationPage projectId={projectId} />;
+  const navigate = useNavigate();
+  return <VerificationPage projectId={projectId} onSelectProject={(id) => navigate(`/projects/${id}`)} />;
 }
 
 function AIChatWrapper() {
   const { projectId } = useParams();
-  return <AIChatPage projectId={projectId} />;
+  const navigate = useNavigate();
+  return <AIChatPage projectId={projectId} onSelectProject={(id) => navigate(`/projects/${id}`)} />;
 }
 
 function DeliverablesWrapper() {
   const { projectId } = useParams();
-  return <DeliverablesPage projectId={projectId} />;
+  const navigate = useNavigate();
+  return <DeliverablesPage projectId={projectId} onSelectProject={(id) => navigate(`/projects/${id}`)} />;
 }
 
 function ReportsWrapper() {
   const { projectId } = useParams();
-  return <ReportsPage projectId={projectId} />;
+  const navigate = useNavigate();
+  return <ReportsPage projectId={projectId} onSelectProject={(id) => navigate(`/projects/${id}`)} />;
 }
 
 function TaskDetailWrapper() {
@@ -291,17 +318,20 @@ function ClientDashboardWrapper() {
 
 function ClientProjectsWrapper() {
   const { projectId } = useParams();
-  return <ClientProjectsPage projectId={projectId} />;
+  const navigate = useNavigate();
+  return <ClientProjectsPage projectId={projectId} onSelectProject={(id) => navigate(`/client-projects/${id}`)} onBack={() => navigate(-1)} />;
 }
 
 function ClientChatWrapper() {
   const { projectId } = useParams();
-  return <ClientChatPage projectId={projectId} />;
+  const navigate = useNavigate();
+  return <ClientChatPage projectId={projectId} onSelectProject={(id) => navigate(`/client-projects/${id}`)} />;
 }
 
 function ClientDownloadsWrapper() {
   const { projectId } = useParams();
-  return <ClientDownloads projectId={projectId} />;
+  const navigate = useNavigate();
+  return <ClientDownloads projectId={projectId} onSelectProject={(id) => navigate(`/client-projects/${id}`)} />;
 }
 
 // ─────────────────────────────────────────────────────────────
@@ -324,7 +354,7 @@ export default function App() {
           path="/signup"
           element={user ? <RoleHome /> : <AuthScreens />}
         />
-        <Route path="/" element={<Navigate to={user ? "/" : "/login"} replace />} />
+        <Route path="/" element={user ? <RoleHome /> : <Navigate to="/login" replace />} />
 
         {/* ── Admin routes ──────────────────────────────────── */}
         <Route

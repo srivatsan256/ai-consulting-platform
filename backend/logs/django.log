@@ -2512,3 +2512,77 @@ INFO 2026-08-07 07:10:06,627 autoreload 59129 8355668352 /Users/srivatsan/Deskto
 INFO 2026-08-07 07:10:06,627 autoreload 59129 8355668352 /Users/srivatsan/Desktop/ai-consulting-platform/backend/authentication/views.py changed, reloading.
 INFO 2026-08-07 07:10:06,901 autoreload 59269 8355668352 Watching for file changes with StatReloader
 INFO 2026-08-07 07:10:06,901 autoreload 59269 8355668352 Watching for file changes with StatReloader
+INFO 2026-08-10 04:51:07,838 autoreload 76163 8338481536 Watching for file changes with StatReloader
+INFO 2026-08-10 04:51:07,838 autoreload 76163 8338481536 Watching for file changes with StatReloader
+INFO 2026-08-10 04:51:18,383 basehttp 76163 6158086144 "GET /api/auth/me/ HTTP/1.1" 200 256
+INFO 2026-08-10 04:51:18,383 basehttp 76163 6158086144 "GET /api/auth/me/ HTTP/1.1" 200 256
+INFO 2026-08-10 04:51:18,546 basehttp 76163 6158086144 - Broken pipe from ('127.0.0.1', 62998)
+INFO 2026-08-10 04:51:18,546 basehttp 76163 6158086144 - Broken pipe from ('127.0.0.1', 62998)
+INFO 2026-08-10 04:51:18,777 basehttp 76163 6174912512 "GET /api/auth/me/ HTTP/1.1" 200 256
+INFO 2026-08-10 04:51:18,777 basehttp 76163 6174912512 "GET /api/auth/me/ HTTP/1.1" 200 256
+INFO 2026-08-10 04:51:18,777 basehttp 76163 6174912512 - Broken pipe from ('127.0.0.1', 63003)
+INFO 2026-08-10 04:51:18,777 basehttp 76163 6174912512 - Broken pipe from ('127.0.0.1', 63003)
+INFO 2026-08-10 04:51:18,941 basehttp 76163 6158086144 "GET /api/auth/me/ HTTP/1.1" 200 256
+INFO 2026-08-10 04:51:18,941 basehttp 76163 6158086144 "GET /api/auth/me/ HTTP/1.1" 200 256
+INFO 2026-08-10 04:51:18,941 basehttp 76163 6158086144 - Broken pipe from ('127.0.0.1', 63005)
+INFO 2026-08-10 04:51:18,941 basehttp 76163 6158086144 - Broken pipe from ('127.0.0.1', 63005)
+INFO 2026-08-10 04:51:18,967 basehttp 76163 6191738880 "GET /api/auth/me/ HTTP/1.1" 200 256
+INFO 2026-08-10 04:51:18,967 basehttp 76163 6191738880 "GET /api/auth/me/ HTTP/1.1" 200 256
+INFO 2026-08-10 04:51:19,130 basehttp 76163 6191738880 "GET /api/auth/me/ HTTP/1.1" 200 256
+INFO 2026-08-10 04:51:19,130 basehttp 76163 6191738880 "GET /api/auth/me/ HTTP/1.1" 200 256
+WARNING 2026-08-10 04:51:19,177 basehttp 76163 6191738880 "GET /api/companies/context/ HTTP/1.1" 404 16895
+WARNING 2026-08-10 04:51:19,177 basehttp 76163 6191738880 "GET /api/companies/context/ HTTP/1.1" 404 16895
+INFO 2026-08-10 04:51:19,485 basehttp 76163 6174912512 "GET /api/subscriptions/subscriptions/usage/ HTTP/1.1" 200 13
+INFO 2026-08-10 04:51:19,485 basehttp 76163 6158086144 "GET /api/subscriptions/subscriptions/features/ HTTP/1.1" 200 2
+INFO 2026-08-10 04:51:19,485 basehttp 76163 6158086144 "GET /api/subscriptions/subscriptions/features/ HTTP/1.1" 200 2
+INFO 2026-08-10 04:51:19,485 basehttp 76163 6208565248 "GET /api/subscriptions/subscriptions/quotas/ HTTP/1.1" 200 25
+INFO 2026-08-10 04:51:19,485 basehttp 76163 6174912512 "GET /api/subscriptions/subscriptions/usage/ HTTP/1.1" 200 13
+INFO 2026-08-10 04:51:19,485 basehttp 76163 6208565248 "GET /api/subscriptions/subscriptions/quotas/ HTTP/1.1" 200 25
+INFO 2026-08-10 04:51:23,478 basehttp 76163 6208565248 "GET /api/auth/me/ HTTP/1.1" 200 256
+INFO 2026-08-10 04:51:23,478 basehttp 76163 6208565248 "GET /api/auth/me/ HTTP/1.1" 200 256
+INFO 2026-08-10 04:51:23,638 basehttp 76163 6208565248 "GET /api/auth/me/ HTTP/1.1" 200 256
+INFO 2026-08-10 04:51:23,638 basehttp 76163 6208565248 "GET /api/auth/me/ HTTP/1.1" 200 256
+WARNING 2026-08-10 04:51:23,683 basehttp 76163 6208565248 "GET /api/companies/context/ HTTP/1.1" 404 16895
+WARNING 2026-08-10 04:51:23,683 basehttp 76163 6208565248 "GET /api/companies/context/ HTTP/1.1" 404 16895
+INFO 2026-08-10 04:51:23,805 basehttp 76163 6174912512 "GET /api/subscriptions/subscriptions/features/ HTTP/1.1" 200 2
+INFO 2026-08-10 04:51:23,805 basehttp 76163 6174912512 "GET /api/subscriptions/subscriptions/features/ HTTP/1.1" 200 2
+INFO 2026-08-10 04:51:23,808 basehttp 76163 6191738880 "GET /api/subscriptions/subscriptions/quotas/ HTTP/1.1" 200 25
+INFO 2026-08-10 04:51:23,808 basehttp 76163 6158086144 "GET /api/subscriptions/subscriptions/usage/ HTTP/1.1" 200 13
+INFO 2026-08-10 04:51:23,808 basehttp 76163 6191738880 "GET /api/subscriptions/subscriptions/quotas/ HTTP/1.1" 200 25
+INFO 2026-08-10 04:51:23,808 basehttp 76163 6158086144 "GET /api/subscriptions/subscriptions/usage/ HTTP/1.1" 200 13
+INFO 2026-08-10 05:00:20,172 basehttp 76163 6158086144 "GET /api/auth/me/ HTTP/1.1" 200 256
+INFO 2026-08-10 05:00:20,172 basehttp 76163 6158086144 "GET /api/auth/me/ HTTP/1.1" 200 256
+INFO 2026-08-10 05:00:20,341 basehttp 76163 6158086144 "GET /api/auth/me/ HTTP/1.1" 200 256
+INFO 2026-08-10 05:00:20,341 basehttp 76163 6158086144 "GET /api/auth/me/ HTTP/1.1" 200 256
+WARNING 2026-08-10 05:00:20,393 basehttp 76163 6158086144 "GET /api/companies/context/ HTTP/1.1" 404 16895
+WARNING 2026-08-10 05:00:20,393 basehttp 76163 6158086144 "GET /api/companies/context/ HTTP/1.1" 404 16895
+INFO 2026-08-10 05:00:20,723 basehttp 76163 6208565248 "GET /api/subscriptions/subscriptions/quotas/ HTTP/1.1" 200 25
+INFO 2026-08-10 05:00:20,723 basehttp 76163 6208565248 "GET /api/subscriptions/subscriptions/quotas/ HTTP/1.1" 200 25
+INFO 2026-08-10 05:00:20,724 basehttp 76163 6191738880 "GET /api/subscriptions/subscriptions/usage/ HTTP/1.1" 200 13
+INFO 2026-08-10 05:00:20,724 basehttp 76163 6191738880 "GET /api/subscriptions/subscriptions/usage/ HTTP/1.1" 200 13
+INFO 2026-08-10 05:00:20,724 basehttp 76163 6174912512 "GET /api/subscriptions/subscriptions/features/ HTTP/1.1" 200 2
+INFO 2026-08-10 05:00:20,724 basehttp 76163 6174912512 "GET /api/subscriptions/subscriptions/features/ HTTP/1.1" 200 2
+INFO 2026-08-10 05:00:21,818 basehttp 76163 6174912512 "GET /api/auth/me/ HTTP/1.1" 200 256
+INFO 2026-08-10 05:00:21,818 basehttp 76163 6174912512 "GET /api/auth/me/ HTTP/1.1" 200 256
+INFO 2026-08-10 05:00:21,988 basehttp 76163 6174912512 "GET /api/auth/me/ HTTP/1.1" 200 256
+INFO 2026-08-10 05:00:21,988 basehttp 76163 6174912512 "GET /api/auth/me/ HTTP/1.1" 200 256
+WARNING 2026-08-10 05:00:22,035 basehttp 76163 6174912512 "GET /api/companies/context/ HTTP/1.1" 404 16895
+WARNING 2026-08-10 05:00:22,035 basehttp 76163 6174912512 "GET /api/companies/context/ HTTP/1.1" 404 16895
+INFO 2026-08-10 05:00:22,159 basehttp 76163 6158086144 "GET /api/subscriptions/subscriptions/quotas/ HTTP/1.1" 200 25
+INFO 2026-08-10 05:00:22,159 basehttp 76163 6158086144 "GET /api/subscriptions/subscriptions/quotas/ HTTP/1.1" 200 25
+INFO 2026-08-10 05:00:22,159 basehttp 76163 6191738880 "GET /api/subscriptions/subscriptions/features/ HTTP/1.1" 200 2
+INFO 2026-08-10 05:00:22,159 basehttp 76163 6191738880 "GET /api/subscriptions/subscriptions/features/ HTTP/1.1" 200 2
+INFO 2026-08-10 05:00:22,162 basehttp 76163 6208565248 "GET /api/subscriptions/subscriptions/usage/ HTTP/1.1" 200 13
+INFO 2026-08-10 05:00:22,162 basehttp 76163 6208565248 "GET /api/subscriptions/subscriptions/usage/ HTTP/1.1" 200 13
+INFO 2026-08-10 05:00:55,821 basehttp 76163 6158086144 "OPTIONS /api/projects/ HTTP/1.1" 200 0
+INFO 2026-08-10 05:00:55,821 basehttp 76163 6158086144 "OPTIONS /api/projects/ HTTP/1.1" 200 0
+INFO 2026-08-10 05:00:55,821 basehttp 76163 6208565248 "OPTIONS /api/projects/ HTTP/1.1" 200 0
+INFO 2026-08-10 05:00:55,821 basehttp 76163 6208565248 "OPTIONS /api/projects/ HTTP/1.1" 200 0
+INFO 2026-08-10 05:00:56,163 basehttp 76163 6208565248 "GET /api/projects/ HTTP/1.1" 200 2263
+INFO 2026-08-10 05:00:56,163 basehttp 76163 6208565248 "GET /api/projects/ HTTP/1.1" 200 2263
+INFO 2026-08-10 05:00:56,397 basehttp 76163 6208565248 "GET /api/projects/ HTTP/1.1" 200 2263
+INFO 2026-08-10 05:00:56,397 basehttp 76163 6208565248 "GET /api/projects/ HTTP/1.1" 200 2263
+INFO 2026-08-10 05:01:23,268 basehttp 76163 6208565248 "OPTIONS /api/auth/login/ HTTP/1.1" 200 0
+INFO 2026-08-10 05:01:23,268 basehttp 76163 6208565248 "OPTIONS /api/auth/login/ HTTP/1.1" 200 0
+WARNING 2026-08-10 05:01:23,522 basehttp 76163 6208565248 "POST /api/auth/login/ HTTP/1.1" 401 137
+WARNING 2026-08-10 05:01:23,522 basehttp 76163 6208565248 "POST /api/auth/login/ HTTP/1.1" 401 137
