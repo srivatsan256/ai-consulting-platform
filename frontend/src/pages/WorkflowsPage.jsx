@@ -210,7 +210,10 @@ function WorkflowFormModal({ initial, onClose, onSaved }) {
       const payload = {
         name: form.name.trim(),
         description: form.description.trim(),
-        project: form.project || undefined,
+        project:
+          form.project !== "" && form.project != null
+            ? Number(form.project)
+            : null,
         trigger_event: form.trigger_event.trim(),
         status: form.status,
         steps: form.steps
@@ -286,6 +289,8 @@ function WorkflowFormModal({ initial, onClose, onSaved }) {
               <label className={labelCls}>Project ID</label>
               <input
                 className={inputCls}
+                type="number"
+                min="1"
                 value={form.project}
                 onChange={(e) => updateField("project", e.target.value)}
                 placeholder="Project primary key"
