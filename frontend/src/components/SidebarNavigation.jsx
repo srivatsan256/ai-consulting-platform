@@ -222,42 +222,8 @@ export default function SidebarNavigation({ activeView, setActiveView, role, use
         })}
       </nav>
 
-      {/* Access Checklist */}
-      {user?.access_checklist && user.access_checklist.length > 0 && (
-        <div className="mx-4 mb-4 p-3 rounded-lg bg-[#1e293b]/20 border border-[#1e293b]/40">
-          <p className="text-slate-500 font-label-md text-[10px] uppercase tracking-widest mb-2">
-            Your Access
-          </p>
-          <div className="space-y-1">
-            {user.access_checklist.slice(0, 4).map((item, i) => (
-              <div key={i} className="flex items-center gap-2">
-                <span className="material-symbols-outlined text-emerald-400 text-[12px]">check_circle</span>
-                <span className="text-slate-400 text-[10px]">{item}</span>
-              </div>
-            ))}
-            {user.access_checklist.length > 4 && (
-              <p className="text-indigo-400 text-[10px] pl-5">
-                +{user.access_checklist.length - 4} more
-              </p>
-            )}
-          </div>
-        </div>
-      )}
-
       {/* Footer */}
-      <div className="mt-auto p-4 space-y-2">
-        {user?.permissions?.upload && (
-          <button
-            onClick={() => {
-              if (onNavigate) onNavigate("upload");
-              else if (setActiveView) setActiveView("upload");
-            }}
-            className="w-full py-3 px-4 bg-indigo-600 text-white rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-indigo-500 transition-all shadow-lg shadow-indigo-600/20"
-          >
-            <span className="material-symbols-outlined text-[18px]">upload_file</span>
-            Upload Document
-          </button>
-        )}
+      <div className="mt-auto p-4">
         <div className="pt-3 border-t border-[#1e293b]/60">
           <button
             onClick={onLogout}
