@@ -224,7 +224,7 @@ function AppLayout({ children }) {
         onLogout={handleLogout}
         onNavigate={handleNavigate}
       />
-      <div className="flex-1 ml-[240px] p-8">{children}</div>
+      <div className="flex-1 p-8">{children}</div>
     </div>
   );
 }
