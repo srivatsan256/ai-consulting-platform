@@ -4,6 +4,7 @@
 import * as React from "react";
 import { motion, useScroll, useMotionValueEvent } from "framer-motion";
 import { Menu, Cpu } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
 
 const navItems = [
@@ -81,6 +82,7 @@ const ctaVariants = {
 export function AnimatedNavFramer() {
   const [isExpanded, setExpanded] = React.useState(true);
   const [scrolled, setScrolled] = React.useState(false);
+  const navigate = useNavigate();
 
   const { scrollY } = useScroll();
   const lastScrollY = React.useRef(0);
@@ -190,13 +192,12 @@ export function AnimatedNavFramer() {
           >
             Request Demo
           </motion.a>
-          <motion.a
-            href="#get-started"
-            onClick={(e) => e.stopPropagation()}
+          <button
+            onClick={(e) => { e.stopPropagation(); navigate("/login"); }}
             className="text-xs font-semibold px-3.5 py-1.5 rounded-full bg-gradient-to-r from-indigo-600 to-violet-600 text-white hover:from-indigo-500 hover:to-violet-500 transition-all whitespace-nowrap shadow-md shadow-indigo-900/40"
           >
             Get Started
-          </motion.a>
+          </button>
         </motion.div>
 
         {/* Collapsed Icon */}

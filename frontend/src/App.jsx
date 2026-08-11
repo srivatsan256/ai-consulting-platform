@@ -17,6 +17,7 @@ import ForgotPassword from "./pages/ForgotPassword";
 import VerifyOTP from "./pages/VerifyOTP";
 import ResetPassword from "./pages/ResetPassword";
 import ResetSuccess from "./pages/ResetSuccess";
+import LandingPage from "./pages/LandingPage";
 
 import DashboardPage from "./pages/DashboardPage";
 import ProjectsPage from "./pages/ProjectsPage";
@@ -351,6 +352,10 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
+        {/* ── Public / Landing ─────────────────────────────── */}
+        <Route path="/" element={user ? <RoleHome /> : <LandingPage />} />
+        <Route path="/home" element={<LandingPage />} />
+
         {/* ── Public / Auth ─────────────────────────────────── */}
         <Route
           path="/login"
@@ -360,7 +365,6 @@ export default function App() {
           path="/signup"
           element={user ? <RoleHome /> : <AuthScreens />}
         />
-        <Route path="/" element={user ? <RoleHome /> : <Navigate to="/login" replace />} />
 
         {/* ── Admin routes ──────────────────────────────────── */}
         <Route

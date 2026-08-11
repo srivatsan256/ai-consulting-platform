@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { motion, useInView } from "framer-motion";
 import {
   Brain,
@@ -69,6 +70,7 @@ function AnimatedSection({ children, className = "" }) {
 
 // ─── HERO ────────────────────────────────────────────────────────────────────
 function HeroSection() {
+  const navigate = useNavigate();
   return (
     <section
       id="home"
@@ -142,13 +144,13 @@ function HeroSection() {
           transition={{ duration: 0.6, delay: 0.5 }}
           className="flex flex-wrap items-center justify-center gap-4 mb-16"
         >
-          <a
+          <button
             id="get-started"
-            href="#platform"
+            onClick={() => navigate("/login")}
             className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white font-semibold text-base shadow-xl shadow-indigo-900/40 transition-all duration-200 hover:scale-105 hover:shadow-indigo-700/50"
           >
             Get Started <ArrowRight className="h-4 w-4" />
-          </a>
+          </button>
           <a
             id="demo"
             href="#how-it-works"
@@ -858,6 +860,7 @@ function FAQSection() {
 
 // ─── FINAL CTA ────────────────────────────────────────────────────────────────
 function FinalCTASection() {
+  const navigate = useNavigate();
   return (
     <section id="contact" className="py-24 bg-[#04060f] relative overflow-hidden">
       <div className="absolute inset-0 pointer-events-none">
@@ -890,12 +893,12 @@ function FinalCTASection() {
           </motion.p>
 
           <motion.div variants={fadeUp} className="flex flex-wrap items-center justify-center gap-4">
-            <a
-              href="#platform"
+            <button
+              onClick={() => navigate("/login")}
               className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white font-semibold text-base shadow-2xl shadow-indigo-900/50 transition-all duration-200 hover:scale-105"
             >
               Get Started <ArrowRight className="h-4 w-4" />
-            </a>
+            </button>
             <a
               href="#how-it-works"
               className="inline-flex items-center gap-2 px-8 py-4 rounded-full border border-slate-600 bg-white/5 hover:bg-white/10 text-slate-200 font-semibold text-base backdrop-blur-sm transition-all duration-200 hover:border-slate-400"
