@@ -52,6 +52,26 @@ class ProjectViewSetTests(APITestCase):
         project = Project.objects.get(project_name="AI Migration")
         self.assertEqual(project.company, self.company)
 
+    def test_create_project_with_lists(self):
+        """Verify that team_members and objectives can be sent as lists."""
+        authenticate(self.client, self.user)
+        payload = {
+            "project_name": "List Test Project",
+            "team_members": ["Alice", "Bob"],
+            "objectives": ["Goal 1", "Goal 2"],
+        }
+        response = self.client.post(self.list_url, payload, format="json")
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        # Check DB state
+        project = Project.objects.get(project_name="List Test Project")
+        self.assertEqual(project.team_members, "Alice, Bob")
+        self.assertEqual(project.objectives, "Goal 1; Goal 2")
+
+        # Check representation
+        self.assertEqual(response.data["team_members"], ["Alice", "Bob"])
+        self.assertEqual(response.data["objectives"], ["Goal 1", "Goal 2"])
+
     def test_update_project(self):
         project = create_project(self.company, name="Old")
         authenticate(self.client, self.user)

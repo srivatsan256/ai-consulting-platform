@@ -129,16 +129,45 @@ class ProjectSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         data = super().to_representation(instance)
+        # Handle status mapping
         status = data.get("status")
         data["status"] = FRONTEND_STATUS_MAP.get(status, status)
+
+        # Convert string fields back to lists for the frontend
+        for field in ["team_members", "objectives"]:
+            val = data.get(field)
+            if isinstance(val, str) and val:
+                # Split by comma or semicolon or newline
+                import re
+
+                data[field] = [
+                    x.strip() for x in re.split(r"[,\n;]", val) if x.strip()
+                ]
+            elif not val:
+                data[field] = []
+
         return data
 
     def to_internal_value(self, data):
-        if isinstance(data, dict) and data.get("status"):
-            data["status"] = BACKEND_STATUS_MAP.get(
-                str(data["status"]).upper(),
-                str(data["status"]),
-            )
+        # Create a mutable copy if it's a QueryDict or similar
+        if hasattr(data, "dict"):
+            data = data.dict()
+        else:
+            data = data.copy() if isinstance(data, dict) else data
+
+        if isinstance(data, dict):
+            # Handle status mapping
+            if data.get("status"):
+                data["status"] = BACKEND_STATUS_MAP.get(
+                    str(data["status"]).upper(),
+                    str(data["status"]),
+                )
+
+            # Convert list fields to strings for the model
+            for field, separator in [("team_members", ", "), ("objectives", "; ")]:
+                if field in data and isinstance(data[field], list):
+                    data[field] = separator.join(str(x) for x in data[field])
+
         return super().to_internal_value(data)
 
     def create(self, validated_data):

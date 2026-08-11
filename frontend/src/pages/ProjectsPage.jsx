@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { projectService, getApiError } from "../services/api";
+import React, { useState, useEffect, useRef } from "react";
+import { projectService, userService, getApiError } from "../services/api";
 import TopHeader from "../components/TopHeader";
 
 const STATUS_COLORS = {
@@ -21,15 +21,36 @@ export default function ProjectsPage({ onSelectProject }) {
   const [showCreate, setShowCreate] = useState(false);
   const [editingProject, setEditingProject] = useState(null);
   const [form, setForm] = useState({
-    company_name: "", industry: "", project_name: "", objectives: "",
-    team_members: "", expected_timeline: "",
+    company_name: "",
+    industry: "",
+    project_name: "",
+    objectives: [],       // array of strings
+    team_members: [],     // array of user objects
+    expected_timeline: "",
   });
   const [submitting, setSubmitting] = useState(false);
   const [formError, setFormError] = useState(null);
   const [search, setSearch] = useState("");
   const [filterStatus, setFilterStatus] = useState("ALL");
 
-  useEffect(() => { fetchProjects(); }, []);
+  // ===== Team Members (from DB) =====
+  const [allUsers, setAllUsers] = useState([]);
+  const [memberSearch, setMemberSearch] = useState("");
+  const [showMemberDropdown, setShowMemberDropdown] = useState(false);
+  const memberInputRef = useRef(null);
+
+  // ===== Objectives (from Internet) =====
+  const [objectiveSearch, setObjectiveSearch] = useState("");
+  const [objectiveSuggestions, setObjectiveSuggestions] = useState([]);
+  const [loadingObjectives, setLoadingObjectives] = useState(false);
+  const [showObjectiveDropdown, setShowObjectiveDropdown] = useState(false);
+  const objectiveInputRef = useRef(null);
+  const objectiveDebounceRef = useRef(null);
+
+  useEffect(() => {
+    fetchProjects();
+    fetchUsers();
+  }, []);
 
   const fetchProjects = async () => {
     try {
@@ -42,15 +63,112 @@ export default function ProjectsPage({ onSelectProject }) {
     }
   };
 
+  // Load team members from DB
+  const fetchUsers = async () => {
+    try {
+      const res = await userService.list(); // adjust to your actual endpoint
+      setAllUsers(res.data.results || res.data || []);
+    } catch (err) {
+      console.error("Failed to fetch users:", err);
+      setAllUsers([]);
+    }
+  };
+
+  // Load objective suggestions from Internet (backend uses web search / LLM)
+  const fetchObjectiveSuggestions = async (query) => {
+    if (!query || query.trim().length < 2) {
+      setObjectiveSuggestions([]);
+      return;
+    }
+    setLoadingObjectives(true);
+    try {
+      const params = new URLSearchParams({
+        q: query.trim(),
+        industry: form.industry || "",
+        project: form.project_name || "",
+        company: form.company_name || "",
+      });
+      // Backend endpoint that searches the internet / uses public data
+      const res = await fetch(`/api/suggest-objectives?${params}`);
+      const data = await res.json();
+      setObjectiveSuggestions(data.suggestions || data.results || []);
+    } catch (err) {
+      console.error("Failed to fetch objective suggestions from internet:", err);
+      setObjectiveSuggestions([]);
+    } finally {
+      setLoadingObjectives(false);
+    }
+  };
+
+  const handleObjectiveSearchChange = (value) => {
+    setObjectiveSearch(value);
+    setShowObjectiveDropdown(true);
+    if (objectiveDebounceRef.current) clearTimeout(objectiveDebounceRef.current);
+    objectiveDebounceRef.current = setTimeout(() => {
+      fetchObjectiveSuggestions(value);
+    }, 350);
+  };
+
+  const addObjective = (text) => {
+    const clean = (typeof text === "string" ? text : "").trim();
+    if (!clean || form.objectives.includes(clean)) return;
+    setForm((prev) => ({ ...prev, objectives: [...prev.objectives, clean] }));
+    setObjectiveSearch("");
+    setObjectiveSuggestions([]);
+    setShowObjectiveDropdown(false);
+    objectiveInputRef.current?.focus();
+  };
+
+  const removeObjective = (obj) => {
+    setForm((prev) => ({
+      ...prev,
+      objectives: prev.objectives.filter((o) => o !== obj),
+    }));
+  };
+
+  const handleObjectiveKeyDown = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      if (objectiveSearch.trim()) addObjective(objectiveSearch);
+    }
+  };
+
+  // Team member helpers
+  const filteredUsers = allUsers.filter((u) => {
+    const name = (u.name || u.full_name || u.email || "").toLowerCase();
+    const matches = !memberSearch || name.includes(memberSearch.toLowerCase());
+    const already = form.team_members.some((m) => m.id === u.id);
+    return matches && !already;
+  });
+
+  const addTeamMember = (user) => {
+    setForm((prev) => ({ ...prev, team_members: [...prev.team_members, user] }));
+    setMemberSearch("");
+    setShowMemberDropdown(false);
+    memberInputRef.current?.focus();
+  };
+
+  const removeTeamMember = (userId) => {
+    setForm((prev) => ({
+      ...prev,
+      team_members: prev.team_members.filter((m) => m.id !== userId),
+    }));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmitting(true);
     setFormError(null);
     try {
+      const payload = {
+        ...form,
+        team_members: form.team_members.map((u) => u.id), // send IDs
+        objectives: form.objectives,                     // array of strings
+      };
       if (editingProject) {
-        await projectService.update(editingProject.id, form);
+        await projectService.update(editingProject.id, payload);
       } else {
-        await projectService.create(form);
+        await projectService.create(payload);
       }
       setShowCreate(false);
       setEditingProject(null);
@@ -74,25 +192,67 @@ export default function ProjectsPage({ onSelectProject }) {
   };
 
   const handleEdit = (project) => {
+    // Team members from DB shape
+    let members = [];
+    if (Array.isArray(project.team_members)) {
+      members = project.team_members.map((m) =>
+        typeof m === "object"
+          ? m
+          : allUsers.find((u) => u.id === m) || { id: m, name: String(m) }
+      );
+    } else if (typeof project.team_members === "string" && project.team_members) {
+      members = project.team_members.split(",").map((n) => ({
+        id: n.trim(),
+        name: n.trim(),
+      }));
+    }
+
+    // Objectives (array or legacy string)
+    let objectives = [];
+    if (Array.isArray(project.objectives)) {
+      objectives = project.objectives;
+    } else if (typeof project.objectives === "string" && project.objectives) {
+      objectives = project.objectives
+        .split(/[;\n,]/)
+        .map((s) => s.trim())
+        .filter(Boolean);
+    }
+
     setForm({
       company_name: project.company_name || "",
       industry: project.industry || "",
       project_name: project.project_name || "",
-      objectives: project.objectives || "",
-      team_members: project.team_members || "",
+      objectives,
+      team_members: members,
       expected_timeline: project.expected_timeline || "",
     });
     setEditingProject(project);
     setShowCreate(true);
     setFormError(null);
+    setMemberSearch("");
+    setObjectiveSearch("");
+    setObjectiveSuggestions([]);
   };
 
   const resetForm = () => {
-    setForm({ company_name: "", industry: "", project_name: "", objectives: "", team_members: "", expected_timeline: "" });
+    setForm({
+      company_name: "",
+      industry: "",
+      project_name: "",
+      objectives: [],
+      team_members: [],
+      expected_timeline: "",
+    });
+    setMemberSearch("");
+    setObjectiveSearch("");
+    setObjectiveSuggestions([]);
   };
 
   const filtered = projects.filter((p) => {
-    const matchesSearch = !search || p.project_name?.toLowerCase().includes(search.toLowerCase()) || p.company_name?.toLowerCase().includes(search.toLowerCase());
+    const matchesSearch =
+      !search ||
+      p.project_name?.toLowerCase().includes(search.toLowerCase()) ||
+      p.company_name?.toLowerCase().includes(search.toLowerCase());
     const matchesStatus = filterStatus === "ALL" || p.status === filterStatus;
     return matchesSearch && matchesStatus;
   });
@@ -104,7 +264,11 @@ export default function ProjectsPage({ onSelectProject }) {
         subtitle="Manage consulting engagements"
         actions={
           <button
-            onClick={() => { resetForm(); setEditingProject(null); setShowCreate(true); }}
+            onClick={() => {
+              resetForm();
+              setEditingProject(null);
+              setShowCreate(true);
+            }}
             className="px-5 py-2.5 bg-primary text-on-primary rounded-xl font-bold text-sm hover:opacity-90 transition-all flex items-center gap-2 shadow-lg shadow-primary/20"
           >
             <span className="material-symbols-outlined text-[18px]">add</span>
@@ -116,7 +280,9 @@ export default function ProjectsPage({ onSelectProject }) {
       {/* Filters */}
       <div className="flex flex-col sm:flex-row gap-3">
         <div className="relative flex-1">
-          <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[20px]">search</span>
+          <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[20px]">
+            search
+          </span>
           <input
             type="text"
             placeholder="Search projects..."
@@ -149,7 +315,11 @@ export default function ProjectsPage({ onSelectProject }) {
           <span className="material-symbols-outlined text-[48px] text-outline-variant">folder_open</span>
           <p className="text-on-surface-variant mt-3 text-sm">No projects found</p>
           <button
-            onClick={() => { resetForm(); setEditingProject(null); setShowCreate(true); }}
+            onClick={() => {
+              resetForm();
+              setEditingProject(null);
+              setShowCreate(true);
+            }}
             className="mt-4 px-4 py-2 bg-primary text-on-primary rounded-lg text-sm font-medium hover:opacity-90"
           >
             Create your first project
@@ -169,13 +339,19 @@ export default function ProjectsPage({ onSelectProject }) {
                 </div>
                 <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                   <button
-                    onClick={(e) => { e.stopPropagation(); handleEdit(project); }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleEdit(project);
+                    }}
                     className="p-1.5 rounded-lg hover:bg-surface-container transition-colors"
                   >
                     <span className="material-symbols-outlined text-[18px] text-outline-variant">edit</span>
                   </button>
                   <button
-                    onClick={(e) => { e.stopPropagation(); handleDelete(project.id); }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleDelete(project.id);
+                    }}
                     className="p-1.5 rounded-lg hover:bg-red-50 transition-colors"
                   >
                     <span className="material-symbols-outlined text-[18px] text-red-500">delete</span>
@@ -190,7 +366,10 @@ export default function ProjectsPage({ onSelectProject }) {
                 </span>
               )}
               <div className="mt-4 flex items-center justify-between">
-                <span className={`px-2 py-1 rounded text-[10px] font-bold ${STATUS_COLORS[project.status] || "bg-gray-100 text-gray-600"}`}>
+                <span
+                  className={`px-2 py-1 rounded text-[10px] font-bold ${STATUS_COLORS[project.status] || "bg-gray-100 text-gray-600"
+                    }`}
+                >
                   {project.status}
                 </span>
                 {project.readiness_score != null && (
@@ -212,7 +391,7 @@ export default function ProjectsPage({ onSelectProject }) {
         </div>
       )}
 
-      {/* Create/Edit Modal */}
+      {/* Create / Edit Modal */}
       {showCreate && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[100] p-4">
           <div className="bg-white rounded-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto soft-shadow">
@@ -221,12 +400,17 @@ export default function ProjectsPage({ onSelectProject }) {
                 {editingProject ? "Edit Project" : "New Project"}
               </h3>
               <button
-                onClick={() => { setShowCreate(false); setEditingProject(null); setFormError(null); }}
+                onClick={() => {
+                  setShowCreate(false);
+                  setEditingProject(null);
+                  setFormError(null);
+                }}
                 className="p-2 rounded-lg hover:bg-surface-container transition-colors"
               >
                 <span className="material-symbols-outlined text-[20px]">close</span>
               </button>
             </div>
+
             <form onSubmit={handleSubmit} className="p-6 space-y-4">
               {formError && (
                 <div className="flex items-start gap-2 px-4 py-3 rounded-xl bg-error/10 border border-error/30 text-on-surface text-sm">
@@ -234,6 +418,8 @@ export default function ProjectsPage({ onSelectProject }) {
                   <span>{formError}</span>
                 </div>
               )}
+
+              {/* Company Name */}
               <div>
                 <label className="block font-label-md text-[11px] uppercase tracking-wider text-on-surface-variant mb-1.5">
                   Company Name *
@@ -247,6 +433,8 @@ export default function ProjectsPage({ onSelectProject }) {
                   className="w-full px-4 py-2.5 rounded-xl border border-outline-variant/40 bg-surface-container-low text-on-surface text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
                 />
               </div>
+
+              {/* Project Name */}
               <div>
                 <label className="block font-label-md text-[11px] uppercase tracking-wider text-on-surface-variant mb-1.5">
                   Project Name *
@@ -260,6 +448,8 @@ export default function ProjectsPage({ onSelectProject }) {
                   className="w-full px-4 py-2.5 rounded-xl border border-outline-variant/40 bg-surface-container-low text-on-surface text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
                 />
               </div>
+
+              {/* Industry */}
               <div>
                 <label className="block font-label-md text-[11px] uppercase tracking-wider text-on-surface-variant mb-1.5">
                   Industry
@@ -275,30 +465,157 @@ export default function ProjectsPage({ onSelectProject }) {
                   ))}
                 </select>
               </div>
+
+              {/* ========== OBJECTIVES (from Internet) ========== */}
               <div>
                 <label className="block font-label-md text-[11px] uppercase tracking-wider text-on-surface-variant mb-1.5">
                   Objectives
                 </label>
-                <textarea
-                  value={form.objectives}
-                  onChange={(e) => setForm({ ...form, objectives: e.target.value })}
-                  placeholder="Describe the project objectives..."
-                  rows={3}
-                  className="w-full px-4 py-2.5 rounded-xl border border-outline-variant/40 bg-surface-container-low text-on-surface text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 resize-none"
-                />
+
+                {/* Selected chips */}
+                {form.objectives.length > 0 && (
+                  <div className="flex flex-wrap gap-2 mb-2">
+                    {form.objectives.map((obj) => (
+                      <span
+                        key={obj}
+                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-primary/10 text-primary text-xs font-medium"
+                      >
+                        {obj}
+                        <button
+                          type="button"
+                          onClick={() => removeObjective(obj)}
+                          className="ml-0.5 hover:bg-primary/20 rounded-full p-0.5 transition-colors"
+                        >
+                          <span className="material-symbols-outlined text-[14px]">close</span>
+                        </button>
+                      </span>
+                    ))}
+                  </div>
+                )}
+
+                {/* Search input – same style as Skill Set */}
+                <div className="relative">
+                  <input
+                    ref={objectiveInputRef}
+                    type="text"
+                    value={objectiveSearch}
+                    onChange={(e) => handleObjectiveSearchChange(e.target.value)}
+                    onFocus={() => setShowObjectiveDropdown(true)}
+                    onBlur={() => setTimeout(() => setShowObjectiveDropdown(false), 150)}
+                    onKeyDown={handleObjectiveKeyDown}
+                    placeholder="Search and add objectives"
+                    className="w-full px-4 py-2.5 rounded-xl border border-outline-variant/40 bg-surface-container-low text-on-surface text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
+                  />
+
+                  {showObjectiveDropdown && (objectiveSearch || loadingObjectives) && (
+                    <div className="absolute z-20 mt-1 w-full max-h-48 overflow-y-auto bg-white border border-outline-variant/40 rounded-xl shadow-lg">
+                      {loadingObjectives ? (
+                        <div className="px-4 py-3 text-sm text-on-surface-variant flex items-center gap-2">
+                          <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+                          Searching internet...
+                        </div>
+                      ) : objectiveSuggestions.length === 0 ? (
+                        <div className="px-4 py-3 text-sm text-on-surface-variant">
+                          {objectiveSearch.length >= 2
+                            ? "No suggestions found. Press Enter to add custom."
+                            : "Type at least 2 characters"}
+                        </div>
+                      ) : (
+                        objectiveSuggestions.map((sug) => (
+                          <button
+                            key={sug}
+                            type="button"
+                            onMouseDown={(e) => e.preventDefault()}
+                            onClick={() => addObjective(sug)}
+                            className="w-full text-left px-4 py-2.5 text-sm text-on-surface hover:bg-surface-container transition-colors"
+                          >
+                            {sug}
+                          </button>
+                        ))
+                      )}
+                    </div>
+                  )}
+                </div>
               </div>
+
+              {/* ========== TEAM MEMBERS (from DB) ========== */}
               <div>
                 <label className="block font-label-md text-[11px] uppercase tracking-wider text-on-surface-variant mb-1.5">
                   Team Members
                 </label>
-                <input
-                  type="text"
-                  value={form.team_members}
-                  onChange={(e) => setForm({ ...form, team_members: e.target.value })}
-                  placeholder="Comma-separated names"
-                  className="w-full px-4 py-2.5 rounded-xl border border-outline-variant/40 bg-surface-container-low text-on-surface text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
-                />
+
+                {/* Selected chips */}
+                {form.team_members.length > 0 && (
+                  <div className="flex flex-wrap gap-2 mb-2">
+                    {form.team_members.map((member) => (
+                      <span
+                        key={member.id}
+                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-primary/10 text-primary text-xs font-medium"
+                      >
+                        {member.name || member.full_name || member.email}
+                        <button
+                          type="button"
+                          onClick={() => removeTeamMember(member.id)}
+                          className="ml-0.5 hover:bg-primary/20 rounded-full p-0.5 transition-colors"
+                        >
+                          <span className="material-symbols-outlined text-[14px]">close</span>
+                        </button>
+                      </span>
+                    ))}
+                  </div>
+                )}
+
+                {/* Search input – same style as Skill Set */}
+                <div className="relative">
+                  <input
+                    ref={memberInputRef}
+                    type="text"
+                    value={memberSearch}
+                    onChange={(e) => {
+                      setMemberSearch(e.target.value);
+                      setShowMemberDropdown(true);
+                    }}
+                    onFocus={() => setShowMemberDropdown(true)}
+                    onBlur={() => setTimeout(() => setShowMemberDropdown(false), 150)}
+                    placeholder="Search and add team members"
+                    className="w-full px-4 py-2.5 rounded-xl border border-outline-variant/40 bg-surface-container-low text-on-surface text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
+                  />
+
+                  {showMemberDropdown && (
+                    <div className="absolute z-20 mt-1 w-full max-h-48 overflow-y-auto bg-white border border-outline-variant/40 rounded-xl shadow-lg">
+                      {filteredUsers.length === 0 ? (
+                        <div className="px-4 py-3 text-sm text-on-surface-variant">
+                          {memberSearch ? "No matching members found" : "No users available"}
+                        </div>
+                      ) : (
+                        filteredUsers.slice(0, 8).map((user) => (
+                          <button
+                            key={user.id}
+                            type="button"
+                            onMouseDown={(e) => e.preventDefault()}
+                            onClick={() => addTeamMember(user)}
+                            className="w-full text-left px-4 py-2.5 text-sm text-on-surface hover:bg-surface-container transition-colors flex items-center gap-2"
+                          >
+                            <span className="material-symbols-outlined text-[18px] text-outline-variant">
+                              person
+                            </span>
+                            <span>
+                              {user.name || user.full_name || user.email}
+                              {user.email && (user.name || user.full_name) && (
+                                <span className="text-on-surface-variant text-xs ml-1">
+                                  ({user.email})
+                                </span>
+                              )}
+                            </span>
+                          </button>
+                        ))
+                      )}
+                    </div>
+                  )}
+                </div>
               </div>
+
+              {/* Expected Timeline */}
               <div>
                 <label className="block font-label-md text-[11px] uppercase tracking-wider text-on-surface-variant mb-1.5">
                   Expected Timeline
@@ -311,10 +628,15 @@ export default function ProjectsPage({ onSelectProject }) {
                   className="w-full px-4 py-2.5 rounded-xl border border-outline-variant/40 bg-surface-container-low text-on-surface text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
                 />
               </div>
+
               <div className="flex gap-3 pt-2">
                 <button
                   type="button"
-                  onClick={() => { setShowCreate(false); setEditingProject(null); setFormError(null); }}
+                  onClick={() => {
+                    setShowCreate(false);
+                    setEditingProject(null);
+                    setFormError(null);
+                  }}
                   className="flex-1 py-2.5 rounded-xl border border-outline-variant/40 text-on-surface-variant text-sm font-medium hover:bg-surface-container transition-colors"
                 >
                   Cancel
