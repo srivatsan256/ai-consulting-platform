@@ -70,7 +70,7 @@ export default function ClientDownloads({ projectId }) {
       <TopHeader title="Downloads" subtitle="Documents and deliverables" />
 
       {/* Project Selector */}
-      <div className="clientdl-card">
+      <div className="clientdl-card soft-shadow">
         <label className="clientdl-label">
           Select Project
         </label>
@@ -98,7 +98,7 @@ export default function ClientDownloads({ projectId }) {
       {selectedId && project && (
         <div className="space-y-6">
           {/* Documents */}
-          <div className="clientdl-card">
+          <div className="clientdl-card soft-shadow">
             <div className="clientdl-section-head">
               <h3 className="clientdl-section-title">Project Documents</h3>
               <span className="clientdl-section-meta">{project.documents?.length || 0} uploaded</span>
@@ -132,7 +132,7 @@ export default function ClientDownloads({ projectId }) {
           </div>
 
           {/* Deliverables */}
-          <div className="clientdl-deliverables-card">
+          <div className="clientdl-deliverables-card soft-shadow">
             <span className="material-symbols-outlined clientdl-deliverables-icon">assignment_turned_in</span>
             <h4 className="clientdl-deliverables-title">Project Deliverables</h4>
             <p className="clientdl-deliverables-desc">
@@ -173,7 +173,7 @@ export default function ClientDownloads({ projectId }) {
 
           {/* Verification Summary */}
           {project.verification_report && (
-            <div className="clientdl-card">
+            <div className="clientdl-card soft-shadow">
               <h3 className="clientdl-summary-title">Verification Summary</h3>
               <div className="clientdl-summary-grid">
                 <div className="clientdl-summary-item">

@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useCallback, useEffect } from "react";
 import { ROLES_DATA } from "../constants/roles";
 import { authService, TOKEN_KEY, companyService, subscriptionService } from "../services/api";
+import "./AuthContext.css";
 
 const AuthContext = createContext(null);
 

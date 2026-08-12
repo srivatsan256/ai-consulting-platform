@@ -43,7 +43,7 @@ export default function ClientDashboard({ user, onSelectProject }) {
 
       {/* Stats */}
       <div className="clientdash-stats-grid">
-        <div className="clientdash-stat-card">
+        <div className="clientdash-stat-card soft-shadow">
           <div className="clientdash-stat-row">
             <div className="clientdash-stat-icon-box">
               <span className="material-symbols-outlined clientdash-stat-icon">folder_open</span>
@@ -54,7 +54,7 @@ export default function ClientDashboard({ user, onSelectProject }) {
             </div>
           </div>
         </div>
-        <div className="clientdash-stat-card">
+        <div className="clientdash-stat-card soft-shadow">
           <div className="clientdash-stat-row">
             <div className="w-10 h-10 rounded-lg bg-emerald-50 flex items-center justify-center">
               <span className="material-symbols-outlined text-emerald-600 text-[22px]">check_circle</span>
@@ -65,7 +65,7 @@ export default function ClientDashboard({ user, onSelectProject }) {
             </div>
           </div>
         </div>
-        <div className="clientdash-stat-card">
+        <div className="clientdash-stat-card soft-shadow">
           <div className="clientdash-stat-row">
             <div className="w-10 h-10 rounded-lg bg-amber-50 flex items-center justify-center">
               <span className="material-symbols-outlined text-amber-600 text-[22px]">trending_up</span>
@@ -76,7 +76,7 @@ export default function ClientDashboard({ user, onSelectProject }) {
             </div>
           </div>
         </div>
-        <div className="clientdash-stat-card">
+        <div className="clientdash-stat-card soft-shadow">
           <div className="clientdash-stat-row">
             <div className="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center">
               <span className="material-symbols-outlined text-blue-600 text-[22px]">description</span>
@@ -90,7 +90,7 @@ export default function ClientDashboard({ user, onSelectProject }) {
       </div>
 
       {/* Projects List */}
-      <div className="clientdash-list-card">
+      <div className="clientdash-list-card soft-shadow">
         <div className="clientdash-list-head">
           <h3 className="clientdash-list-title">Your Projects</h3>
         </div>

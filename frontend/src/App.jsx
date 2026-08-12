@@ -9,6 +9,7 @@ import {
   useParams,
 } from "react-router-dom";
 import { useAuth } from "./context/AuthContext.jsx";
+import "./App.css";
 
 import SidebarNavigation from "./components/SidebarNavigation";
 import LoginPage from "./pages/LoginPage";
@@ -223,7 +224,7 @@ function AppLayout({ children }) {
   }, [location.pathname]);
 
   return (
-    <div className="min-h-screen bg-background flex">
+    <div className="app-shell">
       <SidebarNavigation
         user={user}
         role={user?.role}
@@ -231,7 +232,7 @@ function AppLayout({ children }) {
         onLogout={handleLogout}
         onNavigate={handleNavigate}
       />
-      <div className="flex-1 p-8">{children}</div>
+      <div className="app-content">{children}</div>
     </div>
   );
 }

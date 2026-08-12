@@ -1,5 +1,5 @@
 .aichat-locked-card {
-  @apply bg-white rounded-xl soft-shadow border border-outline-variant/20 p-8 text-center;
+  @apply bg-white rounded-xl border border-outline-variant/20 p-8 text-center;
 }
 
 .aichat-locked-icon {
@@ -15,7 +15,7 @@
 }
 
 .aichat-selector-card {
-  @apply bg-white rounded-xl soft-shadow border border-outline-variant/20 p-4;
+  @apply bg-white rounded-xl border border-outline-variant/20 p-4;
 }
 
 .aichat-select {
@@ -23,7 +23,7 @@
 }
 
 .aichat-card {
-  @apply bg-white rounded-xl soft-shadow border border-outline-variant/20 overflow-hidden;
+  @apply bg-white rounded-xl border border-outline-variant/20 overflow-hidden;
 }
 
 .aichat-messages {

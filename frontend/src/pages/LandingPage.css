@@ -171,7 +171,7 @@
 }
 
 .landing-logo-card {
-  @apply flex flex-col items-center gap-3 p-5 rounded-xl border border-slate-800 bg-slate-900/50 hover:border-indigo-500/40 hover:bg-slate-900 transition-all duration-200 group;
+  @apply flex flex-col items-center gap-3 p-5 rounded-xl border border-slate-800 bg-slate-900/50 hover:border-indigo-500/40 hover:bg-slate-900 transition-all duration-200;
 }
 
 .landing-logo-icon-box {
@@ -259,7 +259,7 @@
 }
 
 .landing-card {
-  @apply group relative p-6 rounded-2xl border border-slate-800 bg-slate-900/60 hover:border-slate-600 transition-all duration-300 hover:-translate-y-1;
+  @apply relative p-6 rounded-2xl border border-slate-800 bg-slate-900/60 hover:border-slate-600 transition-all duration-300 hover:-translate-y-1;
 }
 
 .landing-card-icon {
@@ -307,7 +307,7 @@
 }
 
 .landing-step {
-  @apply flex gap-6 items-start group;
+  @apply flex gap-6 items-start;
 }
 
 .landing-step-indicator-wrap {
@@ -335,7 +335,7 @@
 }
 
 .landing-benefit-card {
-  @apply relative p-6 rounded-2xl border border-slate-800 bg-slate-900/50 hover:border-indigo-500/40 transition-all duration-300 group overflow-hidden;
+  @apply relative p-6 rounded-2xl border border-slate-800 bg-slate-900/50 hover:border-indigo-500/40 transition-all duration-300 overflow-hidden;
 }
 
 .landing-benefit-stat {

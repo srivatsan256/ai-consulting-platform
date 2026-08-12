@@ -1,0 +1,111 @@
+  .teams-input {
+    @apply w-full px-4 py-2.5 rounded-xl border border-outline-variant/40 bg-surface-container-low text-on-surface text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20;
+  }
+
+  .teams-label {
+    @apply block font-label-md text-[11px] uppercase tracking-wider text-on-surface-variant mb-1.5;
+  }
+
+  .teams-overlay {
+    @apply fixed inset-0 bg-black/50 flex items-center justify-center z-[100] p-4;
+  }
+
+  .teams-overlay-xl {
+    @apply fixed inset-0 bg-black/50 flex items-center justify-center z-[110] p-4;
+  }
+
+  .teams-modal-panel {
+    @apply bg-white rounded-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto;
+  }
+
+  .teams-modal-header {
+    @apply p-6 border-b border-outline-variant/20 flex items-center justify-between;
+  }
+
+  .teams-modal-title {
+    @apply font-headline-lg text-lg font-bold text-on-surface;
+  }
+
+  .teams-close-btn {
+    @apply p-2 rounded-lg hover:bg-surface-container transition-colors;
+  }
+
+  .teams-modal-body {
+    @apply p-6 space-y-4;
+  }
+
+  .teams-error {
+    @apply flex items-start gap-2 px-4 py-3 rounded-xl bg-error/10 border border-error/30 text-on-surface text-sm;
+  }
+
+  .teams-cancel-btn {
+    @apply flex-1 py-2.5 rounded-xl border border-outline-variant/40 text-on-surface-variant text-sm font-medium hover:bg-surface-container transition-colors;
+  }
+
+  .teams-submit-btn {
+    @apply flex-1 py-2.5 rounded-xl bg-primary text-on-primary text-sm font-bold hover:opacity-90 transition-all disabled:opacity-50;
+  }
+
+  .teams-add-btn {
+    @apply px-4 py-2.5 rounded-xl bg-primary text-on-primary text-sm font-bold hover:opacity-90 disabled:opacity-50 whitespace-nowrap;
+  }
+
+  .teams-member-row {
+    @apply flex items-center gap-3 py-3;
+  }
+
+  .teams-avatar {
+    @apply w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center shrink-0;
+  }
+
+  .teams-icon-btn-red {
+    @apply p-1.5 rounded-lg hover:bg-red-50 transition-colors;
+  }
+
+  .teams-primary-btn {
+    @apply px-5 py-2.5 bg-primary text-on-primary rounded-xl font-bold text-sm hover:opacity-90 transition-all flex items-center gap-2 shadow-lg shadow-primary/20;
+  }
+
+  .teams-tab {
+    @apply px-4 py-2.5 text-sm font-semibold border-b-2 transition-colors;
+  }
+
+  .teams-tab-active {
+    @apply border-primary text-primary;
+  }
+
+  .teams-tab-idle {
+    @apply border-transparent text-on-surface-variant hover:text-on-surface;
+  }
+
+  .teams-empty-card {
+    @apply col-span-full bg-white rounded-xl border border-outline-variant/20 p-16 text-center;
+  }
+
+  .teams-card {
+    @apply bg-white rounded-xl border border-outline-variant/20 p-5;
+  }
+
+  .teams-card-icon {
+    @apply w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center;
+  }
+
+  .teams-h3 {
+    @apply font-semibold text-on-surface text-sm;
+  }
+
+  .teams-icon-btn {
+    @apply p-1.5 rounded-lg hover:bg-surface-container transition-colors;
+  }
+
+  .teams-card-footer {
+    @apply mt-3 pt-3 border-t border-outline-variant/20 flex items-center justify-between text-xs text-on-surface-variant;
+  }
+
+  .teams-mini-badge {
+    @apply px-2 py-0.5 rounded text-[10px] font-bold;
+  }
+
+  .teams-manage-btn {
+    @apply text-primary text-xs font-semibold hover:underline;
+  }

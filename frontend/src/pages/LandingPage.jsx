@@ -259,7 +259,7 @@ function TrustedBySection() {
               <motion.div
                 key={name}
                 variants={fadeUp}
-                className="landing-logo-card"
+                className="landing-logo-card group"
               >
                 <div className="landing-logo-icon-box">
                   <Icon className="h-5 w-5 text-indigo-400" />
@@ -485,7 +485,7 @@ function WhyChooseSection() {
               <motion.div
                 key={title}
                 variants={fadeUp}
-                className="landing-card"
+                className="landing-card group"
               >
                 <div
                   className={`landing-card-icon bg-gradient-to-br ${color}`}
@@ -686,7 +686,7 @@ function HowItWorksSection() {
                 <motion.div
                   key={num}
                   variants={fadeUp}
-                  className="landing-step"
+                  className="landing-step group"
                 >
                   {/* Step indicator */}
                   <div className="landing-step-indicator-wrap">
@@ -781,7 +781,7 @@ function BenefitsSection() {
               <motion.div
                 key={title}
                 variants={fadeUp}
-                className="landing-benefit-card"
+                className="landing-benefit-card group"
               >
                 <div className="landing-benefit-stat">
                   <span className="landing-benefit-stat-value">

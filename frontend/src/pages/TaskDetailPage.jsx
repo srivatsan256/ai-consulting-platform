@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { taskService, projectService, userService, getApiError } from "../services/api";
 import TopHeader from "../components/TopHeader";
 import TaskFormModal from "../components/TaskFormModal";
+import "./TaskDetailPage.css";
 
 const STATUS_STYLES = {
   todo: "bg-gray-100 text-gray-700",
@@ -193,7 +194,7 @@ export default function TaskDetailPage() {
     <div className="space-y-6">
       <button
         onClick={() => navigate("/tasks")}
-        className="flex items-center gap-1 text-sm text-on-surface-variant hover:text-primary transition-colors"
+        className="taskdetail-back-btn"
       >
         <span className="material-symbols-outlined text-[18px]">arrow_back</span>
         Back to tasks
@@ -207,7 +208,7 @@ export default function TaskDetailPage() {
             {task.status !== "done" && (
               <button
                 onClick={handleComplete}
-                className="px-4 py-2.5 bg-emerald-600 text-white rounded-xl font-bold text-sm hover:opacity-90 transition-all flex items-center gap-2"
+                className="taskdetail-btn-complete"
               >
                 <span className="material-symbols-outlined text-[18px]">check_circle</span>
                 Complete
@@ -215,7 +216,7 @@ export default function TaskDetailPage() {
             )}
             <button
               onClick={() => setShowEdit(true)}
-              className="px-4 py-2.5 bg-primary text-on-primary rounded-xl font-bold text-sm hover:opacity-90 transition-all flex items-center gap-2"
+              className="taskdetail-btn-primary"
             >
               <span className="material-symbols-outlined text-[18px]">edit</span>
               Edit
@@ -227,64 +228,64 @@ export default function TaskDetailPage() {
       <div className="grid grid-cols-12 gap-6">
         {/* Details */}
         <div className="col-span-12 lg:col-span-4 space-y-4">
-          <div className="bg-white rounded-xl soft-shadow border border-outline-variant/20 p-5">
-            <h3 className="font-semibold text-on-surface text-sm mb-4">Details</h3>
+          <div className="taskdetail-card soft-shadow">
+            <h3 className="taskdetail-card-title">Details</h3>
             <dl className="space-y-3 text-sm">
               <div className="flex items-center justify-between">
-                <dt className="text-on-surface-variant">Status</dt>
+                <dt className="taskdetail-dt">Status</dt>
                 <dd>
-                  <span className={`px-2 py-1 rounded text-[10px] font-bold ${STATUS_STYLES[task.status] || "bg-gray-100 text-gray-600"}`}>
+                  <span className={`taskdetail-badge ${STATUS_STYLES[task.status] || "bg-gray-100 text-gray-600"}`}>
                     {task.status?.replace("_", " ")}
                   </span>
                 </dd>
               </div>
               <div className="flex items-center justify-between">
-                <dt className="text-on-surface-variant">Priority</dt>
+                <dt className="taskdetail-dt">Priority</dt>
                 <dd>
-                  <span className={`px-2 py-1 rounded text-[10px] font-bold ${PRIORITY_STYLES[task.priority] || "bg-gray-100 text-gray-600"}`}>
+                  <span className={`taskdetail-badge ${PRIORITY_STYLES[task.priority] || "bg-gray-100 text-gray-600"}`}>
                     {task.priority}
                   </span>
                 </dd>
               </div>
               <div className="flex items-center justify-between">
-                <dt className="text-on-surface-variant">Assignee</dt>
-                <dd className="text-on-surface font-medium">{task.assigned_to_name || "Unassigned"}</dd>
+                <dt className="taskdetail-dt">Assignee</dt>
+                <dd className="taskdetail-dd">{task.assigned_to_name || "Unassigned"}</dd>
               </div>
               <div className="flex items-center justify-between">
-                <dt className="text-on-surface-variant">Project</dt>
-                <dd className="text-on-surface font-medium">{projectName || "-"}</dd>
+                <dt className="taskdetail-dt">Project</dt>
+                <dd className="taskdetail-dd">{projectName || "-"}</dd>
               </div>
               <div className="flex items-center justify-between">
-                <dt className="text-on-surface-variant">Start Date</dt>
-                <dd className="text-on-surface font-medium">{task.start_date || "-"}</dd>
+                <dt className="taskdetail-dt">Start Date</dt>
+                <dd className="taskdetail-dd">{task.start_date || "-"}</dd>
               </div>
               <div className="flex items-center justify-between">
-                <dt className="text-on-surface-variant">Due Date</dt>
-                <dd className="text-on-surface font-medium">{task.due_date || "-"}</dd>
+                <dt className="taskdetail-dt">Due Date</dt>
+                <dd className="taskdetail-dd">{task.due_date || "-"}</dd>
               </div>
               <div className="flex items-center justify-between">
-                <dt className="text-on-surface-variant">Estimated</dt>
-                <dd className="text-on-surface font-medium">{task.estimated_hours != null ? `${task.estimated_hours}h` : "-"}</dd>
+                <dt className="taskdetail-dt">Estimated</dt>
+                <dd className="taskdetail-dd">{task.estimated_hours != null ? `${task.estimated_hours}h` : "-"}</dd>
               </div>
               <div className="flex items-center justify-between">
-                <dt className="text-on-surface-variant">Actual</dt>
-                <dd className="text-on-surface font-medium">{task.actual_hours != null ? `${task.actual_hours}h` : "-"}</dd>
+                <dt className="taskdetail-dt">Actual</dt>
+                <dd className="taskdetail-dd">{task.actual_hours != null ? `${task.actual_hours}h` : "-"}</dd>
               </div>
               {task.completed_at && (
                 <div className="flex items-center justify-between">
-                  <dt className="text-on-surface-variant">Completed</dt>
-                  <dd className="text-on-surface font-medium">{formatDate(task.completed_at)}</dd>
+                  <dt className="taskdetail-dt">Completed</dt>
+                  <dd className="taskdetail-dd">{formatDate(task.completed_at)}</dd>
                 </div>
               )}
             </dl>
           </div>
 
           {task.subtasks?.length > 0 && (
-            <div className="bg-white rounded-xl soft-shadow border border-outline-variant/20 p-5">
-              <h3 className="font-semibold text-on-surface text-sm mb-3">Subtasks</h3>
+            <div className="taskdetail-card soft-shadow">
+              <h3 className="taskdetail-subtask-title">Subtasks</h3>
               <ul className="space-y-2">
                 {task.subtasks.map((id) => (
-                  <li key={id} className="text-sm text-on-surface-variant flex items-center gap-2">
+                  <li key={id} className="taskdetail-subtask-item">
                     <span className="material-symbols-outlined text-[16px]">subdirectory_arrow_right</span>
                     Task #{id}
                   </li>
@@ -294,8 +295,8 @@ export default function TaskDetailPage() {
           )}
 
           {task.description && (
-            <div className="bg-white rounded-xl soft-shadow border border-outline-variant/20 p-5">
-              <h3 className="font-semibold text-on-surface text-sm mb-2">Description</h3>
+            <div className="taskdetail-card soft-shadow">
+              <h3 className="taskdetail-desc-title">Description</h3>
               <p className="text-sm text-on-surface-variant whitespace-pre-wrap">{task.description}</p>
             </div>
           )}
@@ -303,21 +304,21 @@ export default function TaskDetailPage() {
 
         {/* Comments + Attachments */}
         <div className="col-span-12 lg:col-span-8 space-y-6">
-          <div className="bg-white rounded-xl soft-shadow border border-outline-variant/20 p-5">
-            <h3 className="font-semibold text-on-surface text-sm mb-4">Comments ({comments.length})</h3>
+          <div className="taskdetail-card soft-shadow">
+            <h3 className="taskdetail-card-title">Comments ({comments.length})</h3>
             <form onSubmit={handleAddComment} className="mb-4">
               <textarea
                 value={commentText}
                 onChange={(e) => setCommentText(e.target.value)}
                 placeholder="Add a comment..."
                 rows={2}
-                className="w-full px-4 py-2.5 rounded-xl border border-outline-variant/40 bg-surface-container-low text-on-surface text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 resize-none"
+                className="taskdetail-comment-input"
               />
               <div className="flex justify-end mt-2">
                 <button
                   type="submit"
                   disabled={sendingComment || !commentText.trim()}
-                  className="px-4 py-2 bg-primary text-on-primary rounded-lg text-sm font-bold hover:opacity-90 disabled:opacity-50"
+                  className="taskdetail-post-btn"
                 >
                   {sendingComment ? "Posting..." : "Post Comment"}
                 </button>
@@ -329,13 +330,13 @@ export default function TaskDetailPage() {
               ) : (
                 comments.map((comment) => (
                   <div key={comment.id} className="flex gap-3">
-                    <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                    <div className="taskdetail-avatar">
                       <span className="material-symbols-outlined text-[18px] text-primary">person</span>
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-baseline gap-2">
-                        <p className="text-sm font-semibold text-on-surface">{comment.author_name || "Unknown"}</p>
-                        <p className="text-[11px] text-outline">{formatDate(comment.created_at)}</p>
+                        <p className="taskdetail-comment-author">{comment.author_name || "Unknown"}</p>
+                        <p className="taskdetail-comment-time">{formatDate(comment.created_at)}</p>
                       </div>
                       <p className="text-sm text-on-surface-variant mt-0.5 whitespace-pre-wrap">{comment.content}</p>
                     </div>
@@ -345,10 +346,10 @@ export default function TaskDetailPage() {
             </div>
           </div>
 
-          <div className="bg-white rounded-xl soft-shadow border border-outline-variant/20 p-5">
-            <h3 className="font-semibold text-on-surface text-sm mb-4">Attachments ({attachments.length})</h3>
+          <div className="taskdetail-card soft-shadow">
+            <h3 className="taskdetail-card-title">Attachments ({attachments.length})</h3>
             <div className="flex items-center gap-3 mb-4">
-              <label className="cursor-pointer inline-flex items-center gap-2 px-4 py-2 rounded-xl border-2 border-dashed border-outline-variant/50 text-on-surface-variant text-sm font-medium hover:border-primary hover:text-primary transition-colors">
+              <label className="taskdetail-upload-label">
                 <span className="material-symbols-outlined text-[18px]">upload_file</span>
                 {uploading ? "Uploading..." : "Upload file"}
                 <input type="file" onChange={handleUpload} className="hidden" disabled={uploading} />
@@ -360,7 +361,7 @@ export default function TaskDetailPage() {
                 <p className="text-sm text-on-surface-variant">No attachments yet.</p>
               ) : (
                 attachments.map((att) => (
-                  <div key={att.id} className="flex items-center gap-3 px-3 py-2 rounded-lg border border-outline-variant/20 hover:bg-surface-container-low transition-colors">
+                  <div key={att.id} className="taskdetail-attach-row">
                     <span className="material-symbols-outlined text-[20px] text-primary">attach_file</span>
                     <a
                       href={att.file_url}
@@ -368,14 +369,14 @@ export default function TaskDetailPage() {
                       rel="noopener noreferrer"
                       className="flex-1 min-w-0"
                     >
-                      <p className="text-sm font-medium text-on-surface truncate">{att.original_name}</p>
-                      <p className="text-[11px] text-outline">
+                      <p className="taskdetail-attach-name">{att.original_name}</p>
+                      <p className="taskdetail-attach-meta">
                         {formatBytes(att.file_size)} · {att.uploaded_by_name || "Unknown"} · {formatDate(att.uploaded_at)}
                       </p>
                     </a>
                     <button
                       onClick={() => handleDeleteAttachment(att)}
-                      className="p-1.5 rounded-lg hover:bg-red-50 transition-colors"
+                      className="taskdetail-delete-btn"
                       title="Delete attachment"
                     >
                       <span className="material-symbols-outlined text-[18px] text-red-500">delete</span>

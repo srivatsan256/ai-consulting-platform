@@ -65,7 +65,7 @@ export default function ClientChatPage({ projectId }) {
       <TopHeader title="AI Assistant" subtitle="Chat with your project knowledge" />
 
       {!aiEnabled && (
-        <div className="clientchat-locked-card">
+        <div className="clientchat-locked-card soft-shadow">
           <span className="material-symbols-outlined clientchat-locked-icon">lock</span>
           <h3 className="clientchat-locked-title">
             Custom RAG not available on your plan
@@ -78,7 +78,7 @@ export default function ClientChatPage({ projectId }) {
       )}
 
       {/* Project Selector */}
-      <div className="clientchat-selector-card">
+      <div className="clientchat-selector-card soft-shadow">
         <select
           value={selectedId}
           onChange={(e) => handleProjectChange(e.target.value)}
@@ -92,7 +92,7 @@ export default function ClientChatPage({ projectId }) {
       </div>
 
       {/* Chat Area */}
-      <div className="clientchat-card">
+      <div className="clientchat-card soft-shadow">
         <div className="clientchat-messages">
           {messages.length === 0 && (
             <div className="clientchat-empty">

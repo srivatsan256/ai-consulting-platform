@@ -1,0 +1,3 @@
+/* ThemeContext.jsx co-located styles.
+   Theme state is managed entirely via the `dark` class toggled on <html>.
+   No component-level styling is needed here. */

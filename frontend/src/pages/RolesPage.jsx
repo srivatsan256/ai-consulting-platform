@@ -6,9 +6,15 @@ import {
   getApiError,
 } from "../services/api";
 import TopHeader from "../components/TopHeader";
+import "./RolesPage.css";
 
-const inputCls = "w-full px-4 py-2.5 rounded-xl border border-outline-variant/40 bg-surface-container-low text-on-surface text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20";
-const labelCls = "block font-label-md text-[11px] uppercase tracking-wider text-on-surface-variant mb-1.5";
+function inputCls() {
+  return "roles-input";
+}
+
+function labelCls() {
+  return "roles-label";
+}
 
 const FEATURE_COLUMNS = [
   ["can_view", "View"],
@@ -123,7 +129,7 @@ export default function RolesPage() {
           tab === "roles" ? (
             <button
               onClick={() => openRoleForm(null)}
-              className="px-5 py-2.5 bg-primary text-on-primary rounded-xl font-bold text-sm hover:opacity-90 transition-all flex items-center gap-2 shadow-lg shadow-primary/20"
+              className="roles-primary-btn"
             >
               <span className="material-symbols-outlined text-[18px]">add</span>
               New Role
@@ -142,7 +148,7 @@ export default function RolesPage() {
           <button
             key={key}
             onClick={() => setTab(key)}
-            className={`px-4 py-2.5 text-sm font-semibold border-b-2 transition-colors ${tab === key ? "border-primary text-primary" : "border-transparent text-on-surface-variant hover:text-on-surface"}`}
+            className={`roles-tab ${tab === key ? "roles-tab-active" : "roles-tab-idle"}`}
           >
             {label}
           </button>
@@ -156,30 +162,30 @@ export default function RolesPage() {
       ) : tab === "roles" ? (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
           {roles.length === 0 && (
-            <div className="col-span-full bg-white rounded-xl soft-shadow border border-outline-variant/20 p-16 text-center">
+            <div className="roles-empty-card">
               <span className="material-symbols-outlined text-[48px] text-outline-variant">admin_panel_settings</span>
               <p className="text-on-surface-variant mt-3 text-sm">No roles found</p>
             </div>
           )}
           {roles.map((role) => (
-            <div key={role.id} className="bg-white rounded-xl soft-shadow border border-outline-variant/20 p-5">
+            <div key={role.id} className="roles-card soft-shadow">
               <div className="flex items-start justify-between mb-2">
                 <div>
-                  <h3 className="font-semibold text-on-surface text-sm">{role.display_name}</h3>
+                  <h3 className="roles-h3">{role.display_name}</h3>
                   <p className="text-[11px] text-outline font-mono">{role.role_key}</p>
                 </div>
                 <div className="flex gap-1">
-                  <button onClick={() => openRoleForm(role)} className="p-1.5 rounded-lg hover:bg-surface-container transition-colors" title="Edit">
+                  <button onClick={() => openRoleForm(role)} className="roles-icon-btn" title="Edit">
                     <span className="material-symbols-outlined text-[18px] text-outline-variant">edit</span>
                   </button>
-                  <button onClick={() => deleteRole(role)} className="p-1.5 rounded-lg hover:bg-red-50 transition-colors" title="Delete">
+                  <button onClick={() => deleteRole(role)} className="roles-icon-btn-red" title="Delete">
                     <span className="material-symbols-outlined text-[18px] text-red-500">delete</span>
                   </button>
                 </div>
               </div>
               {role.description && <p className="text-xs text-on-surface-variant">{role.description}</p>}
-              <div className="mt-3 pt-3 border-t border-outline-variant/20 flex items-center justify-between">
-                <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${role.is_active ? "bg-emerald-100 text-emerald-700" : "bg-gray-100 text-gray-600"}`}>
+              <div className="roles-card-footer">
+                <span className={`roles-mini-badge ${role.is_active ? "bg-emerald-100 text-emerald-700" : "bg-gray-100 text-gray-600"}`}>
                   {role.is_active ? "Active" : "Inactive"}
                 </span>
                 <span className="text-xs text-on-surface-variant">{(permissionsByRole[role.id] || []).length} permissions</span>
@@ -188,17 +194,17 @@ export default function RolesPage() {
           ))}
         </div>
       ) : tab === "assign" ? (
-        <div className="bg-white rounded-xl soft-shadow border border-outline-variant/20 p-6 max-w-lg">
-          <h3 className="font-semibold text-on-surface text-sm mb-4">Assign Role to User</h3>
+        <div className="roles-assign-card soft-shadow">
+          <h3 className="roles-assign-title">Assign Role to User</h3>
           <form onSubmit={handleAssign} className="space-y-4">
             {assignError && (
-              <div className="flex items-start gap-2 px-4 py-3 rounded-xl bg-error/10 border border-error/30 text-on-surface text-sm">
+              <div className="roles-error">
                 <span className="material-symbols-outlined text-[18px] text-error shrink-0">error</span>
                 <span>{assignError}</span>
               </div>
             )}
             {assignSuccess && (
-              <div className="px-4 py-3 rounded-xl bg-emerald-50 border border-emerald-200 text-sm text-emerald-800">
+              <div className="roles-success">
                 {assignSuccess}
               </div>
             )}
@@ -225,37 +231,37 @@ export default function RolesPage() {
             <button
               type="submit"
               disabled={assigning}
-              className="w-full py-2.5 rounded-xl bg-primary text-on-primary text-sm font-bold hover:opacity-90 transition-all disabled:opacity-50"
+              className="roles-submit-btn-wide"
             >
               {assigning ? "Assigning..." : "Assign Role"}
             </button>
           </form>
         </div>
       ) : tab === "permissions" ? (
-        <div className="bg-white rounded-xl soft-shadow border border-outline-variant/20 overflow-hidden">
+        <div className="roles-table-card soft-shadow">
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
+            <table className="roles-table">
               <thead>
-                <tr className="text-left border-b border-outline-variant/20 text-on-surface-variant text-[11px] uppercase tracking-wider">
-                  <th className="px-5 py-3 font-medium">Role</th>
-                  <th className="px-5 py-3 font-medium">Feature</th>
+                <tr className="roles-thead-tr">
+                  <th className="roles-th">Role</th>
+                  <th className="roles-th">Feature</th>
                   {FEATURE_COLUMNS.map(([key, label]) => (
-                    <th key={key} className="px-3 py-3 font-medium text-center">{label}</th>
+                    <th key={key} className="roles-th-center">{label}</th>
                   ))}
                 </tr>
               </thead>
               <tbody className="divide-y divide-outline-variant/10">
                 {permissions.length === 0 && (
                   <tr>
-                    <td colSpan={9} className="px-5 py-12 text-center text-on-surface-variant">No permissions configured.</td>
+                    <td colSpan={9} className="roles-empty-cell">No permissions configured.</td>
                   </tr>
                 )}
                 {permissions.map((p) => (
-                  <tr key={p.id} className="hover:bg-surface-container-low/50 transition-colors">
-                    <td className="px-5 py-3 font-medium text-on-surface">{p.role_name || "Role #" + p.role}</td>
-                    <td className="px-5 py-3 text-on-surface-variant">{p.feature?.replace(/_/g, " ")}</td>
+                  <tr key={p.id} className="roles-row">
+                    <td className="roles-cell font-medium text-on-surface">{p.role_name || "Role #" + p.role}</td>
+                    <td className="roles-cell text-on-surface-variant">{p.feature?.replace(/_/g, " ")}</td>
                     {FEATURE_COLUMNS.map(([key]) => (
-                      <td key={key} className="px-3 py-3 text-center">
+                      <td key={key} className="roles-cell-center">
                         {p[key] ? (
                           <span className="material-symbols-outlined text-[18px] text-emerald-600">check_circle</span>
                         ) : (
@@ -270,34 +276,34 @@ export default function RolesPage() {
           </div>
         </div>
       ) : (
-        <div className="bg-white rounded-xl soft-shadow border border-outline-variant/20 overflow-hidden">
-          <table className="w-full text-sm">
+        <div className="roles-table-card soft-shadow">
+          <table className="roles-table">
             <thead>
-              <tr className="text-left border-b border-outline-variant/20 text-on-surface-variant text-[11px] uppercase tracking-wider">
-                <th className="px-5 py-3 font-medium">User</th>
-                <th className="px-5 py-3 font-medium">Role</th>
-                <th className="px-5 py-3 font-medium">Previous Role</th>
-                <th className="px-5 py-3 font-medium">Assigned By</th>
-                <th className="px-5 py-3 font-medium">When</th>
+              <tr className="roles-thead-tr">
+                <th className="roles-th">User</th>
+                <th className="roles-th">Role</th>
+                <th className="roles-th">Previous Role</th>
+                <th className="roles-th">Assigned By</th>
+                <th className="roles-th">When</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-outline-variant/10">
               {assignments.length === 0 && (
                 <tr>
-                  <td colSpan={5} className="px-5 py-12 text-center text-on-surface-variant">No assignments yet.</td>
+                  <td colSpan={5} className="roles-empty-cell">No assignments yet.</td>
                 </tr>
               )}
               {assignments.map((a) => (
-                <tr key={a.id} className="hover:bg-surface-container-low/50 transition-colors">
-                  <td className="px-5 py-4">
+                <tr key={a.id} className="roles-row">
+                  <td className="roles-cell-lg">
                     <p className="font-medium text-on-surface">{a.user_email}</p>
                   </td>
-                  <td className="px-5 py-4">
-                    <span className="px-2 py-1 rounded bg-primary/10 text-primary text-[10px] font-bold">{a.role_name}</span>
+                  <td className="roles-cell-lg">
+                    <span className="roles-role-badge">{a.role_name}</span>
                   </td>
-                  <td className="px-5 py-4 text-on-surface-variant">{a.previous_role_key || "-"}</td>
-                  <td className="px-5 py-4 text-on-surface-variant">{a.assigned_by_email || "-"}</td>
-                  <td className="px-5 py-4 text-on-surface-variant">{formatDate(a.created_at)}</td>
+                  <td className="roles-cell-lg text-on-surface-variant">{a.previous_role_key || "-"}</td>
+                  <td className="roles-cell-lg text-on-surface-variant">{a.assigned_by_email || "-"}</td>
+                  <td className="roles-cell-lg text-on-surface-variant">{formatDate(a.created_at)}</td>
                 </tr>
               ))}
             </tbody>
@@ -307,17 +313,17 @@ export default function RolesPage() {
 
       {/* Role form modal */}
       {roleForm && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[100] p-4">
-          <div className="bg-white rounded-2xl w-full max-w-md soft-shadow">
-            <div className="p-6 border-b border-outline-variant/20 flex items-center justify-between">
-              <h3 className="font-headline-lg text-lg font-bold text-on-surface">{roleForm.id ? "Edit Role" : "New Role"}</h3>
-              <button onClick={() => setRoleForm(null)} className="p-2 rounded-lg hover:bg-surface-container transition-colors">
+        <div className="roles-overlay">
+          <div className="roles-modal-panel soft-shadow">
+            <div className="roles-modal-header">
+              <h3 className="roles-modal-title">{roleForm.id ? "Edit Role" : "New Role"}</h3>
+              <button onClick={() => setRoleForm(null)} className="roles-close-btn">
                 <span className="material-symbols-outlined text-[20px]">close</span>
               </button>
             </div>
-            <form onSubmit={saveRole} className="p-6 space-y-4">
+            <form onSubmit={saveRole} className="roles-modal-body">
               {roleError && (
-                <div className="flex items-start gap-2 px-4 py-3 rounded-xl bg-error/10 border border-error/30 text-on-surface text-sm">
+                <div className="roles-error">
                   <span className="material-symbols-outlined text-[18px] text-error shrink-0">error</span>
                   <span>{roleError}</span>
                 </div>
@@ -359,10 +365,10 @@ export default function RolesPage() {
                 Active role
               </label>
               <div className="flex gap-3 pt-2">
-                <button type="button" onClick={() => setRoleForm(null)} className="flex-1 py-2.5 rounded-xl border border-outline-variant/40 text-on-surface-variant text-sm font-medium hover:bg-surface-container transition-colors">
+                <button type="button" onClick={() => setRoleForm(null)} className="roles-cancel-btn">
                   Cancel
                 </button>
-                <button type="submit" disabled={roleSaving} className="flex-1 py-2.5 rounded-xl bg-primary text-on-primary text-sm font-bold hover:opacity-90 transition-all disabled:opacity-50">
+                <button type="submit" disabled={roleSaving} className="roles-submit-btn">
                   {roleSaving ? "Saving..." : "Save Role"}
                 </button>
               </div>

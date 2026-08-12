@@ -65,7 +65,7 @@ export default function AIChatPage({ projectId, onSelectProject }) {
       <TopHeader title="AI Assistant" subtitle="Chat with project knowledge" />
 
       {!aiEnabled && (
-        <div className="aichat-locked-card">
+        <div className="aichat-locked-card soft-shadow">
           <span className="material-symbols-outlined aichat-locked-icon">lock</span>
           <h3 className="aichat-locked-title">
             Custom RAG not available on your plan
@@ -78,7 +78,7 @@ export default function AIChatPage({ projectId, onSelectProject }) {
       )}
 
       {/* Project Selector */}
-      <div className="aichat-selector-card">
+      <div className="aichat-selector-card soft-shadow">
         <select
           value={selectedId}
           onChange={(e) => handleProjectChange(e.target.value)}
@@ -92,7 +92,7 @@ export default function AIChatPage({ projectId, onSelectProject }) {
       </div>
 
       {/* Chat Area */}
-      <div className="aichat-card">
+      <div className="aichat-card soft-shadow">
         <div className="aichat-messages">
           {messages.length === 0 && (
             <div className="aichat-empty">

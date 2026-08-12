@@ -68,7 +68,7 @@ export default function ClientProjectsPage({ projectId, onSelectProject, onBack 
       <TopHeader title="My Projects" subtitle="View your consulting engagements" />
 
       {/* Project Selector */}
-      <div className="clientprojects-selector-card">
+      <div className="clientprojects-selector-card soft-shadow">
         <label className="clientprojects-label">
           Select Project
         </label>
@@ -101,7 +101,7 @@ export default function ClientProjectsPage({ projectId, onSelectProject, onBack 
 
       {selectedId && project && (
         <div className="space-y-6">
-          <div className="clientprojects-card">
+          <div className="clientprojects-card soft-shadow">
             <div className="clientprojects-detail-head">
               <div className="clientprojects-icon-box">
                 <span className="material-symbols-outlined clientprojects-icon">folder</span>
@@ -146,14 +146,14 @@ export default function ClientProjectsPage({ projectId, onSelectProject, onBack 
 
           {/* Objectives */}
           {project.objectives && (
-            <div className="clientprojects-card">
+            <div className="clientprojects-card soft-shadow">
               <h4 className="clientprojects-label">Objectives</h4>
               <p className="text-sm text-on-surface leading-relaxed">{project.objectives}</p>
             </div>
           )}
 
           {/* Documents */}
-          <div className="clientprojects-card">
+          <div className="clientprojects-card soft-shadow">
             <div className="clientprojects-section-head">
               <h3 className="clientprojects-section-title">Documents</h3>
               <span className="clientprojects-section-meta">{project.documents?.length || 0} uploaded</span>
@@ -192,7 +192,7 @@ export default function ClientProjectsPage({ projectId, onSelectProject, onBack 
 
           {/* Verification Report */}
           {reportResults.length > 0 && (
-            <div className="clientprojects-card">
+            <div className="clientprojects-card soft-shadow">
               <h3 className="clientprojects-report-title">Verification Report</h3>
               <div className="clientprojects-report-list">
                 {reportResults.map((result, idx) => (

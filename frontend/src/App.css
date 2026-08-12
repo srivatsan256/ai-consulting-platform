@@ -1,0 +1,7 @@
+.app-shell {
+  @apply min-h-screen bg-background flex;
+}
+
+.app-content {
+  @apply flex-1 p-8;
+}

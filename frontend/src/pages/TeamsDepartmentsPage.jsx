@@ -6,31 +6,32 @@ import {
   getApiError,
 } from "../services/api";
 import TopHeader from "../components/TopHeader";
+import "./TeamsDepartmentsPage.css";
 
 function FormModal({ title, open, onClose, onSubmit, submitting, formError, children }) {
   if (!open) return null;
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[100] p-4">
-      <div className="bg-white rounded-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto soft-shadow">
-        <div className="p-6 border-b border-outline-variant/20 flex items-center justify-between">
-          <h3 className="font-headline-lg text-lg font-bold text-on-surface">{title}</h3>
-          <button onClick={onClose} className="p-2 rounded-lg hover:bg-surface-container transition-colors">
+    <div className="teams-overlay">
+      <div className="teams-modal-panel soft-shadow">
+        <div className="teams-modal-header">
+          <h3 className="teams-modal-title">{title}</h3>
+          <button onClick={onClose} className="teams-close-btn">
             <span className="material-symbols-outlined text-[20px]">close</span>
           </button>
         </div>
-        <form onSubmit={onSubmit} className="p-6 space-y-4">
+        <form onSubmit={onSubmit} className="teams-modal-body">
           {formError && (
-            <div className="flex items-start gap-2 px-4 py-3 rounded-xl bg-error/10 border border-error/30 text-on-surface text-sm">
+            <div className="teams-error">
               <span className="material-symbols-outlined text-[18px] text-error shrink-0">error</span>
               <span>{formError}</span>
             </div>
           )}
           {children}
           <div className="flex gap-3 pt-2">
-            <button type="button" onClick={onClose} className="flex-1 py-2.5 rounded-xl border border-outline-variant/40 text-on-surface-variant text-sm font-medium hover:bg-surface-container transition-colors">
+            <button type="button" onClick={onClose} className="teams-cancel-btn">
               Cancel
             </button>
-            <button type="submit" disabled={submitting} className="flex-1 py-2.5 rounded-xl bg-primary text-on-primary text-sm font-bold hover:opacity-90 transition-all disabled:opacity-50">
+            <button type="submit" disabled={submitting} className="teams-submit-btn">
               {submitting ? "Saving..." : "Save"}
             </button>
           </div>
@@ -41,11 +42,11 @@ function FormModal({ title, open, onClose, onSubmit, submitting, formError, chil
 }
 
 function inputCls() {
-  return "w-full px-4 py-2.5 rounded-xl border border-outline-variant/40 bg-surface-container-low text-on-surface text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20";
+  return "teams-input";
 }
 
 function labelCls() {
-  return "block font-label-md text-[11px] uppercase tracking-wider text-on-surface-variant mb-1.5";
+  return "teams-label";
 }
 
 function MembersModal({ open, title, onClose, members, users, onSubmit, onRemove, memberRoleLabel }) {
@@ -81,15 +82,15 @@ function MembersModal({ open, title, onClose, members, users, onSubmit, onRemove
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[110] p-4">
-      <div className="bg-white rounded-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto soft-shadow">
-        <div className="p-6 border-b border-outline-variant/20 flex items-center justify-between">
-          <h3 className="font-headline-lg text-lg font-bold text-on-surface">{title}</h3>
-          <button onClick={onClose} className="p-2 rounded-lg hover:bg-surface-container transition-colors">
+    <div className="teams-overlay-xl">
+      <div className="teams-modal-panel soft-shadow">
+        <div className="teams-modal-header">
+          <h3 className="teams-modal-title">{title}</h3>
+          <button onClick={onClose} className="teams-close-btn">
             <span className="material-symbols-outlined text-[20px]">close</span>
           </button>
         </div>
-        <div className="p-6 space-y-4">
+        <div className="teams-modal-body">
           <form onSubmit={handleAdd} className="flex gap-2 items-end">
             <div className="flex-1">
               <label className={labelCls()}>Add Member</label>
@@ -115,7 +116,7 @@ function MembersModal({ open, title, onClose, members, users, onSubmit, onRemove
             <button
               type="submit"
               disabled={adding || !user}
-              className="px-4 py-2.5 rounded-xl bg-primary text-on-primary text-sm font-bold hover:opacity-90 disabled:opacity-50 whitespace-nowrap"
+              className="teams-add-btn"
             >
               Add
             </button>
@@ -126,8 +127,8 @@ function MembersModal({ open, title, onClose, members, users, onSubmit, onRemove
               <p className="text-sm text-on-surface-variant py-4 text-center">No members yet.</p>
             ) : (
               members.map((m) => (
-                <div key={m.id} className="flex items-center gap-3 py-3">
-                  <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                <div key={m.id} className="teams-member-row">
+                  <div className="teams-avatar">
                     <span className="material-symbols-outlined text-[18px] text-primary">person</span>
                   </div>
                   <div className="flex-1 min-w-0">
@@ -138,7 +139,7 @@ function MembersModal({ open, title, onClose, members, users, onSubmit, onRemove
                       {m.role ? ` · ${m.role}` : ""}
                     </p>
                   </div>
-                  <button onClick={() => onRemove(m)} className="p-1.5 rounded-lg hover:bg-red-50 transition-colors" title="Remove">
+                  <button onClick={() => onRemove(m)} className="teams-icon-btn-red" title="Remove">
                     <span className="material-symbols-outlined text-[18px] text-red-500">person_remove</span>
                   </button>
                 </div>
@@ -272,7 +273,7 @@ export default function TeamsDepartmentsPage() {
           tab === "departments" ? (
             <button
               onClick={() => openDeptForm(null)}
-              className="px-5 py-2.5 bg-primary text-on-primary rounded-xl font-bold text-sm hover:opacity-90 transition-all flex items-center gap-2 shadow-lg shadow-primary/20"
+              className="teams-primary-btn"
             >
               <span className="material-symbols-outlined text-[18px]">add</span>
               New Department
@@ -280,7 +281,7 @@ export default function TeamsDepartmentsPage() {
           ) : (
             <button
               onClick={() => openTeamForm(null)}
-              className="px-5 py-2.5 bg-primary text-on-primary rounded-xl font-bold text-sm hover:opacity-90 transition-all flex items-center gap-2 shadow-lg shadow-primary/20"
+              className="teams-primary-btn"
             >
               <span className="material-symbols-outlined text-[18px]">add</span>
               New Team
@@ -294,7 +295,7 @@ export default function TeamsDepartmentsPage() {
           <button
             key={t}
             onClick={() => setTab(t)}
-            className={`px-4 py-2.5 text-sm font-semibold border-b-2 transition-colors ${tab === t ? "border-primary text-primary" : "border-transparent text-on-surface-variant hover:text-on-surface"}`}
+            className={`teams-tab ${tab === t ? "teams-tab-active" : "teams-tab-idle"}`}
           >
             {t === "departments" ? "Departments" : "Teams"}
           </button>
@@ -308,45 +309,45 @@ export default function TeamsDepartmentsPage() {
       ) : tab === "departments" ? (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
           {departments.length === 0 && (
-            <div className="col-span-full bg-white rounded-xl soft-shadow border border-outline-variant/20 p-16 text-center">
+            <div className="teams-empty-card">
               <span className="material-symbols-outlined text-[48px] text-outline-variant">account_tree</span>
               <p className="text-on-surface-variant mt-3 text-sm">No departments yet</p>
             </div>
           )}
           {departments.map((dept) => (
-            <div key={dept.id} className="bg-white rounded-xl soft-shadow border border-outline-variant/20 p-5">
+            <div key={dept.id} className="teams-card soft-shadow">
               <div className="flex items-start justify-between mb-3">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                  <div className="teams-card-icon">
                     <span className="material-symbols-outlined text-primary">account_tree</span>
                   </div>
                   <div>
-                    <h3 className="font-semibold text-on-surface text-sm">{dept.name}</h3>
+                    <h3 className="teams-h3">{dept.name}</h3>
                     <p className="text-xs text-on-surface-variant">{dept.code}</p>
                   </div>
                 </div>
                 <div className="flex gap-1">
-                  <button onClick={() => setDeptMembersFor(dept)} className="p-1.5 rounded-lg hover:bg-surface-container transition-colors" title="Members">
+                  <button onClick={() => setDeptMembersFor(dept)} className="teams-icon-btn" title="Members">
                     <span className="material-symbols-outlined text-[18px] text-outline-variant">group</span>
                   </button>
-                  <button onClick={() => openDeptForm(dept)} className="p-1.5 rounded-lg hover:bg-surface-container transition-colors" title="Edit">
+                  <button onClick={() => openDeptForm(dept)} className="teams-icon-btn" title="Edit">
                     <span className="material-symbols-outlined text-[18px] text-outline-variant">edit</span>
                   </button>
-                  <button onClick={() => deleteDept(dept)} className="p-1.5 rounded-lg hover:bg-red-50 transition-colors" title="Delete">
+                  <button onClick={() => deleteDept(dept)} className="teams-icon-btn-red" title="Delete">
                     <span className="material-symbols-outlined text-[18px] text-red-500">delete</span>
                   </button>
                 </div>
               </div>
               {dept.description && <p className="text-xs text-on-surface-variant line-clamp-2">{dept.description}</p>}
-              <div className="mt-3 pt-3 border-t border-outline-variant/20 flex items-center justify-between text-xs text-on-surface-variant">
+              <div className="teams-card-footer">
                 <span>Head: {dept.head_name || "-"}</span>
                 <span>{deptMembersById(dept.id).length} members</span>
               </div>
               <div className="mt-2 flex items-center justify-between">
-                <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${dept.status === "active" ? "bg-emerald-100 text-emerald-700" : "bg-gray-100 text-gray-600"}`}>
+                <span className={`teams-mini-badge ${dept.status === "active" ? "bg-emerald-100 text-emerald-700" : "bg-gray-100 text-gray-600"}`}>
                   {dept.status}
                 </span>
-                <button onClick={() => setDeptMembersFor(dept)} className="text-primary text-xs font-semibold hover:underline">
+                <button onClick={() => setDeptMembersFor(dept)} className="teams-manage-btn">
                   Manage members
                 </button>
               </div>
@@ -356,44 +357,44 @@ export default function TeamsDepartmentsPage() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
           {teams.length === 0 && (
-            <div className="col-span-full bg-white rounded-xl soft-shadow border border-outline-variant/20 p-16 text-center">
+            <div className="teams-empty-card">
               <span className="material-symbols-outlined text-[48px] text-outline-variant">groups</span>
               <p className="text-on-surface-variant mt-3 text-sm">No teams yet</p>
             </div>
           )}
           {teams.map((team) => (
-            <div key={team.id} className="bg-white rounded-xl soft-shadow border border-outline-variant/20 p-5">
+            <div key={team.id} className="teams-card soft-shadow">
               <div className="flex items-start justify-between mb-3">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                  <div className="teams-card-icon">
                     <span className="material-symbols-outlined text-primary">groups</span>
                   </div>
                   <div>
-                    <h3 className="font-semibold text-on-surface text-sm">{team.team_name}</h3>
+                    <h3 className="teams-h3">{team.team_name}</h3>
                     <p className="text-xs text-on-surface-variant">{team.department_name || "No department"}</p>
                   </div>
                 </div>
                 <div className="flex gap-1">
-                  <button onClick={() => setTeamMembersFor(team)} className="p-1.5 rounded-lg hover:bg-surface-container transition-colors" title="Members">
+                  <button onClick={() => setTeamMembersFor(team)} className="teams-icon-btn" title="Members">
                     <span className="material-symbols-outlined text-[18px] text-outline-variant">group</span>
                   </button>
-                  <button onClick={() => openTeamForm(team)} className="p-1.5 rounded-lg hover:bg-surface-container transition-colors" title="Edit">
+                  <button onClick={() => openTeamForm(team)} className="teams-icon-btn" title="Edit">
                     <span className="material-symbols-outlined text-[18px] text-outline-variant">edit</span>
                   </button>
-                  <button onClick={() => deleteTeam(team)} className="p-1.5 rounded-lg hover:bg-red-50 transition-colors" title="Delete">
+                  <button onClick={() => deleteTeam(team)} className="teams-icon-btn-red" title="Delete">
                     <span className="material-symbols-outlined text-[18px] text-red-500">delete</span>
                   </button>
                 </div>
               </div>
               {team.description && <p className="text-xs text-on-surface-variant line-clamp-2">{team.description}</p>}
-              <div className="mt-3 pt-3 border-t border-outline-variant/20 flex items-center justify-between text-xs text-on-surface-variant">
+              <div className="teams-card-footer">
                 <span>{team.member_count ?? teamMembersById(team.id).length} members</span>
-                <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${team.is_active ? "bg-emerald-100 text-emerald-700" : "bg-gray-100 text-gray-600"}`}>
+                <span className={`teams-mini-badge ${team.is_active ? "bg-emerald-100 text-emerald-700" : "bg-gray-100 text-gray-600"}`}>
                   {team.is_active ? "Active" : "Inactive"}
                 </span>
               </div>
               <div className="mt-2">
-                <button onClick={() => setTeamMembersFor(team)} className="text-primary text-xs font-semibold hover:underline">
+                <button onClick={() => setTeamMembersFor(team)} className="teams-manage-btn">
                   Manage members
                 </button>
               </div>

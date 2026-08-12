@@ -512,64 +512,64 @@ export default function UsersPage() {
 
       {/* Edit user modal */}
       {showEdit && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[100] p-4">
-          <div className="bg-white rounded-2xl w-full max-w-md soft-shadow">
-            <div className="p-6 border-b border-outline-variant/20 flex items-center justify-between">
-              <h3 className="font-headline-lg text-lg font-bold text-on-surface">Edit User</h3>
-              <button onClick={() => setShowEdit(false)} className="p-2 rounded-lg hover:bg-surface-container transition-colors">
+        <div className="users-overlay">
+          <div className="users-modal-panel-md soft-shadow">
+            <div className="users-modal-header">
+              <h3 className="users-modal-title">Edit User</h3>
+              <button onClick={() => setShowEdit(false)} className="users-close-btn">
                 <span className="material-symbols-outlined text-[20px]">close</span>
               </button>
             </div>
-            <form onSubmit={handleSaveEdit} className="p-6 space-y-4">
+            <form onSubmit={handleSaveEdit} className="users-modal-body">
               {editError && (
-                <div className="flex items-start gap-2 px-4 py-3 rounded-xl bg-error/10 border border-error/30 text-on-surface text-sm">
+                <div className="users-error">
                   <span className="material-symbols-outlined text-[18px] text-error shrink-0">error</span>
                   <span>{editError}</span>
                 </div>
               )}
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block font-label-md text-[11px] uppercase tracking-wider text-on-surface-variant mb-1.5">First Name</label>
+                  <label className="users-label">First Name</label>
                   <input
                     type="text"
                     value={editForm.first_name || ""}
                     onChange={(e) => setEditForm({ ...editForm, first_name: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-xl border border-outline-variant/40 bg-surface-container-low text-on-surface text-sm focus:outline-none focus:border-primary"
+                    className="users-select-input"
                   />
                 </div>
                 <div>
-                  <label className="block font-label-md text-[11px] uppercase tracking-wider text-on-surface-variant mb-1.5">Last Name</label>
+                  <label className="users-label">Last Name</label>
                   <input
                     type="text"
                     value={editForm.last_name || ""}
                     onChange={(e) => setEditForm({ ...editForm, last_name: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-xl border border-outline-variant/40 bg-surface-container-low text-on-surface text-sm focus:outline-none focus:border-primary"
+                    className="users-select-input"
                   />
                 </div>
               </div>
               <div>
-                <label className="block font-label-md text-[11px] uppercase tracking-wider text-on-surface-variant mb-1.5">Phone</label>
+                <label className="users-label">Phone</label>
                 <input
                   type="text"
                   value={editForm.phone || ""}
                   onChange={(e) => setEditForm({ ...editForm, phone: e.target.value })}
-                  className="w-full px-4 py-2.5 rounded-xl border border-outline-variant/40 bg-surface-container-low text-on-surface text-sm focus:outline-none focus:border-primary"
+                  className="users-select-input"
                 />
               </div>
               <div>
-                <label className="block font-label-md text-[11px] uppercase tracking-wider text-on-surface-variant mb-1.5">Designation</label>
+                <label className="users-label">Designation</label>
                 <input
                   type="text"
                   value={editForm.designation || ""}
                   onChange={(e) => setEditForm({ ...editForm, designation: e.target.value })}
-                  className="w-full px-4 py-2.5 rounded-xl border border-outline-variant/40 bg-surface-container-low text-on-surface text-sm focus:outline-none focus:border-primary"
+                  className="users-select-input"
                 />
               </div>
               <div className="flex gap-3 pt-2">
-                <button type="button" onClick={() => setShowEdit(false)} className="flex-1 py-2.5 rounded-xl border border-outline-variant/40 text-on-surface-variant text-sm font-medium hover:bg-surface-container transition-colors">
+                <button type="button" onClick={() => setShowEdit(false)} className="users-cancel-btn">
                   Cancel
                 </button>
-                <button type="submit" disabled={editing} className="flex-1 py-2.5 rounded-xl bg-primary text-on-primary text-sm font-bold hover:opacity-90 transition-all disabled:opacity-50">
+                <button type="submit" disabled={editing} className="users-submit-btn">
                   {editing ? "Saving..." : "Save Changes"}
                 </button>
               </div>
