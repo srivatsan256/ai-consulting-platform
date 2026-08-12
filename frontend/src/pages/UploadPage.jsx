@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { projectService, documentService } from "../services/api";
 import TopHeader from "../components/TopHeader";
+import "./UploadPage.css";
 
 export default function UploadPage({ projectId, onSelectProject }) {
   const [projects, setProjects] = useState([]);
@@ -162,14 +163,14 @@ export default function UploadPage({ projectId, onSelectProject }) {
       />
 
       {/* Project Selector */}
-      <div className="bg-white rounded-xl soft-shadow border border-outline-variant/20 p-6">
-        <label className="block font-label-md text-[11px] uppercase tracking-wider text-on-surface-variant mb-2">
+      <div className="upload-card soft-shadow">
+        <label className="upload-label">
           Select Project
         </label>
         <select
           value={selectedId}
           onChange={(e) => setSelectedId(e.target.value)}
-          className="w-full px-4 py-2.5 rounded-xl border border-outline-variant/40 bg-surface-container-low text-on-surface text-sm focus:outline-none focus:border-primary"
+          className="upload-select"
         >
           <option value="">Choose a project</option>
           {projects.map((p) => (
@@ -177,7 +178,7 @@ export default function UploadPage({ projectId, onSelectProject }) {
           ))}
         </select>
         {selectedProject && (
-          <p className="mt-3 text-xs text-on-surface-variant">
+          <p className="upload-level">
             Current unlocked level: L{Math.max(1, selectedProject.current_level || 1)}
           </p>
         )}
@@ -185,10 +186,10 @@ export default function UploadPage({ projectId, onSelectProject }) {
 
       {/* Required Documents Progress */}
       {selectedId && requiredDocs.length > 0 && (
-        <div className="bg-white rounded-xl soft-shadow border border-outline-variant/20 p-6">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="font-semibold text-on-surface text-sm">Required Documents</h3>
-            <span className="text-xs text-on-surface-variant">
+        <div className="upload-card soft-shadow">
+          <div className="upload-progress-header">
+            <h3 className="upload-progress-title">Required Documents</h3>
+            <span className="upload-progress-count">
               {requiredDocs.filter((d) => d.has_passed).length} of {requiredDocs.length} verified
             </span>
           </div>
@@ -199,7 +200,7 @@ export default function UploadPage({ projectId, onSelectProject }) {
               return (
                 <div
                   key={doc.doc_type}
-                  className={`flex items-center gap-3 p-3 rounded-lg transition-colors ${
+                  className={`upload-doc-row ${
                     isCurrentDoc
                       ? "bg-primary/5 border border-primary/30"
                       : "bg-surface-container-low"
@@ -209,16 +210,16 @@ export default function UploadPage({ projectId, onSelectProject }) {
                     {getStatusIcon(status)}
                   </span>
                   <div className="flex-1">
-                    <p className="text-sm font-medium text-on-surface">{doc.label}</p>
-                    <p className="text-[11px] text-on-surface-variant">{doc.doc_type}</p>
+                    <p className="upload-doc-label">{doc.label}</p>
+                    <p className="upload-doc-type">{doc.doc_type}</p>
                   </div>
-                  <span className={`text-[10px] font-medium ${
+                  <span className={`upload-status-text ${
                     status === "verified" ? "text-emerald-600" : status === "failed" ? "text-red-600" : "text-on-surface-variant"
                   }`}>
                     {getStatusLabel(status)}
                   </span>
                   {isCurrentDoc && status !== "verified" && (
-                    <span className="material-symbols-outlined text-[16px] text-primary animate-pulse">
+                    <span className="material-symbols-outlined upload-arrow">
                       arrow_forward
                     </span>
                   )}
@@ -231,12 +232,12 @@ export default function UploadPage({ projectId, onSelectProject }) {
 
       {/* Upload Area */}
       {selectedId && currentRequiredDoc && !allDocsVerified && (
-        <div className="bg-white rounded-xl soft-shadow border border-outline-variant/20 p-6">
+        <div className="upload-card soft-shadow">
           <div className="mb-4">
-            <h3 className="font-semibold text-on-surface text-sm mb-1">
+            <h3 className="upload-upload-title">
               Upload: {currentRequiredDoc.label}
             </h3>
-            <p className="text-xs text-on-surface-variant">
+            <p className="upload-upload-sub">
               Document {currentDocIndex + 1} of {requiredDocs.length} - Please upload this document before proceeding to the next one.
             </p>
           </div>
@@ -244,7 +245,7 @@ export default function UploadPage({ projectId, onSelectProject }) {
             onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
             onDragLeave={() => setDragOver(false)}
             onDrop={handleDrop}
-            className={`border-2 border-dashed rounded-xl p-12 text-center transition-colors cursor-pointer ${
+            className={`upload-dropzone ${
               dragOver ? "border-primary bg-primary/5" : "border-outline-variant/40 hover:border-primary/50"
             }`}
           >
@@ -258,11 +259,11 @@ export default function UploadPage({ projectId, onSelectProject }) {
               ref={fileInputRef}
             />
             <label htmlFor="file-upload" className="cursor-pointer">
-              <span className="material-symbols-outlined text-[56px] text-outline-variant">cloud_upload</span>
-              <p className="text-on-surface-variant text-sm mt-3">
+              <span className="material-symbols-outlined upload-drop-icon">cloud_upload</span>
+              <p className="upload-drop-text">
                 {uploading ? "Uploading files..." : "Drag & drop files here or click to browse"}
               </p>
-              <p className="text-outline text-xs mt-1">Supports PDF, DOCX, XLSX, TXT</p>
+              <p className="upload-drop-hint">Supports PDF, DOCX, XLSX, TXT</p>
             </label>
           </div>
         </div>
@@ -270,28 +271,28 @@ export default function UploadPage({ projectId, onSelectProject }) {
 
       {/* Revision Prompt */}
       {showRevisionPrompt && (
-        <div className="bg-red-50 rounded-xl border border-red-200 p-6">
-          <div className="flex items-start gap-3">
-            <span className="material-symbols-outlined text-red-500 text-[24px]">error</span>
+        <div className="upload-revision-card">
+          <div className="upload-revision-inner">
+            <span className="material-symbols-outlined upload-revision-icon">error</span>
             <div className="flex-1">
-              <h4 className="font-semibold text-red-800 text-sm">Document Verification Failed</h4>
-              <p className="text-red-700 text-xs mt-1">
+              <h4 className="upload-revision-title">Document Verification Failed</h4>
+              <p className="upload-revision-text">
                 The uploaded document for <strong>{currentRequiredDoc?.label}</strong> did not pass verification.
                 Please review the requirements below and upload a revised document.
               </p>
               {lastVerificationResult && (
-                <div className="mt-3 p-3 bg-white rounded-lg border border-red-200">
-                  <p className="text-[11px] font-medium text-red-800 mb-2">Verification Result:</p>
+                <div className="upload-result-box">
+                  <p className="upload-result-label">Verification Result:</p>
                   <div className="flex items-center gap-2 mb-2">
-                    <span className="text-[11px] text-red-700">Score:</span>
-                    <span className="text-[11px] font-semibold text-red-800">{lastVerificationResult.score}%</span>
+                    <span className="upload-score-label">Score:</span>
+                    <span className="upload-score-value">{lastVerificationResult.score}%</span>
                   </div>
                   {lastMissingKeywords.length > 0 && (
                     <div>
-                      <p className="text-[11px] text-red-700 mb-1">Missing Requirements:</p>
-                      <div className="flex flex-wrap gap-1">
+                      <p className="upload-missing-label">Missing Requirements:</p>
+                      <div className="upload-keyword-wrap">
                         {lastMissingKeywords.map((keyword, i) => (
-                          <span key={i} className="px-2 py-0.5 bg-red-100 text-red-700 rounded text-[10px]">
+                          <span key={i} className="upload-keyword-chip">
                             {keyword}
                           </span>
                         ))}
@@ -306,7 +307,7 @@ export default function UploadPage({ projectId, onSelectProject }) {
                   setLastVerificationResult(null);
                   setLastMissingKeywords([]);
                 }}
-                className="mt-3 px-4 py-2 bg-red-600 text-white rounded-lg text-xs font-medium hover:bg-red-700 transition-colors"
+                className="upload-revision-btn"
               >
                 Upload Revised Document
               </button>
@@ -317,12 +318,12 @@ export default function UploadPage({ projectId, onSelectProject }) {
 
       {/* All Documents Verified */}
       {allDocsVerified && (
-        <div className="bg-emerald-50 rounded-xl border border-emerald-200 p-6">
-          <div className="flex items-center gap-3">
-            <span className="material-symbols-outlined text-emerald-500 text-[32px]">check_circle</span>
+        <div className="upload-success-card">
+          <div className="upload-success-inner">
+            <span className="material-symbols-outlined upload-success-icon">check_circle</span>
             <div>
-              <h4 className="font-semibold text-emerald-800 text-sm">All Required Documents Verified</h4>
-              <p className="text-emerald-700 text-xs mt-1">
+              <h4 className="upload-success-title">All Required Documents Verified</h4>
+              <p className="upload-success-text">
                 All {requiredDocs.length} required documents for this level have been successfully uploaded and verified.
                 You can now proceed to the next level.
               </p>
@@ -332,9 +333,9 @@ export default function UploadPage({ projectId, onSelectProject }) {
       )}
 
       {!selectedId && !loading && (
-        <div className="text-center py-12">
-          <span className="material-symbols-outlined text-[48px] text-outline-variant">folder_open</span>
-          <p className="text-on-surface-variant mt-3 text-sm">Select a project to upload documents</p>
+        <div className="upload-empty">
+          <span className="material-symbols-outlined upload-empty-icon">folder_open</span>
+          <p className="upload-empty-text">Select a project to upload documents</p>
         </div>
       )}
     </div>

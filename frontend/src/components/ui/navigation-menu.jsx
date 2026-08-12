@@ -6,6 +6,7 @@ import { motion, useScroll, useMotionValueEvent } from "framer-motion";
 import { Menu, Cpu } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
+import "./navigation-menu.css";
 
 const navItems = [
   { name: "Home", href: "#home" },
@@ -115,7 +116,7 @@ export function AnimatedNavFramer() {
   };
 
   return (
-    <div className="fixed top-5 left-1/2 -translate-x-1/2 z-50">
+    <div className="uinavmenu-wrapper">
       <motion.nav
         initial={{ y: -80, opacity: 0 }}
         animate={isExpanded ? "expanded" : "collapsed"}
@@ -124,25 +125,22 @@ export function AnimatedNavFramer() {
         whileTap={!isExpanded ? { scale: 0.95 } : {}}
         onClick={handleNavClick}
         className={cn(
-          "flex items-center overflow-hidden rounded-full border shadow-xl backdrop-blur-md h-12 transition-all duration-300",
+          "uinavmenu-bar",
           scrolled
-            ? "bg-slate-900/90 border-slate-700/60"
-            : "bg-white/10 border-white/20",
+            ? "uinavmenu-bar-scrolled"
+            : "uinavmenu-bar-default",
           !isExpanded && "cursor-pointer justify-center"
         )}
       >
         {/* Logo */}
         <motion.div
           variants={logoVariants}
-          className="flex-shrink-0 flex items-center gap-2 font-semibold pl-4 pr-3"
+          className="uinavmenu-logo"
         >
-          <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center">
+          <div className="uinavmenu-logo-icon">
             <Cpu className="h-4 w-4 text-white" />
           </div>
-          <span className={cn(
-            "text-sm font-bold tracking-tight whitespace-nowrap",
-            scrolled ? "text-white" : "text-white"
-          )}>
+          <span className="uinavmenu-logo-text">
             Consulting Delivery OS
           </span>
         </motion.div>
@@ -150,7 +148,7 @@ export function AnimatedNavFramer() {
         {/* Nav Links */}
         <motion.div
           className={cn(
-            "flex items-center gap-0.5 px-2",
+            "uinavmenu-links",
             !isExpanded && "pointer-events-none"
           )}
         >
@@ -161,10 +159,10 @@ export function AnimatedNavFramer() {
               variants={itemVariants}
               onClick={(e) => e.stopPropagation()}
               className={cn(
-                "text-xs font-medium transition-colors px-2.5 py-1.5 rounded-full whitespace-nowrap",
+                "uinavmenu-link",
                 scrolled
-                  ? "text-slate-300 hover:text-white hover:bg-white/10"
-                  : "text-white/80 hover:text-white hover:bg-white/15"
+                  ? "uinavmenu-link-scrolled"
+                  : "uinavmenu-link-default"
               )}
             >
               {item.name}
@@ -176,7 +174,7 @@ export function AnimatedNavFramer() {
         <motion.div
           variants={ctaVariants}
           className={cn(
-            "flex items-center gap-2 pr-3 pl-2",
+            "uinavmenu-cta",
             !isExpanded && "pointer-events-none"
           )}
         >
@@ -184,24 +182,24 @@ export function AnimatedNavFramer() {
             href="#demo"
             onClick={(e) => e.stopPropagation()}
             className={cn(
-              "text-xs font-medium px-3 py-1.5 rounded-full border transition-all whitespace-nowrap",
+              "uinavmenu-demo",
               scrolled
-                ? "border-slate-600 text-slate-300 hover:border-indigo-500 hover:text-indigo-400"
-                : "border-white/30 text-white hover:border-white/60 hover:bg-white/10"
+                ? "uinavmenu-demo-scrolled"
+                : "uinavmenu-demo-default"
             )}
           >
             Request Demo
           </motion.a>
           <button
             onClick={(e) => { e.stopPropagation(); navigate("/login"); }}
-            className="text-xs font-semibold px-3.5 py-1.5 rounded-full bg-gradient-to-r from-indigo-600 to-violet-600 text-white hover:from-indigo-500 hover:to-violet-500 transition-all whitespace-nowrap shadow-md shadow-indigo-900/40"
+            className="uinavmenu-cta-btn"
           >
             Get Started
           </button>
         </motion.div>
 
         {/* Collapsed Icon */}
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+        <div className="uinavmenu-collapsed-wrap">
           <motion.div
             variants={collapsedIconVariants}
             animate={isExpanded ? "expanded" : "collapsed"}

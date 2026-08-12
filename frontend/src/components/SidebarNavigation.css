@@ -1,0 +1,83 @@
+  .sidenav-root {
+    @apply w-64 flex flex-col bg-[#0b0f19] border-r border-[#1e293b]/40 text-slate-200;
+  }
+
+  .sidenav-brand {
+    @apply p-4 flex flex-col gap-1;
+  }
+
+  .sidenav-brand-title {
+    @apply text-white font-bold text-base;
+  }
+
+  .sidenav-brand-sub {
+    @apply text-slate-400 text-xs;
+  }
+
+  .sidenav-badge {
+    @apply mx-4 mb-4 px-3 py-2 rounded-lg bg-[#1e293b]/40 border border-[#1e293b]/60;
+  }
+
+  .sidenav-badge-row {
+    @apply flex items-center gap-2;
+  }
+
+  .sidenav-badge-icon {
+    @apply text-indigo-400 text-[18px];
+  }
+
+  .sidenav-badge-info {
+    @apply min-w-0;
+  }
+
+  .sidenav-badge-name {
+    @apply text-white text-xs font-bold truncate;
+  }
+
+  .sidenav-badge-meta {
+    @apply text-slate-400 text-[10px] truncate;
+  }
+
+  .sidenav-badge-company {
+    @apply mt-2 pt-2 border-t border-[#1e293b]/60;
+  }
+
+  .sidenav-nav {
+    @apply flex-1 px-2 space-y-1 overflow-y-auto;
+  }
+
+  .sidenav-label {
+    @apply px-4 pt-2 pb-1 text-slate-500 font-label-md text-[10px] uppercase tracking-widest;
+  }
+
+  .sidenav-item {
+    @apply w-full flex items-center gap-3 px-4 py-3 transition-colors duration-200;
+  }
+
+  .sidenav-item-active {
+    @apply bg-[#1e293b]/60 border-l-2 border-indigo-500 text-white font-bold;
+  }
+
+  .sidenav-item-default {
+    @apply text-slate-400 hover:text-white hover:bg-[#1e293b]/30 border-l-2 border-transparent;
+  }
+
+  .sidenav-item-icon {
+    @apply text-[20px];
+  }
+
+  .sidenav-item-label {
+    @apply font-body-md text-[13px];
+  }
+
+  .sidenav-footer {
+    @apply mt-auto p-4;
+  }
+
+  .sidenav-footer-border {
+    @apply pt-3 border-t border-[#1e293b]/60;
+  }
+
+  .sidenav-logout {
+    @apply w-full flex items-center gap-3 px-4 py-2.5 text-slate-400 hover:text-white transition-colors rounded-lg hover:bg-[#1e293b]/30;
+  }

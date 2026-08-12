@@ -1,0 +1,71 @@
+  .resources-page {
+    @apply min-h-screen bg-slate-50 dark:bg-[#04060f];
+  }
+
+  .resources-main {
+    @apply max-w-6xl mx-auto px-6 py-24;
+  }
+
+  .resources-header {
+    @apply mb-16 text-center max-w-3xl mx-auto;
+  }
+
+  .resources-eyebrow {
+    @apply text-indigo-600 dark:text-indigo-400 font-semibold text-sm uppercase tracking-widest mb-4;
+  }
+
+  .resources-title {
+    @apply text-4xl sm:text-5xl lg:text-6xl font-bold text-slate-900 dark:text-white mb-6 tracking-tight;
+  }
+
+  .resources-subtitle {
+    @apply text-lg text-slate-500 dark:text-inverse-on-surface mb-8;
+  }
+
+  .resources-search-wrap {
+    @apply relative max-w-2xl mx-auto;
+  }
+
+  .resources-search-icon {
+    @apply absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400 dark:text-outline-variant;
+  }
+
+  .resources-search-input {
+    @apply w-full pl-12 pr-4 py-4 bg-white dark:bg-on-secondary-fixed-variant/50 border border-slate-200 dark:border-outline/30 focus:border-indigo-500 dark:focus:border-primary rounded-xl font-medium text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-outline-variant shadow-sm transition-all outline-none;
+  }
+
+  .resources-grid {
+    @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16;
+  }
+
+  .resources-card {
+    @apply relative block p-6 bg-white dark:bg-on-secondary-fixed-variant/30 border border-slate-200 dark:border-outline/30 rounded-2xl hover:border-indigo-500 dark:hover:border-primary-container transition-all hover:-translate-y-1 overflow-hidden;
+  }
+
+  .resources-card-overlay {
+    @apply absolute inset-0 bg-gradient-to-br from-transparent to-indigo-600/5 dark:to-primary-container/10 opacity-0 group-hover:opacity-100 transition-opacity;
+  }
+
+  .resources-card-content {
+    @apply relative z-10;
+  }
+
+  .resources-card-icon {
+    @apply w-12 h-12 rounded-xl bg-indigo-500/10 dark:bg-on-secondary-fixed-variant flex items-center justify-center mb-4;
+  }
+
+  .resources-card-icon-svg {
+    @apply h-6 w-6 text-indigo-600 dark:text-primary-container;
+  }
+
+  .resources-card-title {
+    @apply text-lg font-semibold text-slate-900 dark:text-white mb-2;
+  }
+
+  .resources-card-desc {
+    @apply text-sm text-slate-500 dark:text-inverse-on-surface leading-relaxed;
+  }
+
+  .resources-empty {
+    @apply text-center text-slate-400 py-16;
+  }

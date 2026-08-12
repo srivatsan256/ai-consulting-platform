@@ -1,0 +1,151 @@
+.contact-input {
+  @apply w-full rounded-lg p-3 bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-white/50 transition-all focus:bg-white dark:focus:bg-white/10 focus:border-indigo-600 dark:focus:border-primary focus:outline-none focus:ring-1 focus:ring-indigo-600 dark:focus:ring-primary;
+}
+
+.contact-select {
+  @apply w-full rounded-lg p-3 bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-white/50 transition-all focus:bg-white dark:focus:bg-white/10 focus:border-indigo-600 dark:focus:border-primary focus:outline-none focus:ring-1 focus:ring-indigo-600 dark:focus:ring-primary appearance-none;
+}
+
+.contact-label {
+  @apply block text-sm font-medium text-slate-600 dark:text-white/70 mb-2;
+}
+
+.contact-form-card {
+  @apply relative overflow-hidden rounded-2xl bg-white dark:bg-slate-900/70 border border-slate-200 dark:border-white/10 backdrop-blur-md p-6 md:p-8;
+}
+
+.contact-form-bar {
+  @apply absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-indigo-600 to-primary-fixed-dim dark:from-[#2f31d4] dark:to-[#c0c1ff];
+}
+
+.contact-form-title {
+  @apply text-xl font-semibold text-slate-900 dark:text-white mb-6;
+}
+
+.contact-success {
+  @apply py-10 text-center;
+}
+
+.contact-success-icon {
+  @apply w-14 h-14 rounded-full bg-emerald-500/15 flex items-center justify-center mx-auto mb-4;
+}
+
+.contact-success-title {
+  @apply text-lg font-semibold text-slate-900 dark:text-white mb-2;
+}
+
+.contact-success-text {
+  @apply text-sm text-slate-500 dark:text-white/70;
+}
+
+.contact-reset-btn {
+  @apply mt-6 text-sm text-indigo-600 dark:text-primary-fixed-dim font-medium hover:underline;
+}
+
+.contact-form {
+  @apply grid grid-cols-1 md:grid-cols-2 gap-6;
+}
+
+.contact-error {
+  @apply mb-4 flex items-start gap-2 rounded-lg border border-rose-300 dark:border-rose-500/40 bg-rose-50 dark:bg-rose-500/10 px-4 py-3 text-sm text-rose-700 dark:text-rose-300;
+}
+
+.contact-submit-btn {
+  @apply w-full md:w-auto inline-flex items-center justify-center gap-2 bg-gradient-to-r from-indigo-600 to-violet-600 dark:from-[#2f31d4] dark:to-[#2f31d4] text-white px-8 py-3 rounded-lg hover:opacity-90 transition-opacity font-medium disabled:opacity-60 disabled:cursor-not-allowed;
+}
+
+.contact-page {
+  @apply min-h-screen bg-slate-50 dark:bg-[#020814];
+}
+
+.contact-main {
+  @apply max-w-6xl mx-auto px-6 pt-24 pb-16;
+}
+
+.contact-hero {
+  @apply mb-12 text-center md:text-left max-w-3xl mx-auto md:mx-0;
+}
+
+.contact-eyebrow {
+  @apply text-indigo-600 dark:text-indigo-400 font-semibold text-sm uppercase tracking-widest mb-4;
+}
+
+.contact-h1 {
+  @apply text-4xl sm:text-5xl font-bold text-slate-900 dark:text-white mb-4 tracking-tight;
+}
+
+.contact-hero-p {
+  @apply text-lg text-slate-500 dark:text-white/70;
+}
+
+.contact-grid {
+  @apply grid grid-cols-1 lg:grid-cols-12 gap-6;
+}
+
+.contact-side {
+  @apply lg:col-span-4 flex flex-col gap-6;
+}
+
+.contact-card {
+  @apply rounded-2xl bg-white dark:bg-slate-900/70 border border-slate-200 dark:border-white/10 p-6;
+}
+
+.contact-card-h3 {
+  @apply text-xs font-medium text-slate-500 dark:text-white/50 uppercase tracking-wider mb-2;
+}
+
+.contact-channel {
+  @apply flex items-start gap-4;
+}
+
+.contact-channel-icon {
+  @apply bg-indigo-600/10 dark:bg-[#2f31d4]/20 p-2 rounded-lg text-indigo-600 dark:text-[#c0c1ff];
+}
+
+.contact-channel-title {
+  @apply text-sm font-medium text-slate-900 dark:text-white;
+}
+
+.contact-channel-value {
+  @apply text-sm text-slate-500 dark:text-white/70;
+}
+
+.contact-address {
+  @apply text-sm text-slate-500 dark:text-white/70 leading-relaxed;
+}
+
+.contact-hours {
+  @apply mt-5 pt-5 border-t border-slate-200 dark:border-white/10;
+}
+
+.contact-hours-title {
+  @apply flex items-center gap-2 text-sm font-medium text-slate-900 dark:text-white mb-1;
+}
+
+.contact-hours-text {
+  @apply text-sm text-slate-500 dark:text-white/70;
+}
+
+.contact-cta-banner {
+  @apply lg:col-span-12 relative overflow-hidden rounded-2xl bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white p-8 flex flex-col md:flex-row items-center justify-between;
+}
+
+.contact-cta-glow {
+  @apply absolute right-0 top-0 w-1/2 h-full bg-gradient-to-l from-indigo-600/10 dark:from-[#2f31d4]/20 to-transparent pointer-events-none;
+}
+
+.contact-cta-text {
+  @apply relative z-10 max-w-2xl mb-4 md:mb-0;
+}
+
+.contact-cta-title {
+  @apply text-xl font-semibold mb-2;
+}
+
+.contact-cta-desc {
+  @apply text-slate-500 dark:text-white/70;
+}
+
+.contact-demo-btn {
+  @apply relative z-10 whitespace-nowrap bg-gradient-to-r from-indigo-600 to-violet-600 dark:from-[#2f31d4] dark:to-[#2f31d4] text-white px-6 py-3 rounded-lg hover:opacity-90 transition-opacity font-medium;
+}

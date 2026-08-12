@@ -1,0 +1,15 @@
+  .topheader-root {
+    @apply flex items-center justify-between mb-8;
+  }
+
+  .topheader-subtitle {
+    @apply font-label-md text-primary uppercase tracking-tighter text-[11px];
+  }
+
+  .topheader-title {
+    @apply font-headline-lg text-2xl font-bold text-on-surface mt-1;
+  }
+
+  .topheader-actions {
+    @apply flex items-center gap-3;
+  }

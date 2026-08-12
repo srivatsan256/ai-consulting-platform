@@ -163,6 +163,10 @@ export const subscriptionService = {
   quotas: () => api.get("/subscriptions/subscriptions/quotas/"),
 };
 
+export const contactService = {
+  submit: (data) => api.post("/contact/", data),
+};
+
 export const taskService = {
   list: (params) => api.get("/tasks/", { params }),
   get: (id) => api.get(`/tasks/${id}/`),

@@ -19,6 +19,12 @@ import ResetPassword from "./pages/ResetPassword";
 import ResetSuccess from "./pages/ResetSuccess";
 import LandingPage from "./pages/LandingPage";
 
+import PricingPage from "./pages/marketing/PricingPage";
+import ResourcesPage from "./pages/marketing/ResourcesPage";
+import ContactPage from "./pages/marketing/ContactPage";
+import PrivacyPolicyPage from "./pages/marketing/PrivacyPolicyPage";
+import TermsOfServicePage from "./pages/marketing/TermsOfServicePage";
+
 import DashboardPage from "./pages/DashboardPage";
 import ProjectsPage from "./pages/ProjectsPage";
 import ProjectDetailPage from "./pages/ProjectDetailPage";
@@ -355,6 +361,13 @@ export default function App() {
         {/* ── Public / Landing ─────────────────────────────── */}
         <Route path="/" element={user ? <RoleHome /> : <LandingPage />} />
         <Route path="/home" element={<LandingPage />} />
+
+        {/* ── Public / Marketing ────────────────────────────── */}
+        <Route path="/pricing" element={<PricingPage />} />
+        <Route path="/resources" element={<ResourcesPage />} />
+        <Route path="/contact" element={<ContactPage />} />
+        <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
+        <Route path="/terms-of-service" element={<TermsOfServicePage />} />
 
         {/* ── Public / Auth ─────────────────────────────────── */}
         <Route

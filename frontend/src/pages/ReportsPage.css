@@ -1,0 +1,115 @@
+  .reports-card {
+    @apply bg-white rounded-xl border border-outline-variant/20 p-6;
+  }
+
+  .reports-select {
+    @apply w-full px-4 py-2.5 rounded-xl border border-outline-variant/40 bg-surface-container-low text-on-surface text-sm focus:outline-none focus:border-primary;
+  }
+
+  .reports-summary-grid {
+    @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4;
+  }
+
+  .reports-summary-card {
+    @apply bg-white p-5 rounded-xl border border-outline-variant/20;
+  }
+
+  .reports-summary-inner {
+    @apply flex items-center gap-3;
+  }
+
+  .reports-summary-icon {
+    @apply w-10 h-10 rounded-lg flex items-center justify-center text-[22px];
+  }
+
+  .reports-summary-value {
+    @apply text-xl font-bold text-on-surface;
+  }
+
+  .reports-summary-label {
+    @apply text-xs text-on-surface-variant;
+  }
+
+  .reports-report-card {
+    @apply bg-white rounded-xl border border-outline-variant/20 p-6;
+  }
+
+  .reports-report-title {
+    @apply font-headline-sm text-base font-semibold text-on-surface mb-4;
+  }
+
+  .reports-generated {
+    @apply text-xs text-on-surface-variant mb-4;
+  }
+
+  .reports-doc-card {
+    @apply p-4 rounded-xl border border-outline-variant/20;
+  }
+
+  .reports-doc-header {
+    @apply flex items-center gap-3 mb-3;
+  }
+
+  .reports-doc-dot {
+    @apply w-3 h-3 rounded-full;
+  }
+
+  .reports-doc-title {
+    @apply font-semibold text-on-surface text-sm;
+  }
+
+  .reports-doc-score {
+    @apply ml-auto px-3 py-1 rounded-lg text-xs font-bold;
+  }
+
+  .reports-score-track {
+    @apply w-full h-2 bg-surface-container rounded-full overflow-hidden mb-3;
+  }
+
+  .reports-score-fill {
+    @apply h-full rounded-full;
+  }
+
+  .reports-missing-grid {
+    @apply grid grid-cols-2 gap-4 text-xs;
+  }
+
+  .reports-missing-label {
+    @apply text-on-surface-variant font-medium mb-1;
+  }
+
+  .reports-chip-wrap {
+    @apply flex flex-wrap gap-1;
+  }
+
+  .reports-chip-red {
+    @apply px-2 py-0.5 bg-red-50 text-red-600 rounded;
+  }
+
+  .reports-chip-amber {
+    @apply px-2 py-0.5 bg-amber-50 text-amber-600 rounded;
+  }
+
+  .reports-none {
+    @apply text-emerald-600;
+  }
+
+  .reports-ai {
+    @apply mt-3 p-2 bg-blue-50 rounded-lg;
+  }
+
+  .reports-ai-text {
+    @apply text-xs text-blue-800;
+  }
+
+  .reports-empty {
+    @apply text-center py-16;
+  }
+
+  .reports-empty-icon {
+    @apply text-[56px] text-outline-variant;
+  }
+
+  .reports-empty-text {
+    @apply text-on-surface-variant mt-3 text-sm;
+  }

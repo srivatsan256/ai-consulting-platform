@@ -1,18 +1,15 @@
 import * as React from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { motion, useScroll, useMotionValueEvent } from "framer-motion";
-import { Menu, Cpu } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { Menu, X, Cpu, Sun, Moon, ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useTheme } from "@/context/ThemeContext";
+import "./LandingNavbar.css";
 
 const navItems = [
-  { name: "Home", href: "#home" },
-  { name: "Platform", href: "#platform" },
-  { name: "Features", href: "#features" },
-  { name: "Solutions", href: "#solutions" },
-  { name: "Pricing", href: "#pricing" },
-  { name: "Resources", href: "#resources" },
-  { name: "About", href: "#about" },
-  { name: "Contact", href: "#contact" },
+  { name: "Pricing", href: "/pricing", active: (p) => p.startsWith("/pricing") },
+  { name: "Resources", href: "/resources", active: (p) => p.startsWith("/resources") },
+  { name: "Contact", href: "/contact", active: (p) => p.startsWith("/contact") },
 ];
 
 const EXPAND_SCROLL_THRESHOLD = 80;
@@ -71,10 +68,30 @@ const ctaVariants = {
   collapsed: { opacity: 0, x: 20, scale: 0.95, transition: { duration: 0.15 } },
 };
 
+function ThemeToggle({ className }) {
+  const { theme, toggleTheme } = useTheme();
+  return (
+    <button
+      onClick={toggleTheme}
+      aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+      className={cn(
+        "nav-theme-toggle",
+        theme === "dark" ? "nav-theme-toggle-dark" : "nav-theme-toggle-light",
+        className
+      )}
+    >
+      {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+    </button>
+  );
+}
+
 export default function LandingNavbar() {
   const [isExpanded, setExpanded] = React.useState(true);
   const [scrolled, setScrolled] = React.useState(false);
+  const [mobileOpen, setMobileOpen] = React.useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
+  const { theme } = useTheme();
 
   const { scrollY } = useScroll();
   const lastScrollY = React.useRef(0);
@@ -99,6 +116,10 @@ export default function LandingNavbar() {
     lastScrollY.current = latest;
   });
 
+  React.useEffect(() => {
+    setMobileOpen(false);
+  }, [location.pathname]);
+
   const handleNavClick = (e) => {
     if (!isExpanded) {
       e.preventDefault();
@@ -106,97 +127,192 @@ export default function LandingNavbar() {
     }
   };
 
-  return (
-    <div className="fixed top-5 left-1/2 -translate-x-1/2 z-50">
-      <motion.nav
-        initial={{ y: -80, opacity: 0 }}
-        animate={isExpanded ? "expanded" : "collapsed"}
-        variants={containerVariants}
-        whileHover={!isExpanded ? { scale: 1.1 } : {}}
-        whileTap={!isExpanded ? { scale: 0.95 } : {}}
-        onClick={handleNavClick}
-        className={cn(
-          "flex items-center overflow-hidden rounded-full border shadow-xl backdrop-blur-md h-12 transition-all duration-300",
-          scrolled ? "bg-slate-900/90 border-slate-700/60" : "bg-white/10 border-white/20",
-          !isExpanded && "cursor-pointer justify-center"
-        )}
-      >
-        {/* Logo */}
-        <motion.div
-          variants={logoVariants}
-          className="flex-shrink-0 flex items-center gap-2 font-semibold pl-4 pr-3"
-        >
-          <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center">
-            <Cpu className="h-4 w-4 text-white" />
-          </div>
-          <span className="text-sm font-bold tracking-tight whitespace-nowrap text-white">
-            Consulting Delivery OS
-          </span>
-        </motion.div>
+  const go = (path) => {
+    setMobileOpen(false);
+    navigate(path);
+  };
 
-        {/* Nav Links */}
-        <motion.div
+  const isOnDarkHero =
+    location.pathname === "/" ||
+    location.pathname === "/pricing" ||
+    location.pathname === "/resources" ||
+    location.pathname === "/contact";
+
+  const lightTheme = theme === "light";
+  const useDarkNavbar = lightTheme && !scrolled && isOnDarkHero;
+
+  return (
+    <>
+      <div className="nav-wrapper">
+        <motion.nav
+          initial={{ y: -80, opacity: 0 }}
+          animate={isExpanded ? "expanded" : "collapsed"}
+          variants={containerVariants}
+          whileHover={!isExpanded ? { scale: 1.1 } : {}}
+          whileTap={!isExpanded ? { scale: 0.95 } : {}}
+          onClick={handleNavClick}
           className={cn(
-            "flex items-center gap-0.5 px-2",
-            !isExpanded && "pointer-events-none"
+            "nav-bar",
+            useDarkNavbar
+              ? "nav-bar-darkhero"
+              : scrolled
+              ? "nav-bar-scrolled"
+              : "nav-bar-default",
+            !isExpanded && "cursor-pointer justify-center"
           )}
         >
-          {navItems.map((item) => (
-            <motion.a
-              key={item.name}
-              href={item.href}
-              variants={itemVariants}
-              onClick={(e) => e.stopPropagation()}
+          {/* Logo */}
+          <motion.div
+            variants={logoVariants}
+            onClick={() => go("/")}
+            className="nav-logo"
+          >
+            <div className="nav-logo-icon">
+              <Cpu className="h-4 w-4 text-white" />
+            </div>
+            <span
               className={cn(
-                "text-xs font-medium transition-colors px-2.5 py-1.5 rounded-full whitespace-nowrap",
-                scrolled
-                  ? "text-slate-300 hover:text-white hover:bg-white/10"
-                  : "text-white/80 hover:text-white hover:bg-white/15"
+                "nav-logo-text",
+                useDarkNavbar ? "text-white" : "text-slate-900 dark:text-white"
               )}
             >
-              {item.name}
-            </motion.a>
-          ))}
-        </motion.div>
+              Consulting Delivery OS
+            </span>
+          </motion.div>
 
-        {/* CTA Buttons */}
-        <motion.div
-          variants={ctaVariants}
-          className={cn(
-            "flex items-center gap-2 pr-3 pl-2",
-            !isExpanded && "pointer-events-none"
-          )}
-        >
-          <motion.a
-            href="#demo"
-            onClick={(e) => e.stopPropagation()}
+          {/* Nav Links */}
+          <motion.div
             className={cn(
-              "text-xs font-medium px-3 py-1.5 rounded-full border transition-all whitespace-nowrap",
-              scrolled
-                ? "border-slate-600 text-slate-300 hover:border-indigo-500 hover:text-indigo-400"
-                : "border-white/30 text-white hover:border-white/60 hover:bg-white/10"
+              "nav-links",
+              !isExpanded && "pointer-events-none"
             )}
           >
-            Request Demo
-          </motion.a>
-          <button
-            onClick={(e) => { e.stopPropagation(); navigate("/login"); }}
-            className="text-xs font-semibold px-3.5 py-1.5 rounded-full bg-gradient-to-r from-indigo-600 to-violet-600 text-white hover:from-indigo-500 hover:to-violet-500 transition-all whitespace-nowrap shadow-md shadow-indigo-900/40"
-          >
-            Get Started
-          </button>
-        </motion.div>
-
-        {/* Collapsed Icon */}
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <motion.div
-            variants={collapsedIconVariants}
-            animate={isExpanded ? "expanded" : "collapsed"}
-          >
-            <Menu className="h-5 w-5 text-white" />
+            {navItems.map((item) => (
+              <motion.button
+                key={item.name}
+                variants={itemVariants}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  go(item.href);
+                }}
+                className={cn(
+                  "nav-item",
+                  useDarkNavbar
+                    ? item.active(location.pathname)
+                      ? "nav-item-darkhero-active"
+                      : "nav-item-darkhero"
+                    : item.active(location.pathname)
+                    ? "nav-item-active"
+                    : "nav-item-default"
+                )}
+              >
+                {item.name}
+              </motion.button>
+            ))}
           </motion.div>
-        </div>
-      </motion.nav>
-    </div>
+
+          {/* CTA Buttons */}
+          <motion.div
+            variants={ctaVariants}
+            className={cn(
+              "nav-cta",
+              !isExpanded && "pointer-events-none"
+            )}
+          >
+            <ThemeToggle />
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                go("/contact");
+              }}
+              className={cn(
+                "nav-demo",
+                useDarkNavbar ? "nav-demo-darkhero" : "nav-demo-default"
+              )}
+            >
+              Request Demo
+            </button>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                go("/login");
+              }}
+              className="nav-cta-btn"
+            >
+              Get Started
+            </button>
+          </motion.div>
+
+          {/* Mobile menu button */}
+          <motion.div variants={itemVariants} className="nav-mobile">
+            <ThemeToggle />
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                setMobileOpen((v) => !v);
+              }}
+              aria-label="Toggle navigation menu"
+              className={cn(
+                "nav-mobile-toggle",
+                useDarkNavbar ? "nav-mobile-toggle-darkhero" : "nav-mobile-toggle-default"
+              )}
+            >
+              {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            </button>
+          </motion.div>
+
+          {/* Collapsed Icon */}
+          <div className="nav-collapsed-wrap">
+            <motion.div
+              variants={collapsedIconVariants}
+              animate={isExpanded ? "expanded" : "collapsed"}
+            >
+              <Menu className="h-5 w-5 text-slate-900 dark:text-white" />
+            </motion.div>
+          </div>
+        </motion.nav>
+      </div>
+
+      {/* Mobile dropdown menu */}
+      {mobileOpen && (
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -10 }}
+          className="nav-mobile-menu"
+        >
+          <div className="nav-mobile-list">
+            {navItems.map((item) => (
+              <button
+                key={item.name}
+                onClick={() => go(item.href)}
+                className={cn(
+                  "nav-mobile-item",
+                  item.active(location.pathname)
+                    ? "nav-mobile-item-active"
+                    : "nav-mobile-item-default"
+                )}
+              >
+                {item.name}
+              </button>
+            ))}
+            <div className="nav-mobile-actions">
+              <button
+                onClick={() => go("/contact")}
+                className="nav-mobile-demo"
+              >
+                Request Demo
+              </button>
+              <button
+                onClick={() => go("/login")}
+                className="nav-mobile-cta"
+              >
+                Get Started <ArrowRight className="h-4 w-4" />
+              </button>
+            </div>
+          </div>
+        </motion.div>
+      )}
+    </>
   );
 }

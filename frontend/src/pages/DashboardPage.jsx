@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { projectService } from '../services/api';
 import { useAuth } from '../context/AuthContext';
+import './DashboardPage.css';
 
 function formatDate(value) {
   if (!value) return 'N/A';
@@ -30,15 +31,15 @@ function QuotaBar({ label, used, limit }) {
   const nearLimit = pct >= 90;
   return (
     <div>
-      <div className="flex items-center justify-between mb-1">
-        <p className="text-xs text-on-surface font-medium">{label}</p>
-        <p className="text-[11px] text-on-surface-variant">
+      <div className="dash-quota-row">
+        <p className="dash-quota-label">{label}</p>
+        <p className="dash-quota-value">
           {used ?? 0} / {limit}
         </p>
       </div>
-      <div className="w-full h-1.5 bg-surface-container rounded-full overflow-hidden">
+      <div className="dash-quota-track">
         <div
-          className={`h-full rounded-full transition-all ${nearLimit ? "bg-red-500" : "bg-primary"}`}
+          className={`dash-quota-fill ${nearLimit ? "bg-red-500" : "bg-primary"}`}
           style={{ width: `${pct}%` }}
         />
       </div>
@@ -104,13 +105,13 @@ export default function DashboardPage({ user, onOpenProject, onNewProject, onVie
 
   return (
     <div className="space-y-8">
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+      <div className="dash-header">
         <div>
-          <span className="font-label-md text-primary uppercase tracking-tighter text-[11px]">Overview</span>
-          <h2 className="font-headline-lg text-2xl font-bold text-on-surface mt-1">
+          <span className="dash-eyebrow">Overview</span>
+          <h2 className="dash-title">
             {user?.dashboard_name || "Consultant Dashboard"}
           </h2>
-          <p className="text-on-surface-variant text-sm mt-1">
+          <p className="dash-subtitle">
             {user?.assigned_role
               ? `Welcome back, ${user.name?.split(" ")[0] || "User"}. Here's your ${user.dashboard_name || "dashboard"}.`
               : "Live portfolio overview from backend projects and verification status."}
@@ -118,45 +119,45 @@ export default function DashboardPage({ user, onOpenProject, onNewProject, onVie
         </div>
         <button
           onClick={onNewProject}
-          className="px-5 py-2.5 bg-primary text-on-primary rounded-xl font-bold text-sm hover:opacity-90 transition-all flex items-center gap-2 shadow-lg shadow-primary/20 self-start md:self-auto"
+          className="dash-new-btn"
         >
           <span className="material-symbols-outlined text-[18px]">add</span>
           New Project
         </button>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="dash-stats-grid">
         {stats.map((stat) => (
-          <div key={stat.label} className="bg-white p-5 rounded-xl soft-shadow border border-outline-variant/20">
+          <div key={stat.label} className="dash-stat-card soft-shadow">
             <div className="flex items-start justify-between">
-              <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${stat.color}`}>
-                <span className="material-symbols-outlined text-[22px]">{stat.icon}</span>
+              <div className={`dash-stat-icon ${stat.color}`}>
+                <span className="material-symbols-outlined">{stat.icon}</span>
               </div>
             </div>
-            <p className="font-headline-lg text-2xl font-bold text-on-surface mt-4">{loading ? '...' : stat.value}</p>
-            <p className="text-on-surface-variant text-sm mt-0.5">{stat.label}</p>
-            <p className="text-[11px] text-outline mt-2">{stat.change}</p>
+            <p className="dash-stat-value">{loading ? '...' : stat.value}</p>
+            <p className="dash-stat-label">{stat.label}</p>
+            <p className="dash-stat-change">{stat.change}</p>
           </div>
         ))}
       </div>
 
       {/* Plan & Usage */}
-      <div className="bg-white rounded-xl soft-shadow border border-outline-variant/20 overflow-hidden">
-        <div className="p-6 border-b border-outline-variant/20 flex items-center justify-between gap-4">
+      <div className="dash-card soft-shadow">
+        <div className="dash-card-header gap-4">
           <div>
-            <span className="font-label-md text-primary uppercase tracking-tighter text-[11px]">Subscription</span>
-            <h3 className="font-headline-sm text-base font-semibold text-on-surface mt-0.5">
+            <span className="dash-eyebrow">Subscription</span>
+            <h3 className="dash-card-title">
               Plan & Usage
             </h3>
           </div>
           {plan?.plan && (
-            <span className="px-3 py-1 rounded-lg bg-primary/10 text-primary text-xs font-bold uppercase tracking-wider">
+            <span className="dash-plan-badge">
               {plan.plan}
             </span>
           )}
         </div>
         {plan ? (
-          <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="dash-plan-body">
             <div className="space-y-4">
               <QuotaBar
                 label="Active Projects"
@@ -175,17 +176,17 @@ export default function DashboardPage({ user, onOpenProject, onNewProject, onVie
               />
             </div>
             <div>
-              <p className="font-label-md text-[11px] uppercase tracking-wider text-on-surface-variant mb-2">
+              <p className="dash-features-label">
                 Enabled Features
               </p>
               {Object.keys(plan.features || {}).length > 0 ? (
-                <div className="flex flex-wrap gap-2">
+                <div className="dash-feature-chips">
                   {Object.entries(plan.features)
                     .filter(([, enabled]) => enabled)
                     .map(([code]) => (
                       <span
                         key={code}
-                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-50 text-emerald-700 text-xs font-medium"
+                        className="dash-feature-chip"
                       >
                         <span className="material-symbols-outlined text-[14px]">check_circle</span>
                         {featureLabel(code)}
@@ -193,18 +194,18 @@ export default function DashboardPage({ user, onOpenProject, onNewProject, onVie
                     ))}
                 </div>
               ) : (
-                <p className="text-sm text-on-surface-variant">
+                <p className="dash-no-features">
                   No features enabled yet. Check your subscription plan.
                 </p>
               )}
             </div>
           </div>
         ) : (
-          <div className="p-6 flex items-start gap-3">
+          <div className="dash-no-plan">
             <span className="material-symbols-outlined text-[20px] text-outline-variant">info</span>
             <div>
-              <p className="text-sm text-on-surface">No active plan found.</p>
-              <p className="text-xs text-on-surface-variant mt-0.5">
+              <p className="dash-no-plan-title">No active plan found.</p>
+              <p className="dash-no-plan-sub">
                 Quotas and AI features are gated by your company's subscription plan.
               </p>
             </div>
@@ -212,59 +213,59 @@ export default function DashboardPage({ user, onOpenProject, onNewProject, onVie
         )}
       </div>
 
-      <div className="grid grid-cols-12 gap-6">
-        <div className="col-span-12 lg:col-span-8 bg-white rounded-xl soft-shadow border border-outline-variant/20 overflow-hidden">
-          <div className="p-6 border-b border-outline-variant/20 flex items-center justify-between">
-            <h3 className="font-headline-sm text-base font-semibold text-on-surface">Recent Projects</h3>
-            <button onClick={onViewAllProjects} className="text-primary text-sm font-medium hover:underline">
+      <div className="dash-grid">
+        <div className="dash-projects-card soft-shadow">
+          <div className="dash-card-header">
+            <h3 className="dash-section-title">Recent Projects</h3>
+            <button onClick={onViewAllProjects} className="dash-view-all">
               View all
             </button>
           </div>
-          <div className="divide-y divide-outline-variant/10">
+          <div className="dash-project-list">
             {recentProjects.length > 0 ? recentProjects.map((project) => (
               <button
                 key={project.id}
                 onClick={() => onOpenProject(project.id)}
-                className="w-full p-5 flex items-center gap-4 hover:bg-surface-container-low transition-colors text-left"
+                className="dash-project-row"
               >
-                <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                <div className="dash-project-icon">
                   <span className="material-symbols-outlined text-primary">folder</span>
                 </div>
-                <div className="flex-1 min-w-0">
-                  <p className="font-semibold text-on-surface text-sm">{project.project_name}</p>
-                  <p className="text-xs text-on-surface-variant">{project.company_name} · Level {Math.max(1, project.current_level || 1)}</p>
+                <div className="dash-project-info">
+                  <p className="dash-project-name">{project.project_name}</p>
+                  <p className="dash-project-meta">{project.company_name} · Level {Math.max(1, project.current_level || 1)}</p>
                 </div>
-                <div className="hidden sm:block text-right shrink-0">
-                  <span className={`text-xs font-label-md px-2 py-1 rounded ${getStatusTone(project.status)}`}>
+                <div className="dash-project-side">
+                  <span className={`dash-status-badge ${getStatusTone(project.status)}`}>
                     {project.status}
                   </span>
-                  <div className="w-24 h-1.5 bg-surface-container rounded-full mt-2 overflow-hidden">
-                    <div className="h-full bg-primary rounded-full" style={{ width: `${Math.max(0, Math.min(100, Number(project.readiness_score) || 0))}%` }} />
+                  <div className="dash-progress-track">
+                    <div className="dash-progress-fill" style={{ width: `${Math.max(0, Math.min(100, Number(project.readiness_score) || 0))}%` }} />
                   </div>
                 </div>
                 <span className="material-symbols-outlined text-outline-variant">chevron_right</span>
               </button>
             )) : (
-              <div className="p-8 text-center text-sm text-on-surface-variant">No projects yet. Create one to start.</div>
+              <div className="dash-projects-empty">No projects yet. Create one to start.</div>
             )}
           </div>
         </div>
 
-        <div className="col-span-12 lg:col-span-4 bg-white p-6 rounded-xl soft-shadow border border-outline-variant/20">
-          <h3 className="font-headline-sm text-base font-semibold text-on-surface mb-5">Recent Activity</h3>
+        <div className="dash-activity-card soft-shadow">
+          <h3 className="dash-activity-title">Recent Activity</h3>
           <ul className="space-y-4">
             {activity.length > 0 ? activity.map((item, i) => (
               <li key={i} className="flex gap-3">
-                <span className={`material-symbols-outlined text-[20px] shrink-0 ${item.color}`} style={{ fontVariationSettings: "'FILL' 1" }}>
+                <span className={`material-symbols-outlined dash-activity-icon ${item.color}`} style={{ fontVariationSettings: "'FILL' 1" }}>
                   {item.icon}
                 </span>
                 <div>
-                  <p className="text-sm text-on-surface leading-snug">{item.text}</p>
-                  <p className="text-[11px] text-outline mt-0.5">{item.time}</p>
+                  <p className="dash-activity-text">{item.text}</p>
+                  <p className="dash-activity-time">{item.time}</p>
                 </div>
               </li>
             )) : (
-              <li className="text-sm text-on-surface-variant">No recent activity yet.</li>
+              <li className="dash-activity-empty">No recent activity yet.</li>
             )}
           </ul>
         </div>

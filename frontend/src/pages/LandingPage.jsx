@@ -31,9 +31,12 @@ import {
   Database,
   UserCheck,
   Rocket,
+  AlertTriangle,
+  XCircle,
 } from "lucide-react";
 import LandingNavbar from "../components/LandingNavbar";
 import LandingFooter from "../components/LandingFooter";
+import "./LandingPage.css";
 
 // ─── Animation Variants ──────────────────────────────────────────────────────
 const fadeUp = {
@@ -68,11 +71,11 @@ function HeroSection() {
   return (
     <section
       id="home"
-      className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden bg-[#04060f]"
+      className="landing-hero"
     >
       {/* Background Grid */}
       <div
-        className="absolute inset-0 opacity-25"
+        className="landing-hero-grid"
         style={{
           backgroundImage:
             "linear-gradient(rgba(99,102,241,0.15) 1px, transparent 1px), linear-gradient(90deg, rgba(99,102,241,0.15) 1px, transparent 1px)",
@@ -80,17 +83,17 @@ function HeroSection() {
         }}
       />
       {/* Radial glows */}
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[900px] h-[500px] bg-indigo-600/20 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-0 left-1/4 w-[400px] h-[300px] bg-violet-600/15 rounded-full blur-[100px] pointer-events-none" />
-      <div className="absolute bottom-0 right-1/4 w-[400px] h-[300px] bg-cyan-500/10 rounded-full blur-[100px] pointer-events-none" />
+      <div className="landing-hero-glow" />
+      <div className="landing-hero-glow-violet" />
+      <div className="landing-hero-glow-cyan" />
 
-      <div className="relative z-10 max-w-6xl mx-auto px-6 text-center pt-24 pb-16">
+      <div className="landing-hero-content">
         {/* Badge */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-indigo-500/40 bg-indigo-500/10 text-indigo-300 text-sm font-medium mb-8 backdrop-blur-sm"
+          className="landing-hero-badge"
         >
           <span className="text-base">🚀</span>
           <span>AI-Powered Enterprise Consulting Platform</span>
@@ -101,10 +104,10 @@ function HeroSection() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.15 }}
-          className="text-5xl sm:text-6xl lg:text-7xl font-bold text-white leading-tight tracking-tight mb-6"
+          className="landing-hero-h1"
         >
           Deliver Better{" "}
-          <span className="bg-gradient-to-r from-indigo-400 via-violet-400 to-cyan-400 bg-clip-text text-transparent">
+          <span className="landing-gradient">
             Consulting Projects
           </span>{" "}
           with AI
@@ -115,7 +118,7 @@ function HeroSection() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.3 }}
-          className="max-w-3xl mx-auto text-lg text-slate-400 leading-relaxed mb-4"
+          className="landing-hero-sub"
         >
           Transform the way consulting teams gather requirements, analyze business processes, generate
           documentation, and collaborate with clients—all from a single intelligent platform.
@@ -124,7 +127,7 @@ function HeroSection() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.4 }}
-          className="max-w-2xl mx-auto text-base text-slate-500 leading-relaxed mb-10"
+          className="landing-hero-sub2"
         >
           Our AI Consulting Delivery Platform streamlines every stage of the consulting lifecycle.
           From project onboarding and document analysis to AI-assisted documentation and stakeholder
@@ -136,19 +139,19 @@ function HeroSection() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.5 }}
-          className="flex flex-wrap items-center justify-center gap-4 mb-16"
+          className="landing-hero-cta"
         >
           <button
             id="get-started"
             onClick={() => navigate("/login")}
-            className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white font-semibold text-base shadow-xl shadow-indigo-900/40 transition-all duration-200 hover:scale-105 hover:shadow-indigo-700/50"
+            className="landing-btn-primary"
           >
             Get Started <ArrowRight className="h-4 w-4" />
           </button>
           <a
             id="demo"
             href="#how-it-works"
-            className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full border border-slate-600 bg-white/5 hover:bg-white/10 text-slate-200 font-semibold text-base backdrop-blur-sm transition-all duration-200 hover:border-slate-400"
+            className="landing-btn-demo"
           >
             Request Demo
           </a>
@@ -159,7 +162,7 @@ function HeroSection() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.65 }}
-          className="flex flex-wrap justify-center gap-6"
+          className="landing-hero-highlights"
         >
           {[
             { icon: Brain, label: "AI-Powered Discovery" },
@@ -169,9 +172,9 @@ function HeroSection() {
           ].map(({ icon: Icon, label }) => (
             <div
               key={label}
-              className="flex items-center gap-2 text-sm text-slate-400"
+              className="landing-hero-highlight"
             >
-              <div className="w-5 h-5 rounded-full bg-indigo-500/20 flex items-center justify-center">
+              <div className="landing-highlight-icon">
                 <Icon className="h-3 w-3 text-indigo-400" />
               </div>
               <span>{label}</span>
@@ -185,14 +188,14 @@ function HeroSection() {
         initial={{ opacity: 0, y: 60 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.9, delay: 0.7 }}
-        className="relative z-10 w-full max-w-5xl mx-auto px-6 pb-20"
+        className="landing-hero-mockup"
       >
-        <div className="relative rounded-2xl overflow-hidden border border-slate-700/60 shadow-2xl shadow-indigo-950/60">
-          <div className="bg-slate-900 px-4 py-2.5 flex items-center gap-2 border-b border-slate-700/60">
-            <div className="w-3 h-3 rounded-full bg-red-500/70" />
-            <div className="w-3 h-3 rounded-full bg-yellow-500/70" />
-            <div className="w-3 h-3 rounded-full bg-green-500/70" />
-            <div className="flex-1 mx-4 bg-slate-800 rounded px-3 py-1 text-xs text-slate-500">
+        <div className="landing-browser">
+          <div className="landing-browser-bar">
+            <div className="landing-browser-dot bg-red-500/70" />
+            <div className="landing-browser-dot bg-yellow-500/70" />
+            <div className="landing-browser-dot bg-green-500/70" />
+            <div className="landing-browser-url">
               app.consultingdeliveryos.com/dashboard
             </div>
           </div>
@@ -202,19 +205,19 @@ function HeroSection() {
             className="w-full object-cover"
             style={{ height: "420px", objectPosition: "top" }}
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-transparent pointer-events-none" />
+          <div className="landing-mockup-overlay" />
           {/* Floating stat cards */}
-          <div className="absolute bottom-8 left-8 bg-slate-900/90 backdrop-blur-md border border-slate-700/60 rounded-xl p-4 shadow-xl">
-            <p className="text-xs text-slate-400 mb-1">Projects Delivered</p>
-            <p className="text-2xl font-bold text-white">2,847</p>
-            <p className="text-xs text-emerald-400 flex items-center gap-1 mt-1">
+          <div className="landing-float-card">
+            <p className="landing-float-label">Projects Delivered</p>
+            <p className="landing-float-value text-white">2,847</p>
+            <p className="landing-float-sub text-emerald-400">
               <TrendingUp className="h-3 w-3" /> +32% this quarter
             </p>
           </div>
           <div className="absolute bottom-8 right-8 bg-slate-900/90 backdrop-blur-md border border-slate-700/60 rounded-xl p-4 shadow-xl">
-            <p className="text-xs text-slate-400 mb-1">AI Readiness Score</p>
-            <p className="text-2xl font-bold text-indigo-400">94%</p>
-            <p className="text-xs text-slate-500 mt-1">Avg. across all projects</p>
+            <p className="landing-float-label">AI Readiness Score</p>
+            <p className="landing-float-value text-indigo-400">94%</p>
+            <p className="landing-float-note">Avg. across all projects</p>
           </div>
         </div>
       </motion.div>
@@ -234,11 +237,11 @@ function TrustedBySection() {
   ];
 
   return (
-    <section className="py-20 bg-slate-950 border-y border-slate-800/60">
-      <div className="max-w-6xl mx-auto px-6">
+    <section className="landing-trusted">
+      <div className="landing-container">
         <AnimatedSection>
-          <motion.div variants={fadeUp} className="text-center mb-12">
-            <h2 className="text-2xl sm:text-3xl font-bold text-white mb-4">
+          <motion.div variants={fadeUp} className="landing-section-head-sm">
+            <h2 className="landing-h2-sm">
               Trusted by Modern Consulting Teams
             </h2>
             <p className="max-w-2xl mx-auto text-slate-400">
@@ -250,18 +253,18 @@ function TrustedBySection() {
 
           <motion.div
             variants={staggerContainer}
-            className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4"
+            className="landing-logo-grid"
           >
             {logos.map(({ name, icon: Icon }) => (
               <motion.div
                 key={name}
                 variants={fadeUp}
-                className="flex flex-col items-center gap-3 p-5 rounded-xl border border-slate-800 bg-slate-900/50 hover:border-indigo-500/40 hover:bg-slate-900 transition-all duration-200 group"
+                className="landing-logo-card"
               >
-                <div className="w-10 h-10 rounded-lg bg-indigo-500/10 group-hover:bg-indigo-500/20 flex items-center justify-center transition-colors">
+                <div className="landing-logo-icon-box">
                   <Icon className="h-5 w-5 text-indigo-400" />
                 </div>
-                <span className="text-xs text-slate-400 text-center font-medium leading-tight">
+                <span className="landing-logo-name">
                   {name}
                 </span>
               </motion.div>
@@ -287,40 +290,40 @@ function PlatformOverviewSection() {
   ];
 
   return (
-    <section id="platform" className="py-24 bg-[#04060f]">
-      <div className="max-w-6xl mx-auto px-6">
+    <section id="platform" className="landing-section-dark">
+      <div className="landing-container">
         <AnimatedSection>
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
+          <div className="landing-overview-grid">
             <div>
               <motion.p
                 variants={fadeUp}
-                className="text-indigo-400 font-semibold text-sm uppercase tracking-widest mb-4"
+                className="landing-eyebrow mb-4"
               >
                 Platform Overview
               </motion.p>
               <motion.h2
                 variants={fadeUp}
-                className="text-3xl sm:text-4xl font-bold text-white mb-6 leading-tight"
+                className="landing-h2-tight"
               >
                 One Platform for the{" "}
-                <span className="bg-gradient-to-r from-indigo-400 to-violet-400 bg-clip-text text-transparent">
+                <span className="landing-gradient-duo">
                   Entire Consulting Lifecycle
                 </span>
               </motion.h2>
-              <motion.p variants={fadeUp} className="text-slate-400 mb-4 leading-relaxed">
+              <motion.p variants={fadeUp} className="landing-p mb-4">
                 Managing consulting projects often requires multiple disconnected tools for
                 documentation, collaboration, project tracking, and client communication.
               </motion.p>
-              <motion.p variants={fadeUp} className="text-slate-400 mb-8 leading-relaxed">
+              <motion.p variants={fadeUp} className="landing-p mb-8">
                 Our platform brings everything together into one intelligent workspace, enabling
                 consulting teams to manage projects from initial discovery through final delivery.
               </motion.p>
-              <motion.div variants={staggerContainer} className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <motion.div variants={staggerContainer} className="landing-check-grid">
                 {highlights.map((h) => (
                   <motion.div
                     key={h}
                     variants={fadeUp}
-                    className="flex items-center gap-2.5 text-sm text-slate-300"
+                    className="landing-check-item"
                   >
                     <CheckCircle2 className="h-4 w-4 text-indigo-400 flex-shrink-0" />
                     {h}
@@ -330,27 +333,88 @@ function PlatformOverviewSection() {
             </div>
 
             <motion.div variants={fadeUp} className="relative">
-              <div className="rounded-2xl overflow-hidden border border-slate-700/50 shadow-2xl shadow-indigo-950/50">
+              <div className="landing-img-frame">
                 <img
                   src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=80&auto=format&fit=crop"
                   alt="Platform Overview"
                   className="w-full object-cover"
                   style={{ height: "480px", objectPosition: "center" }}
                 />
-                <div className="absolute inset-0 bg-gradient-to-br from-indigo-900/30 to-transparent pointer-events-none rounded-2xl" />
+                <div className="landing-img-overlay" />
               </div>
               {/* Floating badge */}
-              <div className="absolute -bottom-5 -left-5 bg-slate-900 border border-slate-700/60 rounded-xl p-4 shadow-xl backdrop-blur-md">
+              <div className="landing-badge-card">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-lg bg-emerald-500/20 flex items-center justify-center">
+                  <div className="landing-badge-icon-box">
                     <Zap className="h-5 w-5 text-emerald-400" />
                   </div>
                   <div>
-                    <p className="text-xs text-slate-400">Time Saved</p>
-                    <p className="text-lg font-bold text-white">60% Faster</p>
+                    <p className="landing-badge-label">Time Saved</p>
+                    <p className="landing-badge-value">60% Faster</p>
                   </div>
                 </div>
               </div>
+            </motion.div>
+          </div>
+        </AnimatedSection>
+      </div>
+    </section>
+  );
+}
+
+// ─── WHY TRADITIONAL NEEDS AN UPGRADE ─────────────────────────────────────────
+function WhyUpgradeSection() {
+  const painPoints = [
+    "Inconsistent documentation across teams and projects",
+    "Missing or ambiguous requirements leading to scope creep",
+    "Version confusion and fragmented collaboration tools",
+    "Long review cycles and delayed delivery timelines",
+    "Institutional knowledge lost when consultants transition",
+  ];
+
+  return (
+    <section className="landing-section-slate">
+      <div className="landing-container">
+        <AnimatedSection>
+          <div className="landing-upgrade-grid">
+            <motion.div variants={fadeUp}>
+              <p className="landing-eyebrow mb-4">
+                The Problem
+              </p>
+              <h2 className="landing-h2-tight">
+                Why Traditional Consulting Needs an{" "}
+                <span className="landing-gradient-duo">
+                  Upgrade
+                </span>
+              </h2>
+              <p className="landing-p mb-4">
+                Legacy consulting engagements rely on disconnected documents, manual coordination, and
+                tribal knowledge. This leads to inconsistent deliverables, ambiguous requirements, and
+                slow review cycles.
+              </p>
+              <p className="landing-p">
+                ConsultAI OS replaces these fragile practices with a centralized, intelligent delivery
+                process that keeps every engagement structured and auditable.
+              </p>
+            </motion.div>
+
+            <motion.div
+              variants={fadeUp}
+              className="landing-pain-card"
+            >
+              <div className="landing-pain-bar" />
+              <h3 className="landing-pain-title">
+                <AlertTriangle className="h-5 w-5" />
+                Common Pitfalls of Traditional Consulting
+              </h3>
+              <ul className="landing-pain-list">
+                {painPoints.map((point) => (
+                  <li key={point} className="landing-pain-item">
+                    <XCircle className="h-5 w-5 text-rose-500 flex-shrink-0 mt-0.5" />
+                    <span className="landing-pain-text">{point}</span>
+                  </li>
+                ))}
+              </ul>
             </motion.div>
           </div>
         </AnimatedSection>
@@ -401,35 +465,35 @@ function WhyChooseSection() {
   ];
 
   return (
-    <section id="features" className="py-24 bg-slate-950">
-      <div className="max-w-6xl mx-auto px-6">
+    <section id="features" className="landing-section-slate">
+      <div className="landing-container">
         <AnimatedSection>
-          <motion.div variants={fadeUp} className="text-center mb-16">
-            <p className="text-indigo-400 font-semibold text-sm uppercase tracking-widest mb-3">
+          <motion.div variants={fadeUp} className="landing-section-head">
+            <p className="landing-eyebrow mb-3">
               Why Choose Our Platform
             </p>
-            <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
+            <h2 className="landing-h2">
               Built Specifically for Consulting Teams
             </h2>
           </motion.div>
 
           <motion.div
             variants={staggerContainer}
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+            className="landing-cards-3"
           >
             {reasons.map(({ icon: Icon, title, desc, color }) => (
               <motion.div
                 key={title}
                 variants={fadeUp}
-                className="group relative p-6 rounded-2xl border border-slate-800 bg-slate-900/60 hover:border-slate-600 transition-all duration-300 hover:-translate-y-1"
+                className="landing-card"
               >
                 <div
-                  className={`w-12 h-12 rounded-xl bg-gradient-to-br ${color} flex items-center justify-center mb-4 shadow-lg`}
+                  className={`landing-card-icon bg-gradient-to-br ${color}`}
                 >
                   <Icon className="h-6 w-6 text-white" />
                 </div>
-                <h3 className="text-lg font-semibold text-white mb-2">{title}</h3>
-                <p className="text-sm text-slate-400 leading-relaxed">{desc}</p>
+                <h3 className="landing-card-title">{title}</h3>
+                <p className="landing-card-desc">{desc}</p>
               </motion.div>
             ))}
           </motion.div>
@@ -496,16 +560,16 @@ function CoreFeaturesSection() {
   };
 
   return (
-    <section id="solutions" className="py-24 bg-[#04060f]">
-      <div className="max-w-6xl mx-auto px-6">
+    <section id="solutions" className="landing-section-dark">
+      <div className="landing-container">
         <AnimatedSection>
-          <motion.div variants={fadeUp} className="text-center mb-16">
-            <p className="text-indigo-400 font-semibold text-sm uppercase tracking-widest mb-3">
+          <motion.div variants={fadeUp} className="landing-section-head">
+            <p className="landing-eyebrow mb-3">
               Core Features
             </p>
-            <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
+            <h2 className="landing-h2">
               Everything You Need to Deliver{" "}
-              <span className="bg-gradient-to-r from-indigo-400 to-violet-400 bg-clip-text text-transparent">
+              <span className="landing-gradient-duo">
                 Successful Consulting Projects
               </span>
             </h2>
@@ -513,7 +577,7 @@ function CoreFeaturesSection() {
 
           <motion.div
             variants={staggerContainer}
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+            className="landing-features-grid"
           >
             {features.map(({ icon: Icon, title, desc, items, color }) => {
               const [gradFrom, gradTo, borderBg, bgColor] = colorMap[color].split(" ");
@@ -521,20 +585,20 @@ function CoreFeaturesSection() {
                 <motion.div
                   key={title}
                   variants={fadeUp}
-                  className={`p-6 rounded-2xl border ${borderBg} ${bgColor} backdrop-blur-sm hover:scale-[1.02] transition-transform duration-200`}
+                  className={`landing-feature-card ${borderBg} ${bgColor}`}
                 >
                   <div
-                    className={`w-11 h-11 rounded-xl bg-gradient-to-br ${gradFrom} ${gradTo} flex items-center justify-center mb-4 shadow-lg`}
+                    className={`landing-feature-icon bg-gradient-to-br ${gradFrom} ${gradTo}`}
                   >
                     <Icon className="h-5 w-5 text-white" />
                   </div>
-                  <h3 className="text-lg font-semibold text-white mb-2">{title}</h3>
-                  <p className="text-sm text-slate-400 mb-3 leading-relaxed">{desc}</p>
+                  <h3 className="landing-card-title">{title}</h3>
+                  <p className="landing-card-desc mb-3">{desc}</p>
                   {items.length > 0 && (
-                    <ul className="space-y-1.5">
+                    <ul className="landing-feature-list">
                       {items.map((item) => (
-                        <li key={item} className="flex items-center gap-2 text-xs text-slate-400">
-                          <div className="w-1.5 h-1.5 rounded-full bg-indigo-500 flex-shrink-0" />
+                        <li key={item} className="landing-feature-item">
+                          <div className="landing-feature-bullet" />
                           {item}
                         </li>
                       ))}
@@ -598,16 +662,16 @@ function HowItWorksSection() {
   ];
 
   return (
-    <section id="how-it-works" className="py-24 bg-slate-950">
-      <div className="max-w-6xl mx-auto px-6">
+    <section id="how-it-works" className="landing-section-slate">
+      <div className="landing-container">
         <AnimatedSection>
-          <motion.div variants={fadeUp} className="text-center mb-16">
-            <p className="text-indigo-400 font-semibold text-sm uppercase tracking-widest mb-3">
+          <motion.div variants={fadeUp} className="landing-section-head">
+            <p className="landing-eyebrow mb-3">
               How It Works
             </p>
-            <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
+            <h2 className="landing-h2">
               A Simple Process for{" "}
-              <span className="bg-gradient-to-r from-indigo-400 to-violet-400 bg-clip-text text-transparent">
+              <span className="landing-gradient-duo">
                 Complex Consulting Projects
               </span>
             </h2>
@@ -615,29 +679,29 @@ function HowItWorksSection() {
 
           <div className="relative">
             {/* Vertical line */}
-            <div className="absolute left-8 top-0 bottom-0 w-px bg-gradient-to-b from-indigo-600 via-violet-600 to-transparent hidden sm:block" />
+            <div className="landing-timeline-line" />
 
-            <motion.div variants={staggerContainer} className="space-y-6">
+            <motion.div variants={staggerContainer} className="landing-steps">
               {steps.map(({ num, icon: Icon, title, desc }, idx) => (
                 <motion.div
                   key={num}
                   variants={fadeUp}
-                  className="flex gap-6 items-start group"
+                  className="landing-step"
                 >
                   {/* Step indicator */}
-                  <div className="relative flex-shrink-0">
-                    <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-indigo-600 to-violet-600 flex items-center justify-center shadow-xl shadow-indigo-900/40 group-hover:scale-110 transition-transform duration-200 z-10 relative">
+                  <div className="landing-step-indicator-wrap">
+                    <div className="landing-step-indicator">
                       <Icon className="h-7 w-7 text-white" />
                     </div>
                   </div>
-                  <div className="flex-1 pt-2 pb-6 border-b border-slate-800/60 last:border-0">
+                  <div className="landing-step-body">
                     <div className="flex items-center gap-3 mb-1">
-                      <span className="text-xs font-mono text-indigo-400 font-bold">
+                      <span className="landing-step-num">
                         Step {num}
                       </span>
                     </div>
-                    <h3 className="text-lg font-semibold text-white mb-1">{title}</h3>
-                    <p className="text-sm text-slate-400 leading-relaxed">{desc}</p>
+                    <h3 className="landing-step-title">{title}</h3>
+                    <p className="landing-step-desc">{desc}</p>
                   </div>
                 </motion.div>
               ))}
@@ -697,39 +761,39 @@ function BenefitsSection() {
   ];
 
   return (
-    <section className="py-24 bg-[#04060f]">
-      <div className="max-w-6xl mx-auto px-6">
+    <section className="landing-section-dark">
+      <div className="landing-container">
         <AnimatedSection>
-          <motion.div variants={fadeUp} className="text-center mb-16">
-            <p className="text-indigo-400 font-semibold text-sm uppercase tracking-widest mb-3">
+          <motion.div variants={fadeUp} className="landing-section-head">
+            <p className="landing-eyebrow mb-3">
               Benefits
             </p>
-            <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
+            <h2 className="landing-h2">
               Why Organizations Choose Our Platform
             </h2>
           </motion.div>
 
           <motion.div
             variants={staggerContainer}
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+            className="landing-cards-3"
           >
             {benefits.map(({ icon: Icon, title, desc, stat, statLabel }) => (
               <motion.div
                 key={title}
                 variants={fadeUp}
-                className="relative p-6 rounded-2xl border border-slate-800 bg-slate-900/50 hover:border-indigo-500/40 transition-all duration-300 group overflow-hidden"
+                className="landing-benefit-card"
               >
-                <div className="absolute top-0 right-0 p-4 text-right">
-                  <span className="text-3xl font-black bg-gradient-to-r from-indigo-400 to-violet-400 bg-clip-text text-transparent">
+                <div className="landing-benefit-stat">
+                  <span className="landing-benefit-stat-value">
                     {stat}
                   </span>
-                  <p className="text-xs text-slate-500 font-medium">{statLabel}</p>
+                  <p className="landing-benefit-stat-label">{statLabel}</p>
                 </div>
-                <div className="w-10 h-10 rounded-lg bg-indigo-500/15 flex items-center justify-center mb-4">
+                <div className="landing-benefit-icon-box">
                   <Icon className="h-5 w-5 text-indigo-400" />
                 </div>
-                <h3 className="text-base font-semibold text-white mb-2 pr-16">{title}</h3>
-                <p className="text-sm text-slate-400 leading-relaxed">{desc}</p>
+                <h3 className="landing-benefit-title">{title}</h3>
+                <p className="landing-card-desc">{desc}</p>
               </motion.div>
             ))}
           </motion.div>
@@ -749,27 +813,27 @@ function StatsSection() {
   ];
 
   return (
-    <section className="py-20 bg-gradient-to-br from-indigo-950 via-slate-950 to-violet-950 border-y border-indigo-900/40">
-      <div className="max-w-6xl mx-auto px-6">
+    <section className="landing-stats-section">
+      <div className="landing-container">
         <AnimatedSection>
-          <motion.p variants={fadeUp} className="text-center text-indigo-400 font-semibold text-sm uppercase tracking-widest mb-10">
+          <motion.p variants={fadeUp} className="landing-eyebrow text-center mb-10">
             Platform Statistics
           </motion.p>
           <motion.div
             variants={staggerContainer}
-            className="grid grid-cols-2 lg:grid-cols-4 gap-6"
+            className="landing-stats-grid"
           >
             {stats.map(({ value, label, icon: Icon }) => (
               <motion.div
                 key={value}
                 variants={fadeUp}
-                className="text-center p-6 rounded-2xl border border-indigo-800/40 bg-indigo-900/20 backdrop-blur-sm"
+                className="landing-stat-card"
               >
-                <div className="w-12 h-12 rounded-xl bg-indigo-500/20 flex items-center justify-center mx-auto mb-4">
+                <div className="landing-stat-icon-box">
                   <Icon className="h-6 w-6 text-indigo-400" />
                 </div>
-                <div className="text-3xl font-black text-white mb-2">{value}</div>
-                <p className="text-xs text-slate-400 leading-tight">{label}</p>
+                <div className="landing-stat-value">{value}</div>
+                <p className="landing-stat-label">{label}</p>
               </motion.div>
             ))}
           </motion.div>
@@ -811,25 +875,25 @@ function FAQSection() {
   ];
 
   return (
-    <section id="resources" className="py-24 bg-slate-950">
-      <div className="max-w-3xl mx-auto px-6">
+    <section id="resources" className="landing-section-slate">
+      <div className="landing-container-narrow">
         <AnimatedSection>
-          <motion.div variants={fadeUp} className="text-center mb-12">
-            <p className="text-indigo-400 font-semibold text-sm uppercase tracking-widest mb-3">FAQ</p>
-            <h2 className="text-3xl sm:text-4xl font-bold text-white">Frequently Asked Questions</h2>
+          <motion.div variants={fadeUp} className="landing-section-head-sm">
+            <p className="landing-eyebrow mb-3">FAQ</p>
+            <h2 className="landing-h2-plain">Frequently Asked Questions</h2>
           </motion.div>
 
-          <motion.div variants={staggerContainer} className="space-y-3">
+          <motion.div variants={staggerContainer} className="landing-faq-list">
             {faqs.map(({ q, a }, idx) => (
               <motion.div
                 key={idx}
                 variants={fadeUp}
-                className="border border-slate-800 rounded-xl overflow-hidden bg-slate-900/50"
+                className="landing-faq-item"
               >
                 <button
                   id={`faq-${idx}`}
                   onClick={() => setOpenIdx(openIdx === idx ? null : idx)}
-                  className="w-full flex items-center justify-between px-6 py-4 text-left text-white font-medium hover:bg-slate-800/50 transition-colors"
+                  className="landing-faq-btn"
                 >
                   <span className="pr-4">{q}</span>
                   {openIdx === idx ? (
@@ -839,7 +903,7 @@ function FAQSection() {
                   )}
                 </button>
                 {openIdx === idx && (
-                  <div className="px-6 pb-5 text-sm text-slate-400 leading-relaxed border-t border-slate-800">
+                  <div className="landing-faq-answer">
                     <p className="pt-4">{a}</p>
                   </div>
                 )}
@@ -856,16 +920,16 @@ function FAQSection() {
 function FinalCTASection() {
   const navigate = useNavigate();
   return (
-    <section id="contact" className="py-24 bg-[#04060f] relative overflow-hidden">
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[400px] bg-indigo-700/20 rounded-full blur-[100px]" />
-        <div className="absolute top-0 right-0 w-[400px] h-[300px] bg-violet-600/10 rounded-full blur-[100px]" />
+    <section id="contact" className="landing-final-cta">
+      <div className="landing-final-bg">
+        <div className="landing-final-glow" />
+        <div className="landing-final-glow-2" />
       </div>
-      <div className="relative max-w-4xl mx-auto px-6 text-center">
+      <div className="landing-final-content">
         <AnimatedSection>
           <motion.div
             variants={fadeUp}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-indigo-500/40 bg-indigo-500/10 text-indigo-300 text-sm font-medium mb-8"
+            className="landing-hero-badge"
           >
             <Star className="h-4 w-4" />
             <span>Ready to Transform Your Consulting?</span>
@@ -873,29 +937,29 @@ function FinalCTASection() {
 
           <motion.h2
             variants={fadeUp}
-            className="text-4xl sm:text-5xl font-bold text-white mb-6 leading-tight"
+            className="landing-h2-xl"
           >
             Ready to Modernize Your{" "}
-            <span className="bg-gradient-to-r from-indigo-400 via-violet-400 to-cyan-400 bg-clip-text text-transparent">
+            <span className="landing-gradient">
               Consulting Process?
             </span>
           </motion.h2>
 
-          <motion.p variants={fadeUp} className="text-slate-400 text-lg mb-10 max-w-2xl mx-auto">
+          <motion.p variants={fadeUp} className="landing-final-p">
             Deliver consulting projects faster with AI-powered requirement analysis, intelligent
             documentation, and streamlined collaboration.
           </motion.p>
 
-          <motion.div variants={fadeUp} className="flex flex-wrap items-center justify-center gap-4">
+          <motion.div variants={fadeUp} className="landing-hero-cta">
             <button
               onClick={() => navigate("/login")}
-              className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white font-semibold text-base shadow-2xl shadow-indigo-900/50 transition-all duration-200 hover:scale-105"
+              className="landing-btn-primary-lg"
             >
               Get Started <ArrowRight className="h-4 w-4" />
             </button>
             <a
               href="#how-it-works"
-              className="inline-flex items-center gap-2 px-8 py-4 rounded-full border border-slate-600 bg-white/5 hover:bg-white/10 text-slate-200 font-semibold text-base backdrop-blur-sm transition-all duration-200 hover:border-slate-400"
+              className="landing-btn-demo-lg"
             >
               Request Demo
             </a>
@@ -914,6 +978,7 @@ export default function LandingPage() {
       <HeroSection />
       <TrustedBySection />
       <PlatformOverviewSection />
+      <WhyUpgradeSection />
       <WhyChooseSection />
       <CoreFeaturesSection />
       <HowItWorksSection />

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { userService, membershipService, roleService, departmentService, getApiError } from "../services/api";
 import TopHeader from "../components/TopHeader";
+import "./UsersPage.css";
 
 function formatDate(value) {
   if (!value) return "N/A";
@@ -208,21 +209,21 @@ export default function UsersPage() {
           <div className="flex gap-2 flex-wrap">
             <button
               onClick={handleExport}
-              className="px-4 py-2.5 bg-white border border-outline-variant/40 text-on-surface rounded-xl font-bold text-sm hover:bg-surface-container transition-colors flex items-center gap-2"
+              className="users-secondary-btn"
             >
               <span className="material-symbols-outlined text-[18px]">download</span>
               Export CSV
             </button>
             <button
               onClick={() => { setImportResult(null); setImportError(null); setImportJson(""); setImportFile(null); setShowImport(true); }}
-              className="px-4 py-2.5 bg-white border border-outline-variant/40 text-on-surface rounded-xl font-bold text-sm hover:bg-surface-container transition-colors flex items-center gap-2"
+              className="users-secondary-btn"
             >
               <span className="material-symbols-outlined text-[18px]">upload_file</span>
               Bulk Import
             </button>
             <button
               onClick={() => { setInviteError(null); setInviteForm({ email: "", role: "", department: "" }); setShowInvite(true); }}
-              className="px-5 py-2.5 bg-primary text-on-primary rounded-xl font-bold text-sm hover:opacity-90 transition-all flex items-center gap-2 shadow-lg shadow-primary/20"
+              className="users-primary-btn"
             >
               <span className="material-symbols-outlined text-[18px]">person_add</span>
               Invite User
@@ -239,13 +240,13 @@ export default function UsersPage() {
             placeholder="Search users..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-outline-variant/40 bg-white text-on-surface text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
+            className="users-search-input"
           />
         </div>
         <select
           value={filterActive}
           onChange={(e) => setFilterActive(e.target.value)}
-          className="px-4 py-2.5 rounded-xl border border-outline-variant/40 bg-white text-on-surface text-sm focus:outline-none focus:border-primary"
+          className="users-select"
         >
           <option value="ALL">All Users</option>
           <option value="ACTIVE">Active</option>
@@ -258,17 +259,17 @@ export default function UsersPage() {
           <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
         </div>
       ) : (
-        <div className="bg-white rounded-xl soft-shadow border border-outline-variant/20 overflow-hidden">
+        <div className="users-card soft-shadow">
           <table className="w-full text-sm">
             <thead>
-              <tr className="text-left border-b border-outline-variant/20 text-on-surface-variant text-[11px] uppercase tracking-wider">
-                <th className="px-5 py-3 font-medium">User</th>
-                <th className="px-5 py-3 font-medium">Role</th>
-                <th className="px-5 py-3 font-medium">Designation</th>
-                <th className="px-5 py-3 font-medium">Verified</th>
-                <th className="px-5 py-3 font-medium">Status</th>
-                <th className="px-5 py-3 font-medium">Joined</th>
-                <th className="px-5 py-3 font-medium text-right">Actions</th>
+              <tr className="users-th-row">
+                <th className="users-th">User</th>
+                <th className="users-th">Role</th>
+                <th className="users-th">Designation</th>
+                <th className="users-th">Verified</th>
+                <th className="users-th">Status</th>
+                <th className="users-th">Joined</th>
+                <th className="users-th text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-outline-variant/10">
@@ -278,38 +279,38 @@ export default function UsersPage() {
                 </tr>
               )}
               {filtered.map((user) => (
-                <tr key={user.id} className="hover:bg-surface-container-low/50 transition-colors">
-                  <td className="px-5 py-4">
+                <tr key={user.id} className="users-tr">
+                  <td className="users-td">
                     <p className="font-semibold text-on-surface">
                       {[user.first_name, user.last_name].filter(Boolean).join(" ") || user.username}
                     </p>
                     <p className="text-xs text-on-surface-variant">{user.email}</p>
                   </td>
-                  <td className="px-5 py-4">
-                    <span className="px-2 py-1 rounded bg-primary/10 text-primary text-[10px] font-bold">
+                  <td className="users-td">
+                    <span className="users-role-badge">
                       {roleByUser[user.id] || "No membership"}
                     </span>
                   </td>
-                  <td className="px-5 py-4 text-on-surface-variant">{user.designation || "-"}</td>
-                  <td className="px-5 py-4">
+                  <td className="users-td-muted">{user.designation || "-"}</td>
+                  <td className="users-td">
                     {user.is_email_verified ? (
                       <span className="text-emerald-600 text-xs font-bold">Verified</span>
                     ) : (
                       <span className="text-amber-600 text-xs font-bold">Unverified</span>
                     )}
                   </td>
-                  <td className="px-5 py-4">
-                    <span className={`px-2 py-1 rounded text-[10px] font-bold ${user.is_active ? "bg-emerald-100 text-emerald-700" : "bg-red-100 text-red-700"}`}>
+                  <td className="users-td">
+                    <span className={`users-mini-badge ${user.is_active ? "bg-emerald-100 text-emerald-700" : "bg-red-100 text-red-700"}`}>
                       {user.is_active ? "Active" : "Inactive"}
                     </span>
                   </td>
-                  <td className="px-5 py-4 text-on-surface-variant">{formatDate(user.created_at)}</td>
-                  <td className="px-5 py-4">
+                  <td className="users-td-muted">{formatDate(user.created_at)}</td>
+                  <td className="users-td">
                     <div className="flex items-center justify-end gap-1">
                       <button
                         title={user.is_active ? "Deactivate" : "Activate"}
                         onClick={() => handleToggleActive(user)}
-                        className="p-1.5 rounded-lg hover:bg-surface-container transition-colors"
+                        className="users-icon-btn"
                       >
                         <span className={`material-symbols-outlined text-[18px] ${user.is_active ? "text-red-500" : "text-emerald-600"}`}>
                           {user.is_active ? "block" : "check_circle"}
@@ -318,14 +319,14 @@ export default function UsersPage() {
                       <button
                         title="Edit"
                         onClick={() => openEdit(user)}
-                        className="p-1.5 rounded-lg hover:bg-surface-container transition-colors"
+                        className="users-icon-btn"
                       >
                         <span className="material-symbols-outlined text-[18px] text-outline-variant">edit</span>
                       </button>
                       <button
                         title="Delete"
                         onClick={() => handleDelete(user)}
-                        className="p-1.5 rounded-lg hover:bg-red-50 transition-colors"
+                        className="users-icon-btn-red"
                       >
                         <span className="material-symbols-outlined text-[18px] text-red-500">delete</span>
                       </button>
@@ -340,11 +341,11 @@ export default function UsersPage() {
 
       {/* Pending invitations */}
       {invitations.length > 0 && (
-        <div className="bg-white rounded-xl soft-shadow border border-outline-variant/20 p-5">
-          <h3 className="font-semibold text-on-surface text-sm mb-3">Pending Invitations</h3>
+        <div className="users-invite-card soft-shadow">
+          <h3 className="users-h3-mb3">Pending Invitations</h3>
           <div className="space-y-2">
             {invitations.map((inv) => (
-              <div key={inv.id} className="flex items-center gap-3 px-3 py-2 rounded-lg border border-outline-variant/20">
+              <div key={inv.id} className="users-inv-row">
                 <span className="material-symbols-outlined text-[20px] text-primary">mail</span>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium text-on-surface truncate">{inv.email}</p>
@@ -352,7 +353,7 @@ export default function UsersPage() {
                     {inv.role_name || "No role"} · Expires {formatDate(inv.expires_at)}
                   </p>
                 </div>
-                <span className={`px-2 py-1 rounded text-[10px] font-bold ${inv.status === "pending" ? "bg-amber-100 text-amber-700" : inv.status === "accepted" ? "bg-emerald-100 text-emerald-700" : "bg-red-100 text-red-700"}`}>
+                <span className={`users-mini-badge ${inv.status === "pending" ? "bg-amber-100 text-amber-700" : inv.status === "accepted" ? "bg-emerald-100 text-emerald-700" : "bg-red-100 text-red-700"}`}>
                   {inv.status}
                 </span>
               </div>
@@ -363,39 +364,39 @@ export default function UsersPage() {
 
       {/* Invite modal */}
       {showInvite && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[100] p-4">
-          <div className="bg-white rounded-2xl w-full max-w-md max-h-[90vh] overflow-y-auto soft-shadow">
-            <div className="p-6 border-b border-outline-variant/20 flex items-center justify-between">
-              <h3 className="font-headline-lg text-lg font-bold text-on-surface">Invite User</h3>
-              <button onClick={() => setShowInvite(false)} className="p-2 rounded-lg hover:bg-surface-container transition-colors">
+        <div className="users-overlay">
+          <div className="users-modal-panel soft-shadow">
+            <div className="users-modal-header">
+              <h3 className="users-modal-title">Invite User</h3>
+              <button onClick={() => setShowInvite(false)} className="users-close-btn">
                 <span className="material-symbols-outlined text-[20px]">close</span>
               </button>
             </div>
-            <form onSubmit={handleInvite} className="p-6 space-y-4">
+            <form onSubmit={handleInvite} className="users-modal-body">
               {inviteError && (
-                <div className="flex items-start gap-2 px-4 py-3 rounded-xl bg-error/10 border border-error/30 text-on-surface text-sm">
+                <div className="users-error">
                   <span className="material-symbols-outlined text-[18px] text-error shrink-0">error</span>
                   <span>{inviteError}</span>
                 </div>
               )}
               <div>
-                <label className="block font-label-md text-[11px] uppercase tracking-wider text-on-surface-variant mb-1.5">Email *</label>
+                <label className="users-label">Email *</label>
                 <input
                   type="email"
                   required
                   value={inviteForm.email}
                   onChange={(e) => setInviteForm({ ...inviteForm, email: e.target.value })}
                   placeholder="user@company.com"
-                  className="w-full px-4 py-2.5 rounded-xl border border-outline-variant/40 bg-surface-container-low text-on-surface text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
+                  className="users-input"
                 />
               </div>
               <div>
-                <label className="block font-label-md text-[11px] uppercase tracking-wider text-on-surface-variant mb-1.5">Role *</label>
+                <label className="users-label">Role *</label>
                 <select
                   required
                   value={inviteForm.role}
                   onChange={(e) => setInviteForm({ ...inviteForm, role: e.target.value })}
-                  className="w-full px-4 py-2.5 rounded-xl border border-outline-variant/40 bg-surface-container-low text-on-surface text-sm focus:outline-none focus:border-primary"
+                  className="users-select-input"
                 >
                   <option value="">Select role</option>
                   {roles.filter((r) => r.is_active !== false).map((r) => (
@@ -404,11 +405,11 @@ export default function UsersPage() {
                 </select>
               </div>
               <div>
-                <label className="block font-label-md text-[11px] uppercase tracking-wider text-on-surface-variant mb-1.5">Department</label>
+                <label className="users-label">Department</label>
                 <select
                   value={inviteForm.department}
                   onChange={(e) => setInviteForm({ ...inviteForm, department: e.target.value })}
-                  className="w-full px-4 py-2.5 rounded-xl border border-outline-variant/40 bg-surface-container-low text-on-surface text-sm focus:outline-none focus:border-primary"
+                  className="users-select-input"
                 >
                   <option value="">No department</option>
                   {departments.map((d) => (
@@ -417,10 +418,10 @@ export default function UsersPage() {
                 </select>
               </div>
               <div className="flex gap-3 pt-2">
-                <button type="button" onClick={() => setShowInvite(false)} className="flex-1 py-2.5 rounded-xl border border-outline-variant/40 text-on-surface-variant text-sm font-medium hover:bg-surface-container transition-colors">
+                <button type="button" onClick={() => setShowInvite(false)} className="users-cancel-btn">
                   Cancel
                 </button>
-                <button type="submit" disabled={inviting} className="flex-1 py-2.5 rounded-xl bg-primary text-on-primary text-sm font-bold hover:opacity-90 transition-all disabled:opacity-50">
+                <button type="submit" disabled={inviting} className="users-submit-btn">
                   {inviting ? "Sending..." : "Send Invite"}
                 </button>
               </div>
@@ -431,32 +432,32 @@ export default function UsersPage() {
 
       {/* Bulk import modal */}
       {showImport && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[100] p-4">
-          <div className="bg-white rounded-2xl w-full max-w-xl max-h-[90vh] overflow-y-auto soft-shadow">
-            <div className="p-6 border-b border-outline-variant/20 flex items-center justify-between">
-              <h3 className="font-headline-lg text-lg font-bold text-on-surface">Bulk Import Users</h3>
-              <button onClick={() => setShowImport(false)} className="p-2 rounded-lg hover:bg-surface-container transition-colors">
+        <div className="users-overlay">
+          <div className="users-modal-panel-xl soft-shadow">
+            <div className="users-modal-header">
+              <h3 className="users-modal-title">Bulk Import Users</h3>
+              <button onClick={() => setShowImport(false)} className="users-close-btn">
                 <span className="material-symbols-outlined text-[20px]">close</span>
               </button>
             </div>
-            <div className="p-6 space-y-4">
+            <div className="users-modal-body">
               <div className="flex gap-2">
                 <button
                   onClick={() => setImportMode("json")}
-                  className={`px-4 py-2 rounded-lg text-sm font-bold transition-colors ${importMode === "json" ? "bg-primary text-on-primary" : "bg-surface-container text-on-surface-variant"}`}
+                  className={`users-mode-btn ${importMode === "json" ? "bg-primary text-on-primary" : "bg-surface-container text-on-surface-variant"}`}
                 >
                   JSON
                 </button>
                 <button
                   onClick={() => setImportMode("csv")}
-                  className={`px-4 py-2 rounded-lg text-sm font-bold transition-colors ${importMode === "csv" ? "bg-primary text-on-primary" : "bg-surface-container text-on-surface-variant"}`}
+                  className={`users-mode-btn ${importMode === "csv" ? "bg-primary text-on-primary" : "bg-surface-container text-on-surface-variant"}`}
                 >
                   CSV File
                 </button>
               </div>
               {importMode === "json" ? (
                 <div>
-                  <label className="block font-label-md text-[11px] uppercase tracking-wider text-on-surface-variant mb-1.5">
+                  <label className="users-label">
                     Users array (email, first_name, last_name, role, is_active)
                   </label>
                   <textarea
@@ -464,30 +465,30 @@ export default function UsersPage() {
                     value={importJson}
                     onChange={(e) => setImportJson(e.target.value)}
                     placeholder={`[\n  { "email": "a@company.com", "first_name": "Alice", "role": "document_reviewer" },\n  { "email": "b@company.com", "first_name": "Bob", "is_active": false }\n]`}
-                    className="w-full px-4 py-2.5 rounded-xl border border-outline-variant/40 bg-surface-container-low text-on-surface text-sm font-mono focus:outline-none focus:border-primary"
+                    className="users-textarea"
                   />
                 </div>
               ) : (
                 <div>
-                  <label className="block font-label-md text-[11px] uppercase tracking-wider text-on-surface-variant mb-1.5">
+                  <label className="users-label">
                     CSV file (email, username, first_name, last_name, role, is_active)
                   </label>
                   <input
                     type="file"
                     accept=".csv"
                     onChange={(e) => setImportFile(e.target.files?.[0] || null)}
-                    className="w-full px-4 py-2.5 rounded-xl border border-outline-variant/40 bg-surface-container-low text-on-surface text-sm"
+                    className="users-file-input"
                   />
                 </div>
               )}
               {importError && (
-                <div className="flex items-start gap-2 px-4 py-3 rounded-xl bg-error/10 border border-error/30 text-on-surface text-sm">
+                <div className="users-error">
                   <span className="material-symbols-outlined text-[18px] text-error shrink-0">error</span>
                   <span>{importError}</span>
                 </div>
               )}
               {importResult && (
-                <div className="px-4 py-3 rounded-xl bg-emerald-50 border border-emerald-200 text-sm text-emerald-800">
+                <div className="users-success">
                   <p className="font-bold mb-1">{importResult.detail}</p>
                   {importResult.created?.length > 0 && <p>Created: {importResult.created.length}</p>}
                   {importResult.skipped?.length > 0 && <p>Skipped: {importResult.skipped.length}</p>}
@@ -497,10 +498,10 @@ export default function UsersPage() {
                 </div>
               )}
               <div className="flex gap-3 pt-2">
-                <button type="button" onClick={() => setShowImport(false)} className="flex-1 py-2.5 rounded-xl border border-outline-variant/40 text-on-surface-variant text-sm font-medium hover:bg-surface-container transition-colors">
+                <button type="button" onClick={() => setShowImport(false)} className="users-cancel-btn">
                   Close
                 </button>
-                <button onClick={handleImport} disabled={importing} className="flex-1 py-2.5 rounded-xl bg-primary text-on-primary text-sm font-bold hover:opacity-90 transition-all disabled:opacity-50">
+                <button onClick={handleImport} disabled={importing} className="users-submit-btn">
                   {importing ? "Importing..." : "Import Users"}
                 </button>
               </div>

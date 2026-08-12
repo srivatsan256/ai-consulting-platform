@@ -1,0 +1,107 @@
+.clientdash-stats-grid {
+  @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4;
+}
+
+.clientdash-stat-card {
+  @apply bg-white p-5 rounded-xl border border-outline-variant/20;
+}
+
+.clientdash-stat-row {
+  @apply flex items-center gap-3;
+}
+
+.clientdash-stat-icon-box {
+  @apply w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center;
+}
+
+.clientdash-stat-icon {
+  @apply text-primary text-[22px];
+}
+
+.clientdash-stat-value {
+  @apply text-xl font-bold text-on-surface;
+}
+
+.clientdash-stat-label {
+  @apply text-xs text-on-surface-variant;
+}
+
+.clientdash-list-card {
+  @apply bg-white rounded-xl border border-outline-variant/20 overflow-hidden;
+}
+
+.clientdash-list-head {
+  @apply p-6 border-b border-outline-variant/20;
+}
+
+.clientdash-list-title {
+  @apply font-headline-sm text-base font-semibold text-on-surface;
+}
+
+.clientdash-spinner-wrap {
+  @apply flex items-center justify-center py-12;
+}
+
+.clientdash-spinner {
+  @apply w-6 h-6 border-4 border-primary border-t-transparent rounded-full animate-spin;
+}
+
+.clientdash-empty {
+  @apply text-center py-12;
+}
+
+.clientdash-empty-icon {
+  @apply text-[48px] text-outline-variant;
+}
+
+.clientdash-empty-text {
+  @apply text-on-surface-variant mt-3 text-sm;
+}
+
+.clientdash-list {
+  @apply divide-y divide-outline-variant/10;
+}
+
+.clientdash-row {
+  @apply w-full p-5 flex items-center gap-4 hover:bg-surface-container-low transition-colors text-left;
+}
+
+.clientdash-row-icon-box {
+  @apply w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0;
+}
+
+.clientdash-row-icon {
+  @apply text-primary;
+}
+
+.clientdash-row-info {
+  @apply flex-1 min-w-0;
+}
+
+.clientdash-row-title {
+  @apply font-semibold text-on-surface text-sm;
+}
+
+.clientdash-row-sub {
+  @apply text-xs text-on-surface-variant;
+}
+
+.clientdash-row-right {
+  @apply hidden sm:flex items-center gap-4 shrink-0;
+}
+
+.clientdash-row-meta {
+  @apply text-xs text-on-surface-variant;
+}
+
+.clientdash-row-value {
+  @apply text-sm font-bold text-on-surface;
+}
+
+.clientdash-status-badge {
+  @apply px-3 py-1.5 rounded-lg text-[10px] font-bold;
+}
+
+.clientdash-chevron {
+  @apply text-outline-variant;
+}

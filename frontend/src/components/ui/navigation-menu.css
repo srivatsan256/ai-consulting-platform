@@ -1,0 +1,67 @@
+  .uinavmenu-wrapper {
+    @apply fixed top-5 left-1/2 -translate-x-1/2 z-50;
+  }
+
+  .uinavmenu-bar {
+    @apply flex items-center overflow-hidden rounded-full border shadow-xl backdrop-blur-md h-12 transition-all duration-300;
+  }
+
+  .uinavmenu-bar-scrolled {
+    @apply bg-slate-900/90 border-slate-700/60;
+  }
+
+  .uinavmenu-bar-default {
+    @apply bg-white/10 border-white/20;
+  }
+
+  .uinavmenu-logo {
+    @apply flex-shrink-0 flex items-center gap-2 font-semibold pl-4 pr-3;
+  }
+
+  .uinavmenu-logo-icon {
+    @apply w-7 h-7 rounded-lg bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center;
+  }
+
+  .uinavmenu-logo-text {
+    @apply text-sm font-bold tracking-tight whitespace-nowrap;
+  }
+
+  .uinavmenu-links {
+    @apply flex items-center gap-0.5 px-2;
+  }
+
+  .uinavmenu-link {
+    @apply text-xs font-medium transition-colors px-2.5 py-1.5 rounded-full whitespace-nowrap;
+  }
+
+  .uinavmenu-link-scrolled {
+    @apply text-slate-300 hover:text-white hover:bg-white/10;
+  }
+
+  .uinavmenu-link-default {
+    @apply text-white/80 hover:text-white hover:bg-white/15;
+  }
+
+  .uinavmenu-cta {
+    @apply flex items-center gap-2 pr-3 pl-2;
+  }
+
+  .uinavmenu-demo {
+    @apply text-xs font-medium px-3 py-1.5 rounded-full border transition-all whitespace-nowrap;
+  }
+
+  .uinavmenu-demo-scrolled {
+    @apply border-slate-600 text-slate-300 hover:border-indigo-500 hover:text-indigo-400;
+  }
+
+  .uinavmenu-demo-default {
+    @apply border-white/30 text-white hover:border-white/60 hover:bg-white/10;
+  }
+
+  .uinavmenu-cta-btn {
+    @apply text-xs font-semibold px-3.5 py-1.5 rounded-full bg-gradient-to-r from-indigo-600 to-violet-600 text-white hover:from-indigo-500 hover:to-violet-500 transition-all whitespace-nowrap shadow-md shadow-indigo-900/40;
+  }
+
+  .uinavmenu-collapsed-wrap {
+    @apply absolute inset-0 flex items-center justify-center pointer-events-none;
+  }

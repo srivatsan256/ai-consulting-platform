@@ -1,0 +1,7 @@
+  .aurora-root {
+    @apply absolute inset-0 overflow-hidden pointer-events-none;
+  }
+
+  .aurora-blob {
+    @apply absolute rounded-full blur-[100px];
+  }

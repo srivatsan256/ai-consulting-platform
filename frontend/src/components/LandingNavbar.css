@@ -1,0 +1,139 @@
+  .nav-wrapper {
+    @apply fixed top-5 left-1/2 -translate-x-1/2 z-50;
+  }
+
+  .nav-bar {
+    @apply flex items-center overflow-hidden rounded-full border shadow-xl backdrop-blur-md h-12 transition-all duration-300;
+  }
+
+  .nav-bar-darkhero {
+    @apply bg-slate-900/80 border-slate-700/60;
+  }
+
+  .nav-bar-scrolled {
+    @apply bg-white/90 dark:bg-slate-900/90 border-slate-200 dark:border-slate-700/60;
+  }
+
+  .nav-bar-default {
+    @apply bg-white/10 border-slate-200/40 dark:border-white/20;
+  }
+
+  .nav-logo {
+    @apply flex-shrink-0 flex items-center gap-2 font-semibold pl-4 pr-3 cursor-pointer;
+  }
+
+  .nav-logo-icon {
+    @apply w-7 h-7 rounded-lg bg-gradient-to-br from-indigo-600 to-violet-600 flex items-center justify-center;
+  }
+
+  .nav-logo-text {
+    @apply text-sm font-bold tracking-tight whitespace-nowrap;
+  }
+
+  .nav-links {
+    @apply hidden lg:flex items-center gap-0.5 px-2;
+  }
+
+  .nav-item {
+    @apply text-xs font-medium transition-colors px-2.5 py-1.5 rounded-full whitespace-nowrap;
+  }
+
+  .nav-item-darkhero-active {
+    @apply text-white bg-white/15;
+  }
+
+  .nav-item-darkhero {
+    @apply text-slate-300 hover:text-white hover:bg-white/10;
+  }
+
+  .nav-item-active {
+    @apply text-indigo-600 dark:text-white bg-indigo-500/10 dark:bg-white/10;
+  }
+
+  .nav-item-default {
+    @apply text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/10;
+  }
+
+  .nav-cta {
+    @apply hidden sm:flex items-center gap-2 pr-3 pl-2;
+  }
+
+  .nav-demo {
+    @apply text-xs font-medium px-3 py-1.5 rounded-full border transition-all whitespace-nowrap;
+  }
+
+  .nav-demo-darkhero {
+    @apply border-slate-600 text-slate-300 hover:border-indigo-500 hover:text-indigo-400;
+  }
+
+  .nav-demo-default {
+    @apply border-slate-300 text-slate-700 dark:border-slate-600 dark:text-slate-300 hover:border-indigo-500 hover:text-indigo-600 dark:hover:text-indigo-400;
+  }
+
+  .nav-cta-btn {
+    @apply text-xs font-semibold px-3.5 py-1.5 rounded-full bg-gradient-to-r from-indigo-600 to-violet-600 text-white hover:from-indigo-500 hover:to-violet-500 transition-all whitespace-nowrap shadow-md shadow-indigo-500/30 dark:shadow-indigo-900/40;
+  }
+
+  .nav-mobile {
+    @apply flex lg:hidden items-center gap-1 pr-3 pl-2;
+  }
+
+  .nav-theme-toggle {
+    @apply flex items-center justify-center w-9 h-9 rounded-full border transition-colors;
+  }
+
+  .nav-theme-toggle-dark {
+    @apply border-white/20 text-amber-300 hover:bg-white/10;
+  }
+
+  .nav-theme-toggle-light {
+    @apply border-slate-300 text-slate-600 hover:bg-slate-100;
+  }
+
+  .nav-mobile-toggle {
+    @apply flex items-center justify-center w-9 h-9 rounded-full transition-colors;
+  }
+
+  .nav-mobile-toggle-darkhero {
+    @apply text-white hover:bg-white/10;
+  }
+
+  .nav-mobile-toggle-default {
+    @apply text-slate-900 dark:text-white hover:bg-slate-100 dark:hover:bg-white/10;
+  }
+
+  .nav-collapsed-wrap {
+    @apply absolute inset-0 flex items-center justify-center pointer-events-none;
+  }
+
+  .nav-mobile-menu {
+    @apply fixed top-20 left-4 right-4 z-50 rounded-2xl border border-slate-200 dark:border-slate-700/60 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl shadow-2xl p-4 lg:hidden;
+  }
+
+  .nav-mobile-list {
+    @apply flex flex-col gap-1;
+  }
+
+  .nav-mobile-item {
+    @apply text-left text-sm font-medium px-4 py-3 rounded-xl transition-colors;
+  }
+
+  .nav-mobile-item-active {
+    @apply text-indigo-600 dark:text-white bg-indigo-500/10 dark:bg-white/10;
+  }
+
+  .nav-mobile-item-default {
+    @apply text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-white/5;
+  }
+
+  .nav-mobile-actions {
+    @apply flex gap-2 pt-2 mt-2 border-t border-slate-200 dark:border-slate-700/60;
+  }
+
+  .nav-mobile-demo {
+    @apply flex-1 text-sm font-medium border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-200 px-4 py-3 rounded-xl hover:bg-slate-100 dark:hover:bg-white/5;
+  }
+
+  .nav-mobile-cta {
+    @apply flex-1 text-sm font-semibold bg-gradient-to-r from-indigo-600 to-violet-600 text-white px-4 py-3 rounded-xl inline-flex items-center justify-center gap-1;
+  }

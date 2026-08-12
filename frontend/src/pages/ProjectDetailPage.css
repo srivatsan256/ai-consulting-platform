@@ -1,0 +1,259 @@
+  .pdetail-notfound-btn {
+    @apply mt-4 px-4 py-2 bg-primary text-on-primary rounded-lg text-sm font-medium;
+  }
+
+  .pdetail-back-btn {
+    @apply px-4 py-2 rounded-xl border border-outline-variant/40 text-on-surface-variant text-sm font-medium hover:bg-surface-container transition-colors flex items-center gap-2;
+  }
+
+  .pdetail-statusbar {
+    @apply bg-white rounded-xl border border-outline-variant/20 p-4 flex flex-wrap items-center gap-4;
+  }
+
+  .pdetail-badge {
+    @apply px-3 py-1.5 rounded-lg text-xs font-bold;
+  }
+
+  .pdetail-progress {
+    @apply w-32 h-2 bg-surface-container rounded-full overflow-hidden;
+  }
+
+  .pdetail-meta {
+    @apply text-xs text-on-surface-variant flex items-center gap-1;
+  }
+
+  .pdetail-stat-chip {
+    @apply px-3 py-1.5 rounded-lg bg-surface-container-low text-xs text-on-surface-variant flex items-center gap-2;
+  }
+
+  .pdetail-tabs {
+    @apply flex gap-1 bg-white rounded-xl border border-outline-variant/20 p-1 overflow-x-auto;
+  }
+
+  .pdetail-tab {
+    @apply flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all whitespace-nowrap;
+  }
+
+  .pdetail-tab-active {
+    @apply bg-primary text-on-primary shadow-sm;
+  }
+
+  .pdetail-tab-locked {
+    @apply text-on-surface-variant/60 bg-surface-container/40;
+  }
+
+  .pdetail-tab-idle {
+    @apply text-on-surface-variant hover:bg-surface-container;
+  }
+
+  .pdetail-tab-badge {
+    @apply text-[10px] px-2 py-0.5 rounded-full font-bold uppercase;
+  }
+
+  .pdetail-panel {
+    @apply bg-white rounded-xl border border-outline-variant/20 p-6;
+  }
+
+  .pdetail-section-label {
+    @apply font-label-md text-[11px] uppercase tracking-wider text-on-surface-variant mb-2;
+  }
+
+  .pdetail-h3 {
+    @apply font-headline-sm text-base font-bold text-on-surface;
+  }
+
+  .pdetail-h4 {
+    @apply font-semibold text-on-surface text-sm;
+  }
+
+  .pdetail-table-wrap {
+    @apply overflow-x-auto border border-outline-variant/20 rounded-xl;
+  }
+
+  .pdetail-table-head-row {
+    @apply bg-surface-container-low border-b border-outline-variant/20;
+  }
+
+  .pdetail-th {
+    @apply text-left px-4 py-3 font-label-md text-[11px] uppercase tracking-wider text-on-surface-variant;
+  }
+
+  .pdetail-row {
+    @apply border-b border-outline-variant/10 cursor-pointer transition-colors;
+  }
+
+  .pdetail-td {
+    @apply px-4 py-3;
+  }
+
+  .pdetail-level-icon {
+    @apply w-8 h-8 rounded-lg flex items-center justify-center shrink-0;
+  }
+
+  .pdetail-level-title {
+    @apply text-xs font-bold;
+  }
+
+  .pdetail-list-item {
+    @apply flex items-start gap-1.5 text-[11px] text-on-surface;
+  }
+
+  .pdetail-list-item-soft {
+    @apply flex items-start gap-1.5 text-[11px] text-on-surface-variant;
+  }
+
+  .pdetail-pill {
+    @apply inline-flex px-2.5 py-1 rounded-full text-[10px] font-bold;
+  }
+
+  .pdetail-expanded-row {
+    @apply bg-surface-container-low/30 border-b border-outline-variant/10;
+  }
+
+  .pdetail-detail-label {
+    @apply text-[11px] uppercase tracking-wider font-bold text-on-surface-variant mb-2;
+  }
+
+  .pdetail-detail-label-amber {
+    @apply text-[11px] uppercase tracking-wider font-bold text-amber-600 mb-2;
+  }
+
+  .pdetail-detail-label-blue {
+    @apply text-[11px] uppercase tracking-wider font-bold text-blue-600 mb-2;
+  }
+
+  .pdetail-doc-chip {
+    @apply px-2.5 py-1 rounded-lg bg-white border border-outline-variant/20 text-[11px] text-on-surface font-medium;
+  }
+
+  .pdetail-exec-card {
+    @apply flex items-center gap-2 p-3 rounded-xl border border-outline-variant/20 bg-surface-container-low/40;
+  }
+
+  .pdetail-stat-card {
+    @apply p-4 rounded-xl border border-outline-variant/20 bg-white;
+  }
+
+  .pdetail-stat-label {
+    @apply text-[11px] uppercase tracking-wider text-on-surface-variant;
+  }
+
+  .pdetail-stat-value {
+    @apply mt-2 text-lg font-bold text-on-surface;
+  }
+
+  .pdetail-stat-sub {
+    @apply text-xs text-on-surface-variant;
+  }
+
+  .pdetail-bar-track {
+    @apply mt-2 h-1.5 rounded-full bg-surface-container overflow-hidden;
+  }
+
+  .pdetail-upload-panel {
+    @apply p-4 rounded-xl border border-outline-variant/20 bg-surface-container-low/30 space-y-4;
+  }
+
+  .pdetail-doctype-badge {
+    @apply px-3 py-2 rounded-lg border border-primary/20 bg-primary/5 text-xs font-bold text-primary flex items-center gap-2;
+  }
+
+  .pdetail-info-card {
+    @apply rounded-xl bg-white border border-outline-variant/10 p-3;
+  }
+
+  .pdetail-info-value {
+    @apply mt-1 text-sm font-semibold text-on-surface;
+  }
+
+  .pdetail-chip {
+    @apply px-2.5 py-1 rounded-full bg-white border border-outline-variant/20 text-[11px] text-on-surface-variant font-medium;
+  }
+
+  .pdetail-dropzone {
+    @apply border-2 border-dashed rounded-xl p-8 text-center transition-colors cursor-pointer;
+  }
+
+  .pdetail-doc-row {
+    @apply flex items-center gap-3 p-3 rounded-lg bg-white border border-outline-variant/10;
+  }
+
+  .pdetail-open-btn {
+    @apply px-2 py-1 rounded-md text-xs font-medium border border-outline-variant/30 text-on-surface-variant hover:bg-surface-container disabled:opacity-40;
+  }
+
+  .pdetail-mini-badge {
+    @apply px-2 py-1 rounded text-[10px] font-bold;
+  }
+
+  .pdetail-check-label {
+    @apply flex items-center gap-2 text-sm text-on-surface-variant cursor-pointer;
+  }
+
+  .pdetail-checkbox {
+    @apply rounded border-outline-variant text-primary focus:ring-primary disabled:opacity-50;
+  }
+
+  .pdetail-primary-btn {
+    @apply px-4 py-2 bg-primary text-on-primary rounded-lg text-sm font-bold hover:opacity-90 disabled:opacity-50 transition-all flex items-center gap-2;
+  }
+
+  .pdetail-result-card {
+    @apply p-4 rounded-xl bg-surface-container-low border border-outline-variant/20;
+  }
+
+  .pdetail-result-item {
+    @apply p-4 rounded-xl border border-outline-variant/20;
+  }
+
+  .pdetail-meta-pill {
+    @apply px-2 py-1 rounded-full bg-surface-container-low;
+  }
+
+  .pdetail-outline-btn {
+    @apply mt-3 px-3 py-1.5 rounded-lg text-xs font-medium border border-outline-variant/30 text-on-surface-variant hover:bg-surface-container disabled:opacity-40;
+  }
+
+  .pdetail-chat-list {
+    @apply flex-1 overflow-y-auto space-y-4 mb-4 p-4 bg-surface-container-low rounded-xl;
+  }
+
+  .pdetail-suggestion {
+    @apply px-3 py-1.5 bg-white rounded-lg border border-outline-variant/30 text-xs text-on-surface-variant hover:border-primary/50 transition-colors;
+  }
+
+  .pdetail-msg-bubble {
+    @apply max-w-[80%] px-4 py-3 rounded-2xl text-sm;
+  }
+
+  .pdetail-msg-user {
+    @apply bg-primary text-on-primary rounded-br-md;
+  }
+
+  .pdetail-msg-assistant {
+    @apply bg-white border border-outline-variant/20 text-on-surface rounded-bl-md;
+  }
+
+  .pdetail-typing-bubble {
+    @apply bg-white border border-outline-variant/20 px-4 py-3 rounded-2xl rounded-bl-md;
+  }
+
+  .pdetail-chat-input {
+    @apply flex-1 px-4 py-3 rounded-xl border border-outline-variant/40 text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20;
+  }
+
+  .pdetail-send-btn {
+    @apply px-5 py-3 bg-primary text-on-primary rounded-xl font-bold text-sm hover:opacity-90 disabled:opacity-50 transition-all;
+  }
+
+  .pdetail-generate-btn {
+    @apply mt-6 px-6 py-3 bg-primary text-on-primary rounded-xl font-bold text-sm hover:opacity-90 disabled:opacity-50 transition-all flex items-center gap-2 mx-auto shadow-lg shadow-primary/20;
+  }
+
+  .pdetail-deliverable-card {
+    @apply p-4 rounded-xl border border-outline-variant/20 text-center;
+  }
+
+  .pdetail-complete-banner {
+    @apply p-4 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center gap-3;
+  }

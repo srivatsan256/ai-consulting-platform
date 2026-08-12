@@ -1,0 +1,47 @@
+.otp-back {
+  @apply flex items-center gap-1 text-white/60 text-xs font-medium hover:text-white transition-all;
+}
+
+.otp-back-icon {
+  @apply text-[16px];
+}
+
+.otp-h2 {
+  @apply font-headline-lg text-2xl font-bold text-white mt-6;
+}
+
+.otp-sub {
+  @apply text-white/70 text-sm mt-1 leading-relaxed;
+}
+
+.otp-email-link {
+  @apply text-fuchsia-300 font-semibold hover:underline;
+}
+
+.otp-input {
+  @apply tracking-[0.5em] font-bold;
+}
+
+.otp-success {
+  @apply flex items-center gap-2 px-4 py-3 rounded-xl bg-emerald-500/15 border border-emerald-400/40 text-sm;
+}
+
+.otp-success-icon {
+  @apply text-[18px] text-emerald-300;
+}
+
+.otp-success-text {
+  @apply text-emerald-200;
+}
+
+.otp-footer {
+  @apply text-center text-xs text-white/60;
+}
+
+.otp-countdown {
+  @apply text-white/60;
+}
+
+.otp-resend {
+  @apply text-fuchsia-300 font-medium hover:underline disabled:opacity-60;
+}

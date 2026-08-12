@@ -1,0 +1,167 @@
+.pricing-toggle-row {
+  @apply flex items-center justify-center gap-4;
+}
+
+.pricing-toggle-btn {
+  @apply text-sm transition-colors;
+}
+
+.pricing-toggle-switch {
+  @apply w-12 h-6 rounded-full p-1 relative transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500;
+}
+
+.pricing-toggle-knob {
+  @apply w-4 h-4 rounded-full transition-transform;
+}
+
+.pricing-toggle-annual {
+  @apply text-sm text-slate-900 dark:text-white font-bold;
+}
+
+.pricing-toggle-save {
+  @apply text-indigo-600 dark:text-primary-fixed-dim text-sm ml-1;
+}
+
+.pricing-card {
+  @apply relative flex flex-col h-full p-8 rounded-2xl transition-colors;
+}
+
+.pricing-card-highlighted {
+  @apply border-2 border-indigo-600 dark:border-primary shadow-2xl shadow-indigo-500/20 dark:shadow-indigo-950/40 bg-white dark:bg-slate-900/80 dark:backdrop-blur-md md:-translate-y-4 z-10;
+}
+
+.pricing-card-plain {
+  @apply border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 hover:bg-slate-50 dark:hover:bg-white/10;
+}
+
+.pricing-badge {
+  @apply absolute top-0 right-0 bg-indigo-600 dark:bg-primary text-white text-xs px-3 py-1 rounded-bl-xl rounded-tr-2xl font-bold uppercase tracking-wider;
+}
+
+.pricing-plan-name {
+  @apply text-xl font-semibold text-slate-900 dark:text-white mb-2;
+}
+
+.pricing-plan-desc {
+  @apply text-sm text-slate-500 dark:text-white/70 mb-6;
+}
+
+.pricing-price {
+  @apply text-4xl font-bold text-slate-900 dark:text-white;
+}
+
+.pricing-price-suffix {
+  @apply text-sm text-slate-500 dark:text-white/70;
+}
+
+.pricing-cta-btn {
+  @apply w-full text-sm py-3 rounded-xl font-medium mb-8 transition-all;
+}
+
+.pricing-cta-highlighted {
+  @apply bg-gradient-to-r from-indigo-600 to-violet-600 text-white hover:opacity-90 shadow-lg shadow-indigo-500/30;
+}
+
+.pricing-cta-sales {
+  @apply bg-indigo-600 dark:bg-primary text-white hover:opacity-90;
+}
+
+.pricing-cta-default {
+  @apply border border-slate-300 dark:border-white/20 text-slate-700 dark:text-white hover:bg-slate-100 dark:hover:bg-white/5;
+}
+
+.pricing-features {
+  @apply space-y-4 flex-grow;
+}
+
+.pricing-feature {
+  @apply flex items-start gap-2 text-sm;
+}
+
+.pricing-feature-strong {
+  @apply text-slate-900 dark:text-white font-medium;
+}
+
+.pricing-feature-normal {
+  @apply text-slate-600 dark:text-white;
+}
+
+.pricing-table {
+  @apply w-full text-left border-collapse;
+}
+
+.pricing-table-head {
+  @apply text-slate-900 dark:text-white;
+}
+
+.pricing-th {
+  @apply p-4 text-sm font-semibold border-b border-slate-200 dark:border-white/10;
+}
+
+.pricing-th-pro {
+  @apply p-4 text-sm font-semibold text-center bg-indigo-600/10 dark:bg-primary/30 border-b border-indigo-500/50 dark:border-primary/50;
+}
+
+.pricing-tr {
+  @apply border-b border-slate-200 dark:border-white/10;
+}
+
+.pricing-tr-zebra {
+  @apply bg-slate-50 dark:bg-white/5;
+}
+
+.pricing-td-feature {
+  @apply p-4 text-slate-900 dark:text-white font-medium;
+}
+
+.pricing-td {
+  @apply p-4 text-center text-slate-500 dark:text-white/70;
+}
+
+.pricing-td-pro {
+  @apply p-4 text-center text-slate-900 dark:text-white font-medium bg-indigo-600/10 dark:bg-primary/10;
+}
+
+.pricing-note {
+  @apply mt-4 text-xs text-slate-400 dark:text-white/50 text-right;
+}
+
+.pricing-page {
+  @apply min-h-screen bg-slate-50 dark:bg-[#04060f];
+}
+
+.pricing-main {
+  @apply max-w-6xl mx-auto px-6;
+}
+
+.pricing-hero {
+  @apply py-24 text-center;
+}
+
+.pricing-eyebrow {
+  @apply text-indigo-600 dark:text-indigo-400 font-semibold text-sm uppercase tracking-widest mb-4;
+}
+
+.pricing-h1 {
+  @apply text-4xl sm:text-5xl lg:text-6xl font-bold text-slate-900 dark:text-white mb-6 max-w-3xl mx-auto tracking-tight;
+}
+
+.pricing-gradient {
+  @apply bg-gradient-to-r from-indigo-600 via-violet-600 to-cyan-500 dark:from-white dark:to-primary-fixed-dim bg-clip-text text-transparent;
+}
+
+.pricing-hero-p {
+  @apply text-slate-500 dark:text-white/70 mb-10 max-w-2xl mx-auto;
+}
+
+.pricing-plans {
+  @apply pb-24 grid grid-cols-1 md:grid-cols-3 gap-6 items-end;
+}
+
+.pricing-compare {
+  @apply py-16 px-6 md:px-10 bg-white dark:bg-white/5 rounded-3xl mb-24 border border-slate-200 dark:border-white/10;
+}
+
+.pricing-compare-title {
+  @apply text-3xl font-bold text-center text-slate-900 dark:text-white mb-12;
+}

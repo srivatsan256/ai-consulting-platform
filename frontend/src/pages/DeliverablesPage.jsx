@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { projectService, deliverableService } from "../services/api";
 import TopHeader from "../components/TopHeader";
+import "./DeliverablesPage.css";
 
 export default function DeliverablesPage({ projectId, onSelectProject }) {
   const [projects, setProjects] = useState([]);
@@ -74,11 +75,11 @@ export default function DeliverablesPage({ projectId, onSelectProject }) {
       <TopHeader title="Deliverables" subtitle="Generate consulting documents" />
 
       {/* Project Selector */}
-      <div className="bg-white rounded-xl soft-shadow border border-outline-variant/20 p-6">
+      <div className="deliverables-card soft-shadow">
         <select
           value={selectedId}
           onChange={(e) => handleProjectSelect(e.target.value)}
-          className="w-full px-4 py-2.5 rounded-xl border border-outline-variant/40 bg-surface-container-low text-on-surface text-sm focus:outline-none focus:border-primary"
+          className="deliverables-select"
         >
           <option value="">Select a project</option>
           {projects.map((p) => (
@@ -90,29 +91,29 @@ export default function DeliverablesPage({ projectId, onSelectProject }) {
       {selectedId && (
         <>
           {/* Deliverable Types */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="deliverables-grid">
             {deliverableTypes.map((item) => (
-              <div key={item.title} className="bg-white rounded-xl soft-shadow border border-outline-variant/20 p-5">
-                <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${item.color}`}>
-                  <span className="material-symbols-outlined text-[22px]">{item.icon}</span>
+              <div key={item.title} className="deliverables-type-card soft-shadow">
+                <div className={`deliverables-icon ${item.color}`}>
+                  <span className="material-symbols-outlined">{item.icon}</span>
                 </div>
-                <h4 className="font-semibold text-on-surface text-sm mt-3">{item.title}</h4>
-                <p className="text-xs text-on-surface-variant mt-0.5">{item.desc}</p>
+                <h4 className="deliverables-type-title">{item.title}</h4>
+                <p className="deliverables-type-desc">{item.desc}</p>
               </div>
             ))}
           </div>
 
           {/* Generate Button */}
-          <div className="bg-white rounded-xl soft-shadow border border-outline-variant/20 p-8 text-center">
-            <span className="material-symbols-outlined text-[48px] text-primary">auto_awesome</span>
-            <h4 className="font-headline-sm text-lg font-bold text-on-surface mt-3">Generate All Deliverables</h4>
-            <p className="text-on-surface-variant text-sm mt-1 max-w-md mx-auto">
+          <div className="deliverables-gen-card soft-shadow">
+            <span className="material-symbols-outlined deliverables-gen-icon">auto_awesome</span>
+            <h4 className="deliverables-gen-title">Generate All Deliverables</h4>
+            <p className="deliverables-gen-desc">
               AI will generate BRD, FRD, PRD, verification summary, project timeline, and metadata as a downloadable ZIP.
             </p>
             <button
               onClick={handleGenerate}
               disabled={generating}
-              className="mt-6 px-8 py-3 bg-primary text-on-primary rounded-xl font-bold text-sm hover:opacity-90 disabled:opacity-50 transition-all flex items-center gap-2 mx-auto shadow-lg shadow-primary/20"
+              className="deliverables-gen-btn"
             >
               {generating ? (
                 <div className="w-4 h-4 border-2 border-on-primary border-t-transparent rounded-full animate-spin" />
@@ -125,17 +126,17 @@ export default function DeliverablesPage({ projectId, onSelectProject }) {
 
           {/* Download Available */}
           {zipUrl && (
-            <div className="bg-emerald-50 rounded-xl border border-emerald-200 p-6 flex items-center gap-4">
-              <span className="material-symbols-outlined text-emerald-600 text-[32px]" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
+            <div className="deliverables-download-card">
+              <span className="material-symbols-outlined deliverables-download-icon" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
               <div className="flex-1">
-                <p className="text-sm font-bold text-emerald-800">Deliverables Generated Successfully</p>
-                <p className="text-xs text-emerald-600">All documents have been packaged into a ZIP file</p>
+                <p className="deliverables-download-title">Deliverables Generated Successfully</p>
+                <p className="deliverables-download-sub">All documents have been packaged into a ZIP file</p>
               </div>
               <a
                 href={zipUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="px-5 py-2.5 bg-emerald-600 text-white rounded-xl font-bold text-sm hover:bg-emerald-700 transition-all flex items-center gap-2"
+                className="deliverables-download-link"
               >
                 <span className="material-symbols-outlined text-[18px]">download</span>
                 Download ZIP
@@ -145,11 +146,11 @@ export default function DeliverablesPage({ projectId, onSelectProject }) {
 
           {/* Project Status */}
           {project?.status === "COMPLETED" && (
-            <div className="bg-blue-50 rounded-xl border border-blue-200 p-6 flex items-center gap-4">
-              <span className="material-symbols-outlined text-blue-600 text-[32px]" style={{ fontVariationSettings: "'FILL' 1" }}>info</span>
+            <div className="deliverables-status-card">
+              <span className="material-symbols-outlined deliverables-status-icon" style={{ fontVariationSettings: "'FILL' 1" }}>info</span>
               <div>
-                <p className="text-sm font-bold text-blue-800">Project Completed</p>
-                <p className="text-xs text-blue-600">All deliverables have been generated for this project</p>
+                <p className="deliverables-status-title">Project Completed</p>
+                <p className="deliverables-status-sub">All deliverables have been generated for this project</p>
               </div>
             </div>
           )}
@@ -157,9 +158,9 @@ export default function DeliverablesPage({ projectId, onSelectProject }) {
       )}
 
       {!selectedId && !loading && (
-        <div className="text-center py-16">
-          <span className="material-symbols-outlined text-[56px] text-outline-variant">assignment_turned_in</span>
-          <p className="text-on-surface-variant mt-3 text-sm">Select a project to generate deliverables</p>
+        <div className="deliverables-empty">
+          <span className="material-symbols-outlined deliverables-empty-icon">assignment_turned_in</span>
+          <p className="deliverables-empty-text">Select a project to generate deliverables</p>
         </div>
       )}
     </div>

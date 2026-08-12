@@ -1,4 +1,15 @@
 import React, { useState } from "react";
+import Stepper, { Step } from "../components/bits/Stepper";
+import AuroraOverlay from "../components/AuroraOverlay";
+import {
+  AUTH_BACKGROUND_STYLE,
+  GLASS_CARD,
+  GLASS_INPUT,
+  GLASS_LABEL,
+  GLASS_ICON,
+  GLASS_ERROR,
+} from "../constants/auth";
+import "./LoginPage.css";
 
 export default function LoginPage({ onLogin, onShowSignup, onForgotPassword }) {
   const [email, setEmail] = useState("");
@@ -6,9 +17,9 @@ export default function LoginPage({ onLogin, onShowSignup, onForgotPassword }) {
   const [role, setRole] = useState("admin");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [currentStep, setCurrentStep] = useState(1);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async () => {
     setError(null);
     setLoading(true);
     try {
@@ -40,50 +51,65 @@ export default function LoginPage({ onLogin, onShowSignup, onForgotPassword }) {
     }
   };
 
+  const isLastStep = currentStep === 2;
+
+  const nextButtonProps = isLastStep
+    ? {
+        onClick: handleSubmit,
+        disabled: loading,
+        className:
+          "flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-violet-600 via-fuchsia-500 to-violet-600 px-6 py-2.5 text-sm font-bold text-white shadow-lg shadow-fuchsia-500/40 transition-all hover:opacity-90 active:opacity-80 disabled:opacity-60 disabled:cursor-not-allowed",
+        children: loading ? (
+          <>
+            <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+            Signing in...
+          </>
+        ) : (
+          "Sign In"
+        ),
+      }
+    : {
+        className:
+          "flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-violet-600 via-fuchsia-500 to-violet-600 px-6 py-2.5 text-sm font-bold text-white shadow-lg shadow-fuchsia-500/40 transition-all hover:opacity-90 active:opacity-80",
+        children: "Continue",
+      };
+
   return (
-    <div className="min-h-screen relative flex overflow-hidden">
+    <div className="lp-page">
       {/* Full-page Background Image */}
-      <div
-        className="absolute inset-0 bg-cover bg-center"
-        style={{
-          backgroundImage:
-            "url('https://images.unsplash.com/photo-1779528589482-23c0e53e40df?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NjV8fGNvcnBvcmF0ZSUyMGJhY2tncm91bmR8ZW58MHx8MHx8fDA%3D')",
-        }}
-      />
+      <div className="lp-bg" style={AUTH_BACKGROUND_STYLE} />
       {/* Dark overlay for readability */}
-      <div className="absolute inset-0 bg-gradient-to-br from-black/70 via-black/60 to-black/75" />
+      <div className="lp-overlay" />
+      {/* Animated aurora glow */}
+      <AuroraOverlay />
 
       {/* Content */}
-      <div className="relative z-10 flex w-full min-h-screen">
+      <div className="lp-content">
         {/* Left Brand Content */}
-        <div className="hidden lg:flex lg:w-[48%] items-center justify-center p-12">
-          <div className="max-w-md">
-            <div className="flex items-center gap-3 mb-8">
+        <div className="lp-brand">
+          <div className="lp-brand-inner">
+            <div className="lp-brand-head">
               <span
-                className="material-symbols-outlined text-primary-fixed text-[40px]"
+                className="material-symbols-outlined lp-brand-icon"
                 style={{ fontVariationSettings: "'FILL' 1" }}
               >
                 dataset
               </span>
               <div>
-                <h1 className="font-display-lg text-[28px] font-bold text-white">
-                  RequirementAI
-                </h1>
-                <p className="text-white/70 font-label-md text-[10px] uppercase tracking-widest">
-                  Consulting Delivery OS
-                </p>
+                <h1 className="lp-brand-title">RequirementAI</h1>
+                <p className="lp-brand-sub">Consulting Delivery OS</p>
               </div>
             </div>
 
-            <h2 className="font-headline-lg text-3xl font-bold text-white leading-tight">
+            <h2 className="lp-brand-h2">
               AI-powered consulting lifecycle management
             </h2>
-            <p className="text-white/75 mt-4 text-sm leading-relaxed">
+            <p className="lp-brand-p">
               Gate every phase from onboarding through governance with expert AI verification and
               enterprise-grade deliverables.
             </p>
 
-            <div className="mt-10 grid grid-cols-2 gap-4">
+            <div className="lp-feature-grid">
               {[
                 { icon: "person_add", label: "Client Onboarding" },
                 { icon: "query_stats", label: "Smart Discovery" },
@@ -92,14 +118,11 @@ export default function LoginPage({ onLogin, onShowSignup, onForgotPassword }) {
                 { icon: "smart_toy", label: "AI Consultant" },
                 { icon: "assignment_turned_in", label: "Document Generation" },
               ].map((item) => (
-                <div
-                  key={item.label}
-                  className="flex items-center gap-2 px-4 py-3 rounded-xl bg-white/10 border border-white/15 backdrop-blur-sm"
-                >
-                  <span className="material-symbols-outlined text-primary-fixed text-[20px]">
+                <div key={item.label} className="lp-feature-item">
+                  <span className="material-symbols-outlined lp-feature-icon">
                     {item.icon}
                   </span>
-                  <span className="text-white text-sm font-medium">{item.label}</span>
+                  <span className="lp-feature-label">{item.label}</span>
                 </div>
               ))}
             </div>
@@ -107,206 +130,200 @@ export default function LoginPage({ onLogin, onShowSignup, onForgotPassword }) {
         </div>
 
         {/* Login form - Right side */}
-        <div className="flex-1 flex items-center justify-center p-6 sm:p-8">
-          <div className="w-full max-w-md">
+        <div className="lp-form-wrap">
+          <div className="lp-form-inner">
             {/* Mobile logo */}
-            <div className="lg:hidden mb-8 text-center">
-              <h1 className="font-display-lg text-2xl font-bold text-white">
-                RequirementAI
-              </h1>
-              <p className="text-white/70 text-xs uppercase tracking-widest mt-1">
-                Consulting Delivery OS
-              </p>
+            <div className="lp-mobile-logo">
+              <h1 className="lp-mobile-title">RequirementAI</h1>
+              <p className="lp-mobile-sub">Consulting Delivery OS</p>
             </div>
 
-            <div className="bg-white p-8 rounded-2xl shadow-2xl border border-white/20">
-              <h2 className="font-headline-lg text-2xl font-bold text-on-surface">
-                Welcome back
-              </h2>
-              <p className="text-on-surface-variant text-sm mt-1">
-                Sign in to your workspace
-              </p>
+            <Stepper
+              initialStep={1}
+              onStepChange={setCurrentStep}
+              nextButtonText="Continue"
+              nextButtonProps={nextButtonProps}
+              stepContainerClassName={`${GLASS_CARD} overflow-hidden`}
+            >
+              <Step>
+                {/* Step 1: Account type */}
+                <h2 className="lp-step-h2">Welcome back</h2>
+                <p className="lp-step-p">
+                  Choose your account type to get started.
+                </p>
 
-              {/* Role Toggle */}
-              <div className="mt-6 bg-surface-container-low rounded-xl p-1 flex gap-1">
-                <button
-                  type="button"
-                  onClick={() => setRole("admin")}
-                  className={`flex-1 py-2.5 rounded-lg text-sm font-bold transition-all flex items-center justify-center gap-2 ${
-                    role === "admin"
-                      ? "bg-primary text-on-primary shadow-md"
-                      : "text-on-surface-variant hover:bg-surface-container"
-                  }`}
-                >
-                  <span className="material-symbols-outlined text-[18px]">
-                    admin_panel_settings
-                  </span>
-                  Consulting Team
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setRole("client")}
-                  className={`flex-1 py-2.5 rounded-lg text-sm font-bold transition-all flex items-center justify-center gap-2 ${
-                    role === "client"
-                      ? "bg-primary text-on-primary shadow-md"
-                      : "text-on-surface-variant hover:bg-surface-container"
-                  }`}
-                >
-                  <span className="material-symbols-outlined text-[18px]">business</span>
-                  Client
-                </button>
-              </div>
-
-              <form onSubmit={handleSubmit} className="mt-6 space-y-5">
-                <div>
-                  <label className="block font-label-md text-[11px] uppercase tracking-wider text-on-surface-variant mb-2">
-                    {role === "client" ? "Company Email" : "Work Email"}
-                  </label>
-                  <div className="relative">
-                    <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[20px]">
-                      mail
-                    </span>
-                    <input
-                      type="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      placeholder={
-                        role === "admin" ? "consultant@company.com" : "john@acmecorp.com"
-                      }
-                      className="w-full pl-10 pr-4 py-3 rounded-xl border border-outline-variant/40 bg-surface-container-low text-on-surface text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block font-label-md text-[11px] uppercase tracking-wider text-on-surface-variant mb-2">
-                    Password
-                  </label>
-                  <div className="relative">
-                    <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[20px]">
-                      lock
-                    </span>
-                    <input
-                      type="password"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      placeholder="••••••••"
-                      className="w-full pl-10 pr-4 py-3 rounded-xl border border-outline-variant/40 bg-surface-container-low text-on-surface text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
-                    />
-                  </div>
-                </div>
-
-                <div className="flex items-center justify-between text-sm">
-                  <label className="flex items-center gap-2 text-on-surface-variant cursor-pointer">
-                    <input
-                      type="checkbox"
-                      defaultChecked
-                      className="rounded border-outline-variant text-primary focus:ring-primary"
-                    />
-                    Remember me
-                  </label>
+                {/* Role Toggle */}
+                <div className="lp-toggle">
                   <button
                     type="button"
-                    onClick={onForgotPassword}
-                    className="text-primary font-medium hover:underline"
+                    onClick={() => setRole("admin")}
+                    className={`lp-toggle-btn ${
+                      role === "admin"
+                        ? "lp-toggle-btn-active"
+                        : "lp-toggle-btn-inactive"
+                    }`}
                   >
-                    Forgot password?
+                    <span className="material-symbols-outlined lp-toggle-icon">
+                      admin_panel_settings
+                    </span>
+                    Consulting Team
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setRole("client")}
+                    className={`lp-toggle-btn ${
+                      role === "client"
+                        ? "lp-toggle-btn-active"
+                        : "lp-toggle-btn-inactive"
+                    }`}
+                  >
+                    <span className="material-symbols-outlined lp-toggle-icon">business</span>
+                    Client
                   </button>
                 </div>
 
-                {error && (
-                  <div className="flex items-center gap-2 px-4 py-3 rounded-xl bg-error/10 border border-error/30 text-on-surface text-sm">
-                    <span className="material-symbols-outlined text-[18px] text-error">
-                      error
-                    </span>
-                    <span>{error}</span>
+                {/* Divider */}
+                <div className="lp-divider">
+                  <div className="lp-divider-line" />
+                  <span className="lp-divider-text">or continue with</span>
+                  <div className="lp-divider-line" />
+                </div>
+
+                {/* SSO Buttons */}
+                <div className="lp-sso">
+                  <button
+                    type="button"
+                    onClick={handleSSOLogin}
+                    disabled={loading}
+                    className="lp-sso-ms"
+                  >
+                    <svg className="w-5 h-5" viewBox="0 0 23 23" fill="none">
+                      <rect x="1" y="1" width="10" height="10" fill="#F25022" />
+                      <rect x="12" y="1" width="10" height="10" fill="#7FBA00" />
+                      <rect x="1" y="12" width="10" height="10" fill="#00A4EF" />
+                      <rect x="12" y="12" width="10" height="10" fill="#FFB900" />
+                    </svg>
+                    Sign in with Microsoft
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={handleSSOLogin}
+                    disabled={loading}
+                    className="lp-sso-google"
+                  >
+                    <svg className="w-5 h-5" viewBox="0 0 24 24">
+                      <path
+                        d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+                        fill="#4285F4"
+                      />
+                      <path
+                        d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                        fill="#34A853"
+                      />
+                      <path
+                        d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
+                        fill="#FBBC05"
+                      />
+                      <path
+                        d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+                        fill="#EA4335"
+                      />
+                    </svg>
+                    Sign in with Google
+                  </button>
+                </div>
+
+                <p className="lp-sso-note">
+                  Enterprise SSO available · Contact IT for provisioning
+                </p>
+              </Step>
+
+              <Step>
+                {/* Step 2: Credentials */}
+                <h2 className="lp-step-h2">
+                  {role === "client" ? "Client sign in" : "Consultant sign in"}
+                </h2>
+                <p className="lp-step-p">
+                  Enter your credentials to access your workspace.
+                </p>
+
+                <div className="mt-6 space-y-5">
+                  <div>
+                    <label className={GLASS_LABEL}>
+                      {role === "client" ? "Company Email" : "Work Email"}
+                    </label>
+                    <div className="lp-input-wrap">
+                      <span className={`material-symbols-outlined ${GLASS_ICON}`}>mail</span>
+                      <input
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        placeholder={
+                          role === "admin" ? "consultant@company.com" : "john@acmecorp.com"
+                        }
+                        className={GLASS_INPUT}
+                      />
+                    </div>
                   </div>
-                )}
 
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="w-full py-3.5 bg-primary text-on-primary rounded-xl font-bold text-sm hover:opacity-90 transition-all shadow-lg shadow-primary/20 flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
-                >
-                  {loading ? (
-                    <>
-                      <span className="w-4 h-4 border-2 border-on-primary border-t-transparent rounded-full animate-spin" />
-                      Signing in...
-                    </>
-                  ) : role === "admin" ? (
-                    "Sign In as Consultant"
-                  ) : (
-                    "Sign In as Client"
+                  <div>
+                    <label className={GLASS_LABEL}>Password</label>
+                    <div className="lp-input-wrap">
+                      <span className={`material-symbols-outlined ${GLASS_ICON}`}>lock</span>
+                      <input
+                        type="password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter" && !loading) handleSubmit();
+                        }}
+                        placeholder="••••••••"
+                        className={GLASS_INPUT}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="lp-remember-row">
+                    <label className="lp-remember">
+                      <input
+                        type="checkbox"
+                        defaultChecked
+                        className="lp-checkbox"
+                      />
+                      Remember me
+                    </label>
+                    <button
+                      type="button"
+                      onClick={onForgotPassword}
+                      className="lp-forgot"
+                    >
+                      Forgot password?
+                    </button>
+                  </div>
+
+                  {error && (
+                    <div className={GLASS_ERROR}>
+                      <span className="material-symbols-outlined text-[18px] text-red-300">
+                        error
+                      </span>
+                      <span>{error}</span>
+                    </div>
                   )}
-                </button>
-              </form>
+                </div>
 
-              {/* Divider */}
-              <div className="flex items-center gap-4 my-6">
-                <div className="flex-1 h-px bg-outline-variant/40" />
-                <span className="text-xs text-on-surface-variant">or continue with</span>
-                <div className="flex-1 h-px bg-outline-variant/40" />
-              </div>
-
-              {/* SSO Buttons */}
-              <div className="space-y-3">
-                <button
-                  type="button"
-                  onClick={handleSSOLogin}
-                  disabled={loading}
-                  className="w-full py-3 bg-[#2F2F2F] text-white rounded-xl font-bold text-sm hover:bg-[#1a1a1a] transition-all flex items-center justify-center gap-3 disabled:opacity-60 disabled:cursor-not-allowed"
-                >
-                  <svg className="w-5 h-5" viewBox="0 0 23 23" fill="none">
-                    <rect x="1" y="1" width="10" height="10" fill="#F25022" />
-                    <rect x="12" y="1" width="10" height="10" fill="#7FBA00" />
-                    <rect x="1" y="12" width="10" height="10" fill="#00A4EF" />
-                    <rect x="12" y="12" width="10" height="10" fill="#FFB900" />
-                  </svg>
-                  Sign in with Microsoft
-                </button>
-
-                <button
-                  type="button"
-                  onClick={handleSSOLogin}
-                  disabled={loading}
-                  className="w-full py-3 bg-white border border-outline-variant/40 text-on-surface rounded-xl font-bold text-sm hover:bg-surface-container-low transition-all flex items-center justify-center gap-3 disabled:opacity-60 disabled:cursor-not-allowed"
-                >
-                  <svg className="w-5 h-5" viewBox="0 0 24 24">
-                    <path
-                      d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
-                      fill="#4285F4"
-                    />
-                    <path
-                      d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
-                      fill="#34A853"
-                    />
-                    <path
-                      d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
-                      fill="#FBBC05"
-                    />
-                    <path
-                      d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
-                      fill="#EA4335"
-                    />
-                  </svg>
-                  Sign in with Google
-                </button>
-              </div>
-
-              <p className="text-center text-xs text-on-surface-variant mt-6">
-                Enterprise SSO available · Contact IT for provisioning
-              </p>
-              <p className="text-center text-xs text-on-surface-variant mt-6">
-                New to RequirementAI?{" "}
-                <button
-                  type="button"
-                  onClick={onShowSignup}
-                  className="text-primary font-medium hover:underline"
-                >
-                  Create an account
-                </button>
-              </p>
-            </div>
+                <p className="lp-footer">
+                  New to RequirementAI?{" "}
+                  <button
+                    type="button"
+                    onClick={onShowSignup}
+                    className="lp-forgot"
+                  >
+                    Create an account
+                  </button>
+                </p>
+              </Step>
+            </Stepper>
           </div>
         </div>
       </div>

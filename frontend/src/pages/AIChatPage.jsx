@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { projectService, chatService, getApiError } from "../services/api";
 import { useAuth } from "../context/AuthContext";
 import TopHeader from "../components/TopHeader";
+import "./AIChatPage.css";
 
 export default function AIChatPage({ projectId, onSelectProject }) {
   const { plan } = useAuth();
@@ -64,12 +65,12 @@ export default function AIChatPage({ projectId, onSelectProject }) {
       <TopHeader title="AI Assistant" subtitle="Chat with project knowledge" />
 
       {!aiEnabled && (
-        <div className="bg-white rounded-xl soft-shadow border border-outline-variant/20 p-8 text-center">
-          <span className="material-symbols-outlined text-[56px] text-outline-variant">lock</span>
-          <h3 className="font-headline-sm text-lg font-bold text-on-surface mt-3">
+        <div className="aichat-locked-card">
+          <span className="material-symbols-outlined aichat-locked-icon">lock</span>
+          <h3 className="aichat-locked-title">
             Custom RAG not available on your plan
           </h3>
-          <p className="text-on-surface-variant text-sm mt-1 max-w-md mx-auto">
+          <p className="aichat-locked-desc">
             This feature requires the custom_rag add-on. Ask your company admin to upgrade the
             subscription to enable AI document chat.
           </p>
@@ -77,11 +78,11 @@ export default function AIChatPage({ projectId, onSelectProject }) {
       )}
 
       {/* Project Selector */}
-      <div className="bg-white rounded-xl soft-shadow border border-outline-variant/20 p-4">
+      <div className="aichat-selector-card">
         <select
           value={selectedId}
           onChange={(e) => handleProjectChange(e.target.value)}
-          className="w-full px-4 py-2.5 rounded-xl border border-outline-variant/40 bg-surface-container-low text-on-surface text-sm focus:outline-none focus:border-primary"
+          className="aichat-select"
         >
           <option value="">Select a project to chat about</option>
           {projects.map((p) => (
@@ -91,24 +92,24 @@ export default function AIChatPage({ projectId, onSelectProject }) {
       </div>
 
       {/* Chat Area */}
-      <div className="bg-white rounded-xl soft-shadow border border-outline-variant/20 overflow-hidden">
-        <div className="h-[500px] overflow-y-auto p-6 space-y-4">
+      <div className="aichat-card">
+        <div className="aichat-messages">
           {messages.length === 0 && (
-            <div className="text-center py-16">
-              <span className="material-symbols-outlined text-[56px] text-outline-variant">smart_toy</span>
-              <h3 className="font-headline-sm text-lg font-bold text-on-surface mt-3">AI Document Assistant</h3>
-              <p className="text-on-surface-variant text-sm mt-1 max-w-md mx-auto">
+            <div className="aichat-empty">
+              <span className="material-symbols-outlined aichat-empty-icon">smart_toy</span>
+              <h3 className="aichat-empty-title">AI Document Assistant</h3>
+              <p className="aichat-empty-desc">
                 {selectedId
                   ? "Ask questions about this project's uploaded documents"
                   : "Select a project above to start chatting"}
               </p>
               {selectedId && (
-                <div className="flex flex-wrap gap-2 justify-center mt-6">
+                <div className="aichat-suggestions">
                   {suggestedQuestions.map((q) => (
                     <button
                       key={q}
                       onClick={() => setInput(q)}
-                      className="px-3 py-2 bg-surface-container-low rounded-lg border border-outline-variant/30 text-xs text-on-surface-variant hover:border-primary/50 hover:bg-primary/5 transition-colors"
+                      className="aichat-suggestion-btn"
                     >
                       {q}
                     </button>
@@ -120,10 +121,10 @@ export default function AIChatPage({ projectId, onSelectProject }) {
 
           {messages.map((msg, i) => (
             <div key={i} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
-              <div className={`max-w-[75%] px-4 py-3 rounded-2xl text-sm leading-relaxed ${
+              <div className={`aichat-bubble ${
                 msg.role === "user"
-                  ? "bg-primary text-on-primary rounded-br-md"
-                  : "bg-surface-container-low border border-outline-variant/20 text-on-surface rounded-bl-md"
+                  ? "aichat-bubble-user"
+                  : "aichat-bubble-assistant"
               }`}>
                 {msg.content}
               </div>
@@ -132,11 +133,11 @@ export default function AIChatPage({ projectId, onSelectProject }) {
 
           {loading && (
             <div className="flex justify-start">
-              <div className="bg-surface-container-low border border-outline-variant/20 px-4 py-3 rounded-2xl rounded-bl-md">
-                <div className="flex gap-1.5">
-                  <div className="w-2 h-2 bg-outline-variant rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
-                  <div className="w-2 h-2 bg-outline-variant rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
-                  <div className="w-2 h-2 bg-outline-variant rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
+              <div className="aichat-typing">
+                <div className="aichat-typing-dots">
+                  <div className="aichat-typing-dot" style={{ animationDelay: "0ms" }} />
+                  <div className="aichat-typing-dot" style={{ animationDelay: "150ms" }} />
+                  <div className="aichat-typing-dot" style={{ animationDelay: "300ms" }} />
                 </div>
               </div>
             </div>
@@ -145,7 +146,7 @@ export default function AIChatPage({ projectId, onSelectProject }) {
         </div>
 
         {/* Input */}
-        <div className="border-t border-outline-variant/20 p-4">
+        <div className="aichat-input-area">
           <div className="flex gap-2">
             <input
               type="text"
@@ -154,14 +155,14 @@ export default function AIChatPage({ projectId, onSelectProject }) {
               onKeyDown={(e) => e.key === "Enter" && handleSend()}
               placeholder={!aiEnabled ? "Custom RAG is disabled on this plan" : selectedId ? "Ask a question about the project documents..." : "Select a project first"}
               disabled={!selectedId || !aiEnabled}
-              className="flex-1 px-4 py-3 rounded-xl border border-outline-variant/40 text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 disabled:opacity-50"
+              className="aichat-input"
             />
             <button
               onClick={handleSend}
               disabled={!input.trim() || !selectedId || loading || !aiEnabled}
-              className="px-5 py-3 bg-primary text-on-primary rounded-xl font-bold text-sm hover:opacity-90 disabled:opacity-50 transition-all flex items-center gap-2"
+              className="aichat-send-btn"
             >
-              <span className="material-symbols-outlined text-[18px]">send</span>
+              <span className="material-symbols-outlined aichat-send-icon">send</span>
             </button>
           </div>
         </div>

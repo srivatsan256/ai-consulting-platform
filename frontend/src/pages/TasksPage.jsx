@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { taskService, projectService, userService, getApiError } from "../services/api";
 import TopHeader from "../components/TopHeader";
 import TaskFormModal from "../components/TaskFormModal";
+import "./TasksPage.css";
 
 const STATUS_STYLES = {
   todo: "bg-gray-100 text-gray-700",
@@ -176,7 +177,7 @@ export default function TasksPage() {
         actions={
           <button
             onClick={openCreate}
-            className="px-5 py-2.5 bg-primary text-on-primary rounded-xl font-bold text-sm hover:opacity-90 transition-all flex items-center gap-2 shadow-lg shadow-primary/20"
+            className="tasks-new-btn"
           >
             <span className="material-symbols-outlined text-[18px]">add</span>
             New Task
@@ -184,21 +185,21 @@ export default function TasksPage() {
         }
       />
 
-      <div className="flex flex-col md:flex-row gap-3">
+      <div className="tasks-filters">
         <div className="relative flex-1">
-          <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[20px]">search</span>
+          <span className="material-symbols-outlined tasks-search-icon">search</span>
           <input
             type="text"
             placeholder="Search tasks..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-outline-variant/40 bg-white text-on-surface text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
+            className="tasks-search-input"
           />
         </div>
         <select
           value={filterProject}
           onChange={(e) => setFilterProject(e.target.value)}
-          className="px-4 py-2.5 rounded-xl border border-outline-variant/40 bg-white text-on-surface text-sm focus:outline-none focus:border-primary"
+          className="tasks-filter-select"
         >
           <option value="ALL">All Projects</option>
           {projects.map((p) => (
@@ -208,7 +209,7 @@ export default function TasksPage() {
         <select
           value={filterStatus}
           onChange={(e) => setFilterStatus(e.target.value)}
-          className="px-4 py-2.5 rounded-xl border border-outline-variant/40 bg-white text-on-surface text-sm focus:outline-none focus:border-primary"
+          className="tasks-filter-select"
         >
           <option value="ALL">All Status</option>
           <option value="todo">To Do</option>
@@ -220,7 +221,7 @@ export default function TasksPage() {
         <select
           value={filterPriority}
           onChange={(e) => setFilterPriority(e.target.value)}
-          className="px-4 py-2.5 rounded-xl border border-outline-variant/40 bg-white text-on-surface text-sm focus:outline-none focus:border-primary"
+          className="tasks-filter-select"
         >
           <option value="ALL">All Priority</option>
           <option value="low">Low</option>
@@ -235,59 +236,59 @@ export default function TasksPage() {
           <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
         </div>
       ) : filtered.length === 0 ? (
-        <div className="bg-white rounded-xl soft-shadow border border-outline-variant/20 p-16 text-center">
-          <span className="material-symbols-outlined text-[48px] text-outline-variant">checklist</span>
-          <p className="text-on-surface-variant mt-3 text-sm">No tasks found</p>
+        <div className="tasks-empty soft-shadow">
+          <span className="material-symbols-outlined tasks-empty-icon">checklist</span>
+          <p className="tasks-empty-text">No tasks found</p>
           <button
             onClick={openCreate}
-            className="mt-4 px-4 py-2 bg-primary text-on-primary rounded-lg text-sm font-medium hover:opacity-90"
+            className="tasks-empty-btn"
           >
             Create your first task
           </button>
         </div>
       ) : (
-        <div className="bg-white rounded-xl soft-shadow border border-outline-variant/20 overflow-hidden">
-          <table className="w-full text-sm">
+        <div className="tasks-table-card soft-shadow">
+          <table className="tasks-table">
             <thead>
-              <tr className="text-left border-b border-outline-variant/20 text-on-surface-variant text-[11px] uppercase tracking-wider">
-                <th className="px-5 py-3 font-medium">Task</th>
-                <th className="px-5 py-3 font-medium">Project</th>
-                <th className="px-5 py-3 font-medium">Assignee</th>
-                <th className="px-5 py-3 font-medium">Status</th>
-                <th className="px-5 py-3 font-medium">Priority</th>
-                <th className="px-5 py-3 font-medium">Due Date</th>
-                <th className="px-5 py-3 font-medium text-right">Actions</th>
+              <tr className="tasks-table-head">
+                <th className="tasks-th">Task</th>
+                <th className="tasks-th">Project</th>
+                <th className="tasks-th">Assignee</th>
+                <th className="tasks-th">Status</th>
+                <th className="tasks-th">Priority</th>
+                <th className="tasks-th">Due Date</th>
+                <th className="tasks-th text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-outline-variant/10">
+            <tbody className="tasks-tbody">
               {filtered.map((task) => (
-                <tr key={task.id} className="hover:bg-surface-container-low/50 transition-colors cursor-pointer" onClick={() => navigate(`/tasks/${task.id}`)}>
-                  <td className="px-5 py-4">
-                    <p className="font-semibold text-on-surface">{task.title}</p>
+                <tr key={task.id} className="tasks-tr" onClick={() => navigate(`/tasks/${task.id}`)}>
+                  <td className="tasks-td">
+                    <p className="tasks-task-title">{task.title}</p>
                     {task.subtasks?.length > 0 && (
-                      <p className="text-xs text-on-surface-variant">{task.subtasks.length} subtask(s)</p>
+                      <p className="tasks-subtask">{task.subtasks.length} subtask(s)</p>
                     )}
                   </td>
-                  <td className="px-5 py-4 text-on-surface-variant">{projectNameMap[task.project] || "-"}</td>
-                  <td className="px-5 py-4 text-on-surface-variant">{task.assigned_to_name || "-"}</td>
-                  <td className="px-5 py-4">
-                    <span className={`px-2 py-1 rounded text-[10px] font-bold ${STATUS_STYLES[task.status] || "bg-gray-100 text-gray-600"}`}>
+                  <td className="tasks-td tasks-cell-text">{projectNameMap[task.project] || "-"}</td>
+                  <td className="tasks-td tasks-cell-text">{task.assigned_to_name || "-"}</td>
+                  <td className="tasks-td">
+                    <span className={`tasks-badge ${STATUS_STYLES[task.status] || "bg-gray-100 text-gray-600"}`}>
                       {task.status?.replace("_", " ")}
                     </span>
                   </td>
-                  <td className="px-5 py-4">
-                    <span className={`px-2 py-1 rounded text-[10px] font-bold ${PRIORITY_STYLES[task.priority] || "bg-gray-100 text-gray-600"}`}>
+                  <td className="tasks-td">
+                    <span className={`tasks-badge ${PRIORITY_STYLES[task.priority] || "bg-gray-100 text-gray-600"}`}>
                       {task.priority}
                     </span>
                   </td>
-                  <td className="px-5 py-4 text-on-surface-variant">{task.due_date || "-"}</td>
-                  <td className="px-5 py-4">
-                    <div className="flex items-center justify-end gap-1">
+                  <td className="tasks-td tasks-cell-text">{task.due_date || "-"}</td>
+                  <td className="tasks-td">
+                    <div className="tasks-actions">
                       {task.status !== "done" && (
                         <button
                           title="Mark complete"
                           onClick={(e) => { e.stopPropagation(); handleComplete(task); }}
-                          className="p-1.5 rounded-lg hover:bg-emerald-50 transition-colors"
+                          className="tasks-action-complete"
                         >
                           <span className="material-symbols-outlined text-[18px] text-emerald-600">check_circle</span>
                         </button>
@@ -295,14 +296,14 @@ export default function TasksPage() {
                       <button
                         title="Edit"
                         onClick={(e) => { e.stopPropagation(); openEdit(task); }}
-                        className="p-1.5 rounded-lg hover:bg-surface-container transition-colors"
+                        className="tasks-action-edit"
                       >
                         <span className="material-symbols-outlined text-[18px] text-outline-variant">edit</span>
                       </button>
                       <button
                         title="Delete"
                         onClick={(e) => { e.stopPropagation(); handleDelete(task); }}
-                        className="p-1.5 rounded-lg hover:bg-red-50 transition-colors"
+                        className="tasks-action-delete"
                       >
                         <span className="material-symbols-outlined text-[18px] text-red-500">delete</span>
                       </button>

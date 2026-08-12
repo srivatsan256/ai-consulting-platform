@@ -1,0 +1,11 @@
+  .tos-section-h2 {
+    @apply text-xl font-semibold text-slate-900 dark:text-white mb-4 pb-2 border-b border-slate-200 dark:border-white/10;
+  }
+
+  .tos-section-body {
+    @apply space-y-4 text-slate-600 dark:text-white/70;
+  }
+
+  .tos-ul {
+    @apply list-disc pl-6 space-y-2;
+  }

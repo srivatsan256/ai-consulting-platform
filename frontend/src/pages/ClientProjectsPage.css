@@ -1,0 +1,175 @@
+.clientprojects-selector-card {
+  @apply bg-white rounded-xl border border-outline-variant/20 p-6;
+}
+
+.clientprojects-label {
+  @apply block font-label-md text-[11px] uppercase tracking-wider text-on-surface-variant mb-2;
+}
+
+.clientprojects-select {
+  @apply w-full px-4 py-2.5 rounded-xl border border-outline-variant/40 bg-surface-container-low text-on-surface text-sm focus:outline-none focus:border-primary;
+}
+
+.clientprojects-empty {
+  @apply text-center py-16;
+}
+
+.clientprojects-empty-icon {
+  @apply text-[56px] text-outline-variant;
+}
+
+.clientprojects-empty-text {
+  @apply text-on-surface-variant mt-3 text-sm;
+}
+
+.clientprojects-spinner-wrap {
+  @apply flex items-center justify-center py-20;
+}
+
+.clientprojects-spinner {
+  @apply w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin;
+}
+
+.clientprojects-card {
+  @apply bg-white rounded-xl border border-outline-variant/20 p-6;
+}
+
+.clientprojects-detail-head {
+  @apply flex flex-wrap items-center gap-4;
+}
+
+.clientprojects-icon-box {
+  @apply w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center;
+}
+
+.clientprojects-icon {
+  @apply text-primary;
+}
+
+.clientprojects-title-wrap {
+  @apply flex-1 min-w-0;
+}
+
+.clientprojects-title {
+  @apply font-headline-sm text-lg font-bold text-on-surface;
+}
+
+.clientprojects-subtitle {
+  @apply text-xs text-on-surface-variant mt-0.5;
+}
+
+.clientprojects-badges {
+  @apply flex items-center gap-2;
+}
+
+.clientprojects-badge {
+  @apply px-3 py-1.5 rounded-lg text-xs font-bold;
+}
+
+.clientprojects-progress-track {
+  @apply mt-4 w-full h-2 bg-surface-container rounded-full overflow-hidden;
+}
+
+.clientprojects-progress-fill {
+  @apply h-full bg-primary rounded-full;
+}
+
+.clientprojects-stats {
+  @apply grid grid-cols-1 sm:grid-cols-3 gap-4 mt-5;
+}
+
+.clientprojects-stat-label {
+  @apply text-[11px] uppercase tracking-wider text-on-surface-variant mb-1;
+}
+
+.clientprojects-stat-value {
+  @apply text-sm font-bold text-on-surface;
+}
+
+.clientprojects-section-head {
+  @apply flex items-center justify-between mb-4;
+}
+
+.clientprojects-section-title {
+  @apply font-headline-sm text-base font-bold text-on-surface;
+}
+
+.clientprojects-section-meta {
+  @apply text-xs text-on-surface-variant;
+}
+
+.clientprojects-doc-list {
+  @apply space-y-2;
+}
+
+.clientprojects-doc-row {
+  @apply flex items-center gap-3 p-3 rounded-lg border border-outline-variant/10;
+}
+
+.clientprojects-doc-icon {
+  @apply text-primary text-[20px];
+}
+
+.clientprojects-doc-info {
+  @apply flex-1 min-w-0;
+}
+
+.clientprojects-doc-name {
+  @apply text-sm text-on-surface truncate;
+}
+
+.clientprojects-doc-meta {
+  @apply text-xs text-on-surface-variant;
+}
+
+.clientprojects-doc-badge {
+  @apply px-2 py-1 rounded text-[10px] font-bold;
+}
+
+.clientprojects-doc-btn {
+  @apply px-3 py-1.5 rounded-lg text-xs font-medium border border-outline-variant/30 text-on-surface-variant hover:bg-surface-container disabled:opacity-40 flex items-center gap-1;
+}
+
+.clientprojects-doc-btn-icon {
+  @apply text-[14px];
+}
+
+.clientprojects-no-docs {
+  @apply text-sm text-on-surface-variant text-center py-8;
+}
+
+.clientprojects-report-title {
+  @apply font-headline-sm text-base font-bold text-on-surface mb-4;
+}
+
+.clientprojects-report-list {
+  @apply space-y-3;
+}
+
+.clientprojects-report-item {
+  @apply p-4 rounded-xl border border-outline-variant/20;
+}
+
+.clientprojects-report-head {
+  @apply flex items-center gap-3 mb-2;
+}
+
+.clientprojects-report-dot {
+  @apply w-2 h-2 rounded-full;
+}
+
+.clientprojects-report-type {
+  @apply font-semibold text-on-surface text-sm;
+}
+
+.clientprojects-report-score {
+  @apply ml-auto px-3 py-1 rounded-lg text-xs font-bold;
+}
+
+.clientprojects-report-evidence {
+  @apply text-xs text-on-surface-variant p-3 rounded-lg bg-surface-container-low leading-relaxed;
+}
+
+.clientprojects-report-feedback {
+  @apply text-xs text-on-surface-variant mt-2 p-2 bg-blue-50 rounded-lg;
+}

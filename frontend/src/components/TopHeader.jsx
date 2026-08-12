@@ -1,19 +1,20 @@
 import React from "react";
+import "./TopHeader.css";
 
 export default function TopHeader({ title, subtitle, actions }) {
   return (
-    <div className="flex items-center justify-between mb-8">
+    <div className="topheader-root">
       <div>
         {subtitle && (
-          <span className="font-label-md text-primary uppercase tracking-tighter text-[11px]">
+          <span className="topheader-subtitle">
             {subtitle}
           </span>
         )}
-        <h2 className="font-headline-lg text-2xl font-bold text-on-surface mt-1">
+        <h2 className="topheader-title">
           {title}
         </h2>
       </div>
-      {actions && <div className="flex items-center gap-3">{actions}</div>}
+      {actions && <div className="topheader-actions">{actions}</div>}
     </div>
   );
 }

@@ -6,11 +6,10 @@ import {
   getApiError,
 } from "../services/api";
 import TopHeader from "../components/TopHeader";
+import "./FileManagementPage.css";
 
-const inputCls =
-  "w-full px-4 py-2.5 rounded-xl border border-outline-variant/40 bg-surface-container-low text-on-surface text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20";
-const labelCls =
-  "block font-label-md text-[11px] uppercase tracking-wider text-on-surface-variant mb-1.5";
+const inputCls = "filemgmt-input";
+const labelCls = "filemgmt-label";
 
 const SCAN_STATUS = {
   pending: { label: "Pending", icon: "hourglass_top", color: "text-amber-500" },
@@ -89,15 +88,15 @@ function UploadModal({ onClose, onUploaded }) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
-        <div className="flex items-center justify-between px-6 py-4 border-b border-outline-variant/20">
-          <h3 className="font-semibold text-on-surface">Upload File</h3>
-          <button onClick={onClose} className="text-on-surface-variant hover:text-on-surface">
+    <div className="filemgmt-overlay">
+      <div className="filemgmt-modal-panel">
+        <div className="filemgmt-modal-header">
+          <h3 className="filemgmt-modal-title">Upload File</h3>
+          <button onClick={onClose} className="filemgmt-close-btn">
             <span className="material-symbols-outlined">close</span>
           </button>
         </div>
-        <form onSubmit={handleSubmit} className="p-6 space-y-4">
+        <form onSubmit={handleSubmit} className="filemgmt-modal-body">
           <div>
             <label className={labelCls}>Project</label>
             <select
@@ -155,7 +154,7 @@ function UploadModal({ onClose, onUploaded }) {
             </div>
           </div>
           {error && (
-            <p className="text-xs text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">
+            <p className="filemgmt-error">
               {error}
             </p>
           )}
@@ -163,14 +162,14 @@ function UploadModal({ onClose, onUploaded }) {
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 rounded-xl border border-outline-variant/40 text-on-surface-variant text-sm font-semibold"
+              className="filemgmt-cancel-btn"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={saving}
-              className="px-5 py-2 bg-primary text-on-primary rounded-xl font-bold text-sm hover:opacity-90 transition-all disabled:opacity-50 flex items-center gap-2"
+              className="filemgmt-primary-btn"
             >
               {saving ? "Uploading..." : "Upload"}
             </button>
@@ -254,16 +253,16 @@ function PermissionModal({ file, onClose, onChanged }) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
-        <div className="flex items-center justify-between px-6 py-4 border-b border-outline-variant/20">
+    <div className="filemgmt-overlay">
+      <div className="filemgmt-modal-panel">
+        <div className="filemgmt-modal-header">
           <div>
-            <h3 className="font-semibold text-on-surface">File Permissions</h3>
+            <h3 className="filemgmt-modal-title">File Permissions</h3>
             <p className="text-xs text-on-surface-variant truncate max-w-sm">
               {file.original_name}
             </p>
           </div>
-          <button onClick={onClose} className="text-on-surface-variant hover:text-on-surface">
+          <button onClick={onClose} className="filemgmt-close-btn">
             <span className="material-symbols-outlined">close</span>
           </button>
         </div>
@@ -280,7 +279,7 @@ function PermissionModal({ file, onClose, onChanged }) {
               {permissions.map((p) => (
                 <div
                   key={p.id}
-                  className="flex items-center justify-between gap-3 p-3 rounded-lg bg-surface-container-low border border-outline-variant/20"
+                  className="filemgmt-perm-row"
                 >
                   <div className="flex items-center gap-2 min-w-0">
                     <span className={`material-symbols-outlined text-[18px] ${p.allow ? "text-emerald-500" : "text-red-500"}`}>
@@ -382,7 +381,7 @@ function PermissionModal({ file, onClose, onChanged }) {
             </label>
 
             {error && (
-              <p className="text-xs text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">
+              <p className="filemgmt-error">
                 {error}
               </p>
             )}
@@ -391,7 +390,7 @@ function PermissionModal({ file, onClose, onChanged }) {
               <button
                 type="submit"
                 disabled={saving}
-                className="px-4 py-2 bg-primary text-on-primary rounded-xl font-bold text-sm hover:opacity-90 transition-all disabled:opacity-50"
+                className="filemgmt-primary-btn-sm"
               >
                 {saving ? "Adding..." : "Add Rule"}
               </button>
@@ -430,17 +429,17 @@ function CategoryForm({ initial, onClose, onSaved }) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md">
-        <div className="flex items-center justify-between px-6 py-4 border-b border-outline-variant/20">
-          <h3 className="font-semibold text-on-surface">
+    <div className="filemgmt-overlay">
+      <div className="filemgmt-modal-panel-sm">
+        <div className="filemgmt-modal-header">
+          <h3 className="filemgmt-modal-title">
             {form.id ? "Edit Category" : "New Category"}
           </h3>
-          <button onClick={onClose} className="text-on-surface-variant hover:text-on-surface">
+          <button onClick={onClose} className="filemgmt-close-btn">
             <span className="material-symbols-outlined">close</span>
           </button>
         </div>
-        <form onSubmit={handleSubmit} className="p-6 space-y-4">
+        <form onSubmit={handleSubmit} className="filemgmt-modal-body">
           <div>
             <label className={labelCls}>Name</label>
             <input
@@ -458,7 +457,7 @@ function CategoryForm({ initial, onClose, onSaved }) {
                 type="color"
                 value={form.color}
                 onChange={(e) => setForm({ ...form, color: e.target.value })}
-                className="w-full h-11 rounded-xl border border-outline-variant/40 bg-surface-container-low"
+                className="filemgmt-color-input"
               />
             </div>
             <div>
@@ -481,7 +480,7 @@ function CategoryForm({ initial, onClose, onSaved }) {
             />
           </div>
           {error && (
-            <p className="text-xs text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">
+            <p className="filemgmt-error">
               {error}
             </p>
           )}
@@ -489,14 +488,14 @@ function CategoryForm({ initial, onClose, onSaved }) {
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 rounded-xl border border-outline-variant/40 text-on-surface-variant text-sm font-semibold"
+              className="filemgmt-cancel-btn"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={saving}
-              className="px-5 py-2 bg-primary text-on-primary rounded-xl font-bold text-sm hover:opacity-90 transition-all disabled:opacity-50"
+              className="filemgmt-primary-btn"
             >
               {saving ? "Saving..." : "Save"}
             </button>
@@ -552,10 +551,10 @@ function StoragePanel({ quota, onChanged }) {
     percent >= 90 ? "bg-red-500" : percent >= 70 ? "bg-amber-500" : "bg-primary";
 
   return (
-    <div className="bg-white rounded-xl soft-shadow border border-outline-variant/20 p-6">
+    <div className="filemgmt-card soft-shadow">
       <div className="flex items-start justify-between mb-6">
         <div>
-          <h3 className="font-semibold text-on-surface text-sm">Storage Quota</h3>
+          <h3 className="filemgmt-h3">Storage Quota</h3>
           <p className="text-xs text-on-surface-variant mt-1">
             Track and limit how much storage the company uses across uploaded files.
           </p>
@@ -566,7 +565,7 @@ function StoragePanel({ quota, onChanged }) {
               setLimitInput((quota.quota_limit_bytes / 1024 ** 3).toFixed(1));
               setEditing(true);
             }}
-            className="px-3 py-1.5 rounded-lg border border-outline-variant/40 text-on-surface-variant text-xs font-semibold hover:text-primary"
+            className="filemgmt-edit-btn"
           >
             Edit Limit
           </button>
@@ -580,7 +579,7 @@ function StoragePanel({ quota, onChanged }) {
           </span>
           <span className="text-sm font-bold text-on-surface">{percent}%</span>
         </div>
-        <div className="h-3 rounded-full bg-surface-container-low overflow-hidden">
+        <div className="filemgmt-quota-track">
           <div
             className={`h-full rounded-full transition-all ${barColor}`}
             style={{ width: `${percent}%` }}
@@ -608,21 +607,21 @@ function StoragePanel({ quota, onChanged }) {
           <button
             type="submit"
             disabled={saving}
-            className="px-4 py-2.5 bg-primary text-on-primary rounded-xl font-bold text-sm disabled:opacity-50"
+            className="filemgmt-save-btn"
           >
             {saving ? "Saving..." : "Save"}
           </button>
           <button
             type="button"
             onClick={() => setEditing(false)}
-            className="px-4 py-2.5 rounded-xl border border-outline-variant/40 text-on-surface-variant text-sm font-semibold"
+            className="filemgmt-cancel-btn"
           >
             Cancel
           </button>
         </form>
       )}
 
-      <div className="mt-4 flex items-center justify-between p-4 rounded-lg bg-surface-container-low">
+      <div className="filemgmt-enforce-panel">
         <div>
           <p className="text-sm font-semibold text-on-surface">Enforce Quota</p>
           <p className="text-xs text-on-surface-variant mt-0.5">
@@ -631,7 +630,7 @@ function StoragePanel({ quota, onChanged }) {
         </div>
         <button
           onClick={toggleEnforced}
-          className={`w-12 h-6 rounded-full transition-colors relative ${quota?.enforced ? "bg-primary" : "bg-outline-variant/50"}`}
+          className={`filemgmt-toggle ${quota?.enforced ? "bg-primary" : "bg-outline-variant/50"}`}
         >
           <span
             className={`absolute top-0.5 w-5 h-5 rounded-full bg-white transition-all ${quota?.enforced ? "left-[26px]" : "left-0.5"}`}
@@ -640,7 +639,7 @@ function StoragePanel({ quota, onChanged }) {
       </div>
 
       {error && (
-        <p className="mt-3 text-xs text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">
+        <p className="filemgmt-error mt-3">
           {error}
         </p>
       )}
@@ -738,7 +737,7 @@ export default function FileManagementPage() {
     const scan = file.scan;
     const s = SCAN_STATUS[scan?.status] || SCAN_STATUS.pending;
     return (
-      <span className={`inline-flex items-center gap-1 text-[11px] font-semibold ${s.color}`}>
+      <span className={`filemgmt-scan-badge ${s.color}`}>
         <span className="material-symbols-outlined text-[14px]">{s.icon}</span>
         {s.label}
       </span>
@@ -754,7 +753,7 @@ export default function FileManagementPage() {
           tab === "files" ? (
             <button
               onClick={() => setShowUpload(true)}
-              className="px-5 py-2.5 bg-primary text-on-primary rounded-xl font-bold text-sm hover:opacity-90 transition-all flex items-center gap-2 shadow-lg shadow-primary/20"
+              className="filemgmt-primary-btn-lg"
             >
               <span className="material-symbols-outlined text-[18px]">upload_file</span>
               Upload File
@@ -762,7 +761,7 @@ export default function FileManagementPage() {
           ) : tab === "categories" ? (
             <button
               onClick={() => setShowCategoryForm({})}
-              className="px-5 py-2.5 bg-primary text-on-primary rounded-xl font-bold text-sm hover:opacity-90 transition-all flex items-center gap-2 shadow-lg shadow-primary/20"
+              className="filemgmt-primary-btn-lg"
             >
               <span className="material-symbols-outlined text-[18px]">add</span>
               New Category
@@ -771,7 +770,7 @@ export default function FileManagementPage() {
         }
       />
 
-      <div className="flex gap-2 border-b border-outline-variant/20 flex-wrap">
+      <div className="filemgmt-tabs">
         {[
           ["files", "Files"],
           ["categories", "Categories"],
@@ -780,7 +779,7 @@ export default function FileManagementPage() {
           <button
             key={key}
             onClick={() => setTab(key)}
-            className={`px-4 py-2.5 text-sm font-semibold border-b-2 transition-colors ${tab === key ? "border-primary text-primary" : "border-transparent text-on-surface-variant hover:text-on-surface"}`}
+            className={`filemgmt-tab ${tab === key ? "filemgmt-tab-active" : "filemgmt-tab-idle"}`}
           >
             {label}
           </button>
@@ -790,7 +789,7 @@ export default function FileManagementPage() {
       {tab === "files" && (
         <>
           {/* Filters */}
-          <div className="bg-white rounded-xl soft-shadow border border-outline-variant/20 p-4 grid grid-cols-1 md:grid-cols-3 gap-3">
+          <div className="filemgmt-filters soft-shadow">
             <div className="relative">
               <span className="material-symbols-outlined absolute left-3 top-2.5 text-outline-variant text-[20px]">
                 search
@@ -829,7 +828,7 @@ export default function FileManagementPage() {
           </div>
 
           {/* Files table */}
-          <div className="bg-white rounded-xl soft-shadow border border-outline-variant/20 overflow-hidden">
+          <div className="filemgmt-table-card soft-shadow">
             {loading ? (
               <p className="p-6 text-sm text-on-surface-variant">Loading files...</p>
             ) : files.length === 0 ? (
@@ -841,21 +840,21 @@ export default function FileManagementPage() {
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
-                    <tr className="text-left text-[11px] uppercase tracking-wider text-on-surface-variant border-b border-outline-variant/20 bg-surface-container-low">
-                      <th className="px-4 py-3">File</th>
-                      <th className="px-4 py-3">Project</th>
-                      <th className="px-4 py-3">Category</th>
-                      <th className="px-4 py-3">Size</th>
-                      <th className="px-4 py-3">Scan</th>
-                      <th className="px-4 py-3">Uploaded By</th>
-                      <th className="px-4 py-3">Date</th>
-                      <th className="px-4 py-3 text-right">Actions</th>
+                    <tr className="filemgmt-th-row">
+                      <th className="filemgmt-th">File</th>
+                      <th className="filemgmt-th">Project</th>
+                      <th className="filemgmt-th">Category</th>
+                      <th className="filemgmt-th">Size</th>
+                      <th className="filemgmt-th">Scan</th>
+                      <th className="filemgmt-th">Uploaded By</th>
+                      <th className="filemgmt-th">Date</th>
+                      <th className="filemgmt-th text-right">Actions</th>
                     </tr>
                   </thead>
                   <tbody>
                     {files.map((file) => (
-                      <tr key={file.id} className="border-b border-outline-variant/10 hover:bg-surface-container-low/50">
-                        <td className="px-4 py-3">
+                      <tr key={file.id} className="filemgmt-tr">
+                        <td className="filemgmt-td">
                           <div className="flex items-center gap-3 min-w-[200px]">
                             <span className="material-symbols-outlined text-outline-variant">description</span>
                             <div className="min-w-0">
@@ -864,13 +863,13 @@ export default function FileManagementPage() {
                             </div>
                           </div>
                         </td>
-                        <td className="px-4 py-3 text-on-surface-variant">{file.project_name}</td>
-                        <td className="px-4 py-3">
+                        <td className="filemgmt-td-muted">{file.project_name}</td>
+                        <td className="filemgmt-td">
                           <div className="flex items-center gap-2">
                             <select
                               value={file.file_category || ""}
                               onChange={(e) => assignCategory(file, e.target.value)}
-                              className="px-2 py-1.5 rounded-lg border border-outline-variant/40 bg-surface-container-low text-xs focus:outline-none focus:border-primary max-w-[140px]"
+                              className="filemgmt-cat-select"
                             >
                               <option value="">No category</option>
                               {categories.map((c) => (
@@ -887,37 +886,37 @@ export default function FileManagementPage() {
                             )}
                           </div>
                         </td>
-                        <td className="px-4 py-3 text-on-surface-variant">{file.size_display}</td>
-                        <td className="px-4 py-3">{scanBadge(file)}</td>
-                        <td className="px-4 py-3 text-on-surface-variant">{file.uploaded_by_name}</td>
-                        <td className="px-4 py-3 text-on-surface-variant text-xs">{formatDate(file.uploaded_at)}</td>
-                        <td className="px-4 py-3">
+                        <td className="filemgmt-td-muted">{file.size_display}</td>
+                        <td className="filemgmt-td">{scanBadge(file)}</td>
+                        <td className="filemgmt-td-muted">{file.uploaded_by_name}</td>
+                        <td className="filemgmt-td-muted text-xs">{formatDate(file.uploaded_at)}</td>
+                        <td className="filemgmt-td">
                           <div className="flex items-center justify-end gap-1">
                             <button
                               onClick={() => handleDownload(file)}
                               title="Download"
-                              className="p-2 rounded-lg hover:bg-surface-container-low text-on-surface-variant hover:text-primary"
+                              className="filemgmt-icon-btn"
                             >
                               <span className="material-symbols-outlined text-[18px]">download</span>
                             </button>
                             <button
                               onClick={() => rescanFile(file)}
                               title="Re-scan for viruses"
-                              className="p-2 rounded-lg hover:bg-surface-container-low text-on-surface-variant hover:text-primary"
+                              className="filemgmt-icon-btn"
                             >
                               <span className="material-symbols-outlined text-[18px]">shield</span>
                             </button>
                             <button
                               onClick={() => setPermFile(file)}
                               title="Manage permissions"
-                              className="p-2 rounded-lg hover:bg-surface-container-low text-on-surface-variant hover:text-primary"
+                              className="filemgmt-icon-btn"
                             >
                               <span className="material-symbols-outlined text-[18px]">lock</span>
                             </button>
                             <button
                               onClick={() => deleteFile(file)}
                               title="Delete"
-                              className="p-2 rounded-lg hover:bg-surface-container-low text-on-surface-variant hover:text-red-500"
+                              className="filemgmt-icon-btn hover:text-red-500"
                             >
                               <span className="material-symbols-outlined text-[18px]">delete</span>
                             </button>
@@ -934,7 +933,7 @@ export default function FileManagementPage() {
       )}
 
       {tab === "categories" && (
-        <div className="bg-white rounded-xl soft-shadow border border-outline-variant/20 p-6">
+        <div className="filemgmt-card soft-shadow">
           {loading ? (
             <p className="text-sm text-on-surface-variant">Loading categories...</p>
           ) : categories.length === 0 ? (
@@ -945,7 +944,7 @@ export default function FileManagementPage() {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {categories.map((c) => (
-                <div key={c.id} className="border border-outline-variant/20 rounded-xl p-4 flex flex-col">
+                <div key={c.id} className="filemgmt-cat-card">
                   <div className="flex items-start justify-between mb-3">
                     <div
                       className="w-10 h-10 rounded-xl flex items-center justify-center"
@@ -956,7 +955,7 @@ export default function FileManagementPage() {
                     <div className="flex gap-1">
                       <button
                         onClick={() => setShowCategoryForm(c)}
-                        className="p-1.5 rounded-lg hover:bg-surface-container-low text-on-surface-variant hover:text-primary"
+                        className="filemgmt-icon-btn-sm"
                       >
                         <span className="material-symbols-outlined text-[18px]">edit</span>
                       </button>
@@ -970,15 +969,15 @@ export default function FileManagementPage() {
                             alert(getApiError(err, "Failed to delete category."));
                           }
                         }}
-                        className="p-1.5 rounded-lg hover:bg-surface-container-low text-on-surface-variant hover:text-red-500"
+                        className="filemgmt-icon-btn-sm hover:text-red-500"
                       >
                         <span className="material-symbols-outlined text-[18px]">delete</span>
                       </button>
                     </div>
                   </div>
-                  <h4 className="font-semibold text-on-surface text-sm">{c.name}</h4>
+                  <h4 className="filemgmt-h3">{c.name}</h4>
                   <p className="text-xs text-on-surface-variant mt-1 flex-1">{c.description || "No description"}</p>
-                  <div className="flex items-center gap-2 mt-3 pt-3 border-t border-outline-variant/10 text-xs text-on-surface-variant">
+                  <div className="filemgmt-cat-footer">
                     <span className="material-symbols-outlined text-[14px]">description</span>
                     {c.file_count || 0} file{c.file_count === 1 ? "" : "s"}
                   </div>

@@ -106,6 +106,7 @@ INSTALLED_APPS = [
     "settings_app",
     "subscriptions",
     "file_management",
+    "contact",
 ]
 
 

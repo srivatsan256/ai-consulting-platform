@@ -20,12 +20,48 @@
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
     --ring: 239 84% 67%;
+    --surface: 221 100% 99%;
+    --on-surface: 217 91% 12%;
+    --surface-container: 222 100% 95%;
+    --on-surface-variant: 240 10% 30%;
+    --outline: 244 9% 49%;
+    --outline-variant: 250 10% 81%;
+    --primary-strong: 243 75% 38%;
+    --primary-container: 241 73% 58%;
+    --primary-fixed: 241 100% 94%;
+    --primary-fixed-dim: 241 100% 88%;
+    --inverse-surface: 220 11% 19%;
+    --inverse-on-surface: 226 38% 96%;
+    --secondary-fixed: 213 100% 89%;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --surface: 221 48% 7%;
+    --on-surface: 226 38% 96%;
+    --surface-container: 220 11% 19%;
+    --on-surface-variant: 240 10% 81%;
+    --outline: 244 9% 49%;
+    --outline-variant: 240 10% 32%;
+    --primary-strong: 242 100% 84%;
+    --primary-container: 242 67% 51%;
+    --primary-fixed: 242 100% 94%;
+    --primary-fixed-dim: 242 100% 88%;
+    --inverse-surface: 226 38% 96%;
+    --inverse-on-surface: 220 11% 19%;
+    --secondary-fixed: 213 100% 89%;
+  }
+
+  html {
+    scroll-behavior: smooth;
   }
 
   body {
-    background-color: #f8f9ff;
-    color: #0b1c30;
+    background-color: hsl(var(--surface));
+    color: hsl(var(--on-surface));
     font-family: 'Inter', sans-serif;
+    transition: background-color 0.3s ease, color 0.3s ease;
   }
 }
 

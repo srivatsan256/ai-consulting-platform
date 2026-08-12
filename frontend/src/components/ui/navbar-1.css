@@ -1,0 +1,59 @@
+  .uinav-root {
+    @apply flex justify-center w-full py-6 px-4;
+  }
+
+  .uinav-bar {
+    @apply flex items-center justify-between px-6 py-3 bg-white rounded-full shadow-lg w-full max-w-3xl relative z-10;
+  }
+
+  .uinav-logo {
+    @apply w-8 h-8 mr-6;
+  }
+
+  .uinav-desktop {
+    @apply hidden md:flex items-center space-x-8;
+  }
+
+  .uinav-desktop-link {
+    @apply text-sm text-gray-900 hover:text-gray-600 transition-colors font-medium;
+  }
+
+  .uinav-desktop-cta-wrap {
+    @apply hidden md:block;
+  }
+
+  .uinav-desktop-cta {
+    @apply inline-flex items-center justify-center px-5 py-2 text-sm text-white bg-black rounded-full hover:bg-gray-800 transition-colors;
+  }
+
+  .uinav-mobile-btn {
+    @apply md:hidden flex items-center;
+  }
+
+  .uinav-icon {
+    @apply h-6 w-6 text-gray-900;
+  }
+
+  .uinav-overlay {
+    @apply fixed inset-0 bg-white z-50 pt-24 px-6 md:hidden;
+  }
+
+  .uinav-close {
+    @apply absolute top-6 right-6 p-2;
+  }
+
+  .uinav-mobile-list {
+    @apply flex flex-col space-y-6;
+  }
+
+  .uinav-mobile-link {
+    @apply text-base text-gray-900 font-medium;
+  }
+
+  .uinav-mobile-cta-wrap {
+    @apply pt-6;
+  }
+
+  .uinav-mobile-cta {
+    @apply inline-flex items-center justify-center w-full px-5 py-3 text-base text-white bg-black rounded-full hover:bg-gray-800 transition-colors;
+  }

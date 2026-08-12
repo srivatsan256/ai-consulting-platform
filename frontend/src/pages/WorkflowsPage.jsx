@@ -1,11 +1,10 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { workflowService, getApiError } from "../services/api";
 import TopHeader from "../components/TopHeader";
+import "./WorkflowsPage.css";
 
-const inputCls =
-  "w-full px-4 py-2.5 rounded-xl border border-outline-variant/40 bg-surface-container-low text-on-surface text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20";
-const labelCls =
-  "block font-label-md text-[11px] uppercase tracking-wider text-on-surface-variant mb-1.5";
+const inputCls = "workflows-input";
+const labelCls = "workflows-label";
 
 // UI display maps only (not data)
 const WORKFLOW_STATUS = {
@@ -66,7 +65,7 @@ const formatDate = (v) => (v ? new Date(v).toLocaleString() : "N/A");
 function statusBadge(status) {
   const s = EXECUTION_STATUS[status] || EXECUTION_STATUS.running;
   return (
-    <span className={`inline-flex items-center gap-1 text-[11px] font-semibold ${s.color}`}>
+    <span className={`workflows-badge ${s.color}`}>
       <span className="material-symbols-outlined text-[14px]">{s.icon}</span>
       {s.label}
     </span>
@@ -76,7 +75,7 @@ function statusBadge(status) {
 function workflowBadge(status) {
   const s = WORKFLOW_STATUS[status] || WORKFLOW_STATUS.draft;
   return (
-    <span className={`inline-flex items-center gap-1 text-[11px] font-semibold ${s.color}`}>
+    <span className={`workflows-badge ${s.color}`}>
       <span className="material-symbols-outlined text-[14px]">{s.icon}</span>
       {s.label}
     </span>
@@ -107,7 +106,7 @@ function HistoryTimeline({ events }) {
           const style = HISTORY_EVENT_STYLE[ev.event_type] || HISTORY_EVENT_STYLE.comment;
           return (
             <div key={ev.id} className="relative flex gap-4 pl-0">
-              <div className="z-10 flex items-center justify-center w-8 h-8 rounded-full shrink-0 bg-white border border-outline-variant/30">
+              <div className="workflows-event-icon">
                 <span className={`material-symbols-outlined text-[16px] ${style.color}`}>{style.icon}</span>
               </div>
               <div className="flex-1 min-w-0 pt-0.5">
@@ -242,23 +241,23 @@ function WorkflowFormModal({ initial, onClose, onSaved }) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40">
-      <div className="bg-white rounded-2xl shadow-xl w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col">
-        <div className="px-6 py-4 border-b border-outline-variant/20 flex items-center justify-between">
-          <h3 className="font-semibold text-on-surface text-lg">
+    <div className="workflows-overlay">
+      <div className="workflows-modal-panel">
+        <div className="workflows-modal-header">
+          <h3 className="workflows-modal-title">
             {isEdit ? "Edit Workflow" : "Create Workflow"}
           </h3>
           <button
             onClick={onClose}
-            className="p-2 rounded-lg hover:bg-surface-container-low text-on-surface-variant"
+            className="workflows-close-btn"
           >
             <span className="material-symbols-outlined">close</span>
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-6 space-y-5">
+        <form onSubmit={handleSubmit} className="workflows-modal-body">
           {error && (
-            <div className="px-4 py-3 rounded-xl bg-red-50 text-red-600 text-sm border border-red-100">
+            <div className="workflows-error">
               {error}
             </div>
           )}
@@ -329,7 +328,7 @@ function WorkflowFormModal({ initial, onClose, onSaved }) {
               <button
                 type="button"
                 onClick={addStep}
-                className="text-xs font-semibold text-primary hover:underline inline-flex items-center gap-1"
+                className="workflows-add-step-btn"
               >
                 <span className="material-symbols-outlined text-[16px]">add</span>
                 Add step
@@ -339,7 +338,7 @@ function WorkflowFormModal({ initial, onClose, onSaved }) {
               {form.steps.map((step, idx) => (
                 <div
                   key={idx}
-                  className="p-3 rounded-xl border border-outline-variant/30 bg-surface-container-low space-y-2"
+                  className="workflows-step-card"
                 >
                   <div className="flex items-center justify-between gap-2">
                     <span className="text-[11px] font-bold text-on-surface-variant">
@@ -348,7 +347,7 @@ function WorkflowFormModal({ initial, onClose, onSaved }) {
                     <button
                       type="button"
                       onClick={() => removeStep(idx)}
-                      className="p-1 rounded hover:bg-white text-on-surface-variant hover:text-red-500"
+                      className="workflows-step-remove-btn"
                     >
                       <span className="material-symbols-outlined text-[18px]">delete</span>
                     </button>
@@ -384,18 +383,18 @@ function WorkflowFormModal({ initial, onClose, onSaved }) {
           </div>
         </form>
 
-        <div className="px-6 py-4 border-t border-outline-variant/20 flex justify-end gap-3">
+        <div className="workflows-modal-footer">
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-2.5 rounded-xl text-sm font-semibold text-on-surface-variant hover:bg-surface-container-low"
+            className="workflows-cancel-btn"
           >
             Cancel
           </button>
           <button
             onClick={handleSubmit}
             disabled={saving}
-            className="px-5 py-2.5 rounded-xl bg-primary text-white text-sm font-bold hover:opacity-90 disabled:opacity-50"
+            className="workflows-save-btn"
           >
             {saving ? "Saving..." : isEdit ? "Save Changes" : "Create Workflow"}
           </button>
@@ -437,20 +436,20 @@ function StartExecutionModal({ workflow, onClose, onStarted }) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40">
-      <div className="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden">
-        <div className="px-6 py-4 border-b border-outline-variant/20 flex items-center justify-between">
-          <h3 className="font-semibold text-on-surface text-lg">Start Execution</h3>
+    <div className="workflows-overlay">
+      <div className="workflows-modal-panel-sm">
+        <div className="workflows-modal-header">
+          <h3 className="workflows-modal-title">Start Execution</h3>
           <button
             onClick={onClose}
-            className="p-2 rounded-lg hover:bg-surface-container-low text-on-surface-variant"
+            className="workflows-close-btn"
           >
             <span className="material-symbols-outlined">close</span>
           </button>
         </div>
-        <form onSubmit={handleStart} className="p-6 space-y-4">
+        <form onSubmit={handleStart} className="workflows-modal-body-sm">
           {error && (
-            <div className="px-4 py-3 rounded-xl bg-red-50 text-red-600 text-sm border border-red-100">
+            <div className="workflows-error">
               {error}
             </div>
           )}
@@ -484,14 +483,14 @@ function StartExecutionModal({ workflow, onClose, onStarted }) {
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2.5 rounded-xl text-sm font-semibold text-on-surface-variant hover:bg-surface-container-low"
+              className="workflows-cancel-btn"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={saving}
-              className="px-5 py-2.5 rounded-xl bg-primary text-white text-sm font-bold hover:opacity-90 disabled:opacity-50"
+              className="workflows-save-btn"
             >
               {saving ? "Starting..." : "Start Execution"}
             </button>
@@ -572,19 +571,19 @@ function WorkflowDetail({ workflow, onBack, onChanged, onEdit }) {
 
   return (
     <>
-      <div className="bg-white rounded-xl soft-shadow border border-outline-variant/20 overflow-hidden">
-        <div className="p-6 border-b border-outline-variant/20">
+      <div className="workflows-card soft-shadow">
+        <div className="workflows-detail-header">
           <div className="flex items-start justify-between gap-4 flex-wrap">
             <div className="flex items-start gap-3">
               <button
                 onClick={onBack}
-                className="p-2 rounded-lg hover:bg-surface-container-low text-on-surface-variant"
+                className="workflows-close-btn"
                 title="Back to workflows"
               >
                 <span className="material-symbols-outlined">arrow_back</span>
               </button>
               <div>
-                <h3 className="font-semibold text-on-surface text-lg">{workflow.name}</h3>
+                <h3 className="workflows-modal-title">{workflow.name}</h3>
                 <p className="text-xs text-on-surface-variant mt-0.5">
                   {workflow.project_name || (workflow.project ? `Project #${workflow.project}` : "No project")} · Trigger:{" "}
                   {workflow.trigger_event}
@@ -598,21 +597,21 @@ function WorkflowDetail({ workflow, onBack, onChanged, onEdit }) {
               {workflowBadge(workflow.status)}
               <button
                 onClick={() => setShowStartModal(true)}
-                className="px-3 py-2 rounded-xl text-xs font-bold bg-primary text-white hover:opacity-90 inline-flex items-center gap-1"
+                className="workflows-start-btn"
               >
                 <span className="material-symbols-outlined text-[16px]">play_arrow</span>
                 Start Run
               </button>
               <button
                 onClick={() => onEdit(workflow)}
-                className="px-3 py-2 rounded-xl text-xs font-bold border border-outline-variant/40 text-on-surface hover:bg-surface-container-low inline-flex items-center gap-1"
+                className="workflows-edit-btn"
               >
                 <span className="material-symbols-outlined text-[16px]">edit</span>
                 Edit
               </button>
               <button
                 onClick={toggleStatus}
-                className={`px-4 py-2 rounded-xl text-xs font-bold text-white transition-all hover:opacity-90 ${
+                className={`workflows-toggle-btn ${
                   workflow.status === "active" ? "bg-amber-500" : "bg-emerald-500"
                 }`}
               >
@@ -629,10 +628,10 @@ function WorkflowDetail({ workflow, onBack, onChanged, onEdit }) {
               <button
                 key={key}
                 onClick={() => setSubTab(key)}
-                className={`px-4 py-2.5 text-sm font-semibold border-b-2 transition-colors ${
+                className={`workflows-tab ${
                   subTab === key
-                    ? "border-primary text-primary"
-                    : "border-transparent text-on-surface-variant hover:text-on-surface"
+                    ? "workflows-tab-active"
+                    : "workflows-tab-idle"
                 }`}
               >
                 {label}
@@ -656,9 +655,9 @@ function WorkflowDetail({ workflow, onBack, onChanged, onEdit }) {
                   {workflow.steps.map((step) => (
                     <div
                       key={step.id}
-                      className="flex items-center gap-3 p-3 rounded-lg bg-surface-container-low"
+                      className="workflows-step-row"
                     >
-                      <span className="w-7 h-7 rounded-full bg-primary/10 text-primary flex items-center justify-center text-xs font-bold">
+                      <span className="workflows-step-num">
                         {step.order}
                       </span>
                       <div className="flex-1">
@@ -673,17 +672,17 @@ function WorkflowDetail({ workflow, onBack, onChanged, onEdit }) {
                 </div>
               )}
               <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="p-4 rounded-lg bg-surface-container-low">
+                <div className="workflows-info-card">
                   <p className="text-[11px] text-on-surface-variant uppercase tracking-wider">Status</p>
                   <p className="text-sm font-semibold text-on-surface mt-1">{workflow.status}</p>
                 </div>
-                <div className="p-4 rounded-lg bg-surface-container-low">
+                <div className="workflows-info-card">
                   <p className="text-[11px] text-on-surface-variant uppercase tracking-wider">Trigger Event</p>
                   <p className="text-sm font-semibold text-on-surface mt-1 break-words">
                     {workflow.trigger_event}
                   </p>
                 </div>
-                <div className="p-4 rounded-lg bg-surface-container-low">
+                <div className="workflows-info-card">
                   <p className="text-[11px] text-on-surface-variant uppercase tracking-wider">Created By</p>
                   <p className="text-sm font-semibold text-on-surface mt-1">
                     {workflow.created_by_name || "N/A"}
@@ -698,7 +697,7 @@ function WorkflowDetail({ workflow, onBack, onChanged, onEdit }) {
                 <p className="text-on-surface-variant mt-3 text-sm">No executions yet</p>
                 <button
                   onClick={() => setShowStartModal(true)}
-                  className="mt-4 px-4 py-2 rounded-xl bg-primary text-white text-xs font-bold hover:opacity-90"
+                  className="workflows-mini-btn"
                 >
                   Start first run
                 </button>
@@ -707,45 +706,45 @@ function WorkflowDetail({ workflow, onBack, onChanged, onEdit }) {
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
-                    <tr className="text-left text-[11px] uppercase tracking-wider text-on-surface-variant border-b border-outline-variant/20 bg-surface-container-low">
-                      <th className="px-4 py-3">ID</th>
-                      <th className="px-4 py-3">Entity</th>
-                      <th className="px-4 py-3">Status</th>
-                      <th className="px-4 py-3">Initiated By</th>
-                      <th className="px-4 py-3">Started</th>
-                      <th className="px-4 py-3">Completed</th>
-                      <th className="px-4 py-3 text-right">Actions</th>
+                    <tr className="workflows-th-row">
+                      <th className="workflows-th">ID</th>
+                      <th className="workflows-th">Entity</th>
+                      <th className="workflows-th">Status</th>
+                      <th className="workflows-th">Initiated By</th>
+                      <th className="workflows-th">Started</th>
+                      <th className="workflows-th">Completed</th>
+                      <th className="workflows-th text-right">Actions</th>
                     </tr>
                   </thead>
                   <tbody>
                     {executions.map((exec) => (
-                      <tr key={exec.id} className="border-b border-outline-variant/10">
-                        <td className="px-4 py-3 font-medium text-on-surface">#{exec.id}</td>
-                        <td className="px-4 py-3 text-on-surface-variant">
+                      <tr key={exec.id} className="workflows-tr">
+                        <td className="workflows-td-strong">#{exec.id}</td>
+                        <td className="workflows-td-muted">
                           {exec.entity_type} #{exec.entity_id}
                         </td>
-                        <td className="px-4 py-3">{statusBadge(exec.status)}</td>
-                        <td className="px-4 py-3 text-on-surface-variant">
+                        <td className="workflows-td">{statusBadge(exec.status)}</td>
+                        <td className="workflows-td-muted">
                           {exec.initiated_by_name || "—"}
                         </td>
-                        <td className="px-4 py-3 text-xs text-on-surface-variant">
+                        <td className="workflows-td-muted text-xs">
                           {formatDate(exec.started_at)}
                         </td>
-                        <td className="px-4 py-3 text-xs text-on-surface-variant">
+                        <td className="workflows-td-muted text-xs">
                           {formatDate(exec.completed_at)}
                         </td>
-                        <td className="px-4 py-3 text-right">
+                        <td className="workflows-td text-right">
                           {exec.status === "running" && (
                             <div className="inline-flex gap-2">
                               <button
                                 onClick={() => completeExecution(exec)}
-                                className="px-3 py-1.5 rounded-lg bg-emerald-500 text-white text-xs font-semibold hover:opacity-90"
+                                className="workflows-complete-btn"
                               >
                                 Complete
                               </button>
                               <button
                                 onClick={() => cancelExecution(exec)}
-                                className="px-3 py-1.5 rounded-lg border border-outline-variant/40 text-on-surface-variant text-xs font-semibold hover:bg-surface-container-low"
+                                className="workflows-cancel-sm-btn"
                               >
                                 Cancel
                               </button>
@@ -767,7 +766,7 @@ function WorkflowDetail({ workflow, onBack, onChanged, onEdit }) {
                 <select
                   value={historyFilter}
                   onChange={(e) => setHistoryFilter(e.target.value)}
-                  className="px-3 py-2 rounded-lg border border-outline-variant/40 bg-surface-container-low text-xs focus:outline-none focus:border-primary max-w-[180px]"
+                  className="workflows-filter-select"
                 >
                   <option value="">All event types</option>
                   {Object.keys(HISTORY_EVENT_STYLE).map((key) => (
@@ -854,9 +853,9 @@ export default function WorkflowsPage() {
         />
       ) : (
         <>
-          <div className="bg-white rounded-xl soft-shadow border border-outline-variant/20 p-4 flex items-center justify-between flex-wrap gap-3">
+          <div className="workflows-toolbar soft-shadow">
             <div>
-              <h3 className="font-semibold text-on-surface text-sm">All Workflows</h3>
+              <h3 className="workflows-h3">All Workflows</h3>
               <p className="text-xs text-on-surface-variant mt-0.5">
                 Data loaded from the database. Select a workflow to view steps, executions and history.
               </p>
@@ -870,13 +869,13 @@ export default function WorkflowsPage() {
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   placeholder="Search workflows..."
-                  className="pl-9 pr-3 py-2 rounded-lg border border-outline-variant/40 bg-surface-container-low text-xs focus:outline-none focus:border-primary w-48"
+                  className="workflows-search-input"
                 />
               </div>
               <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
-                className="px-3 py-2 rounded-lg border border-outline-variant/40 bg-surface-container-low text-xs focus:outline-none focus:border-primary"
+                className="workflows-select"
               >
                 <option value="">All statuses</option>
                 {Object.entries(WORKFLOW_STATUS).map(([k, v]) => (
@@ -887,7 +886,7 @@ export default function WorkflowsPage() {
               </select>
               <button
                 onClick={() => setFormModal("create")}
-                className="px-4 py-2 rounded-xl bg-primary text-white text-xs font-bold hover:opacity-90 inline-flex items-center gap-1"
+                className="workflows-new-btn"
               >
                 <span className="material-symbols-outlined text-[16px]">add</span>
                 New Workflow
@@ -896,18 +895,18 @@ export default function WorkflowsPage() {
           </div>
 
           {loading ? (
-            <div className="bg-white rounded-xl soft-shadow border border-outline-variant/20 p-6">
+            <div className="workflows-card soft-shadow p-6">
               <p className="text-sm text-on-surface-variant">Loading workflows...</p>
             </div>
           ) : workflows.length === 0 ? (
-            <div className="bg-white rounded-xl soft-shadow border border-outline-variant/20 text-center py-14">
+            <div className="workflows-empty-card soft-shadow">
               <span className="material-symbols-outlined text-[48px] text-outline-variant">
                 account_tree
               </span>
               <p className="text-on-surface-variant mt-3 text-sm">No workflows in the database</p>
               <button
                 onClick={() => setFormModal("create")}
-                className="mt-4 px-4 py-2 rounded-xl bg-primary text-white text-xs font-bold hover:opacity-90"
+                className="workflows-mini-btn"
               >
                 Create your first workflow
               </button>
@@ -917,7 +916,7 @@ export default function WorkflowsPage() {
               {workflows.map((workflow) => (
                 <div
                   key={workflow.id}
-                  className="bg-white rounded-xl soft-shadow border border-outline-variant/20 p-5 flex flex-col cursor-pointer hover:border-primary/40 transition-colors"
+                  className="workflows-wf-card soft-shadow"
                   onClick={() => setSelected(workflow)}
                 >
                   <div className="flex items-start justify-between mb-3">
@@ -928,7 +927,7 @@ export default function WorkflowsPage() {
                           e.stopPropagation();
                           setFormModal(workflow);
                         }}
-                        className="p-1.5 rounded-lg hover:bg-surface-container-low text-on-surface-variant"
+                        className="workflows-icon-btn"
                         title="Edit"
                       >
                         <span className="material-symbols-outlined text-[18px]">edit</span>
@@ -938,18 +937,18 @@ export default function WorkflowsPage() {
                           e.stopPropagation();
                           deleteWorkflow(workflow);
                         }}
-                        className="p-1.5 rounded-lg hover:bg-surface-container-low text-on-surface-variant hover:text-red-500"
+                        className="workflows-icon-btn hover:text-red-500"
                         title="Delete"
                       >
                         <span className="material-symbols-outlined text-[18px]">delete</span>
                       </button>
                     </div>
                   </div>
-                  <h4 className="font-semibold text-on-surface text-sm">{workflow.name}</h4>
+                  <h4 className="workflows-h3">{workflow.name}</h4>
                   <p className="text-xs text-on-surface-variant mt-1 flex-1">
                     {workflow.description || "No description"}
                   </p>
-                  <div className="mt-4 pt-3 border-t border-outline-variant/10 flex items-center justify-between text-xs text-on-surface-variant">
+                  <div className="workflows-card-footer">
                     <span className="inline-flex items-center gap-1">
                       <span className="material-symbols-outlined text-[14px]">steps</span>
                       {workflow.steps?.length || 0} steps

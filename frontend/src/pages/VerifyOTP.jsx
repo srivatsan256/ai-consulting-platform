@@ -1,6 +1,8 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import AuthLayout from "../components/AuthLayout";
 import { authService } from "../services/api";
+import { GLASS_INPUT, GLASS_LABEL, GLASS_ICON, GLASS_BUTTON, GLASS_ERROR } from "../constants/auth";
+import "./VerifyOTP.css";
 
 function maskEmail(email) {
   const [local, domain] = email.split("@");
@@ -74,103 +76,96 @@ export default function VerifyOTP({ email, onVerified, onBackToLogin, onBackToEm
 
   return (
     <AuthLayout>
-      <div className="bg-white p-8 rounded-2xl soft-shadow border border-outline-variant/20">
+      <button
+        type="button"
+        onClick={onBackToLogin}
+        className="otp-back"
+      >
+        <span className="material-symbols-outlined otp-back-icon">arrow_back</span>
+        Back to sign in
+      </button>
+
+      <h2 className="otp-h2">Verify your email</h2>
+      <p className="otp-sub">
+        We've sent a 6-digit OTP to{" "}
         <button
           type="button"
-          onClick={onBackToLogin}
-          className="flex items-center gap-1 text-on-surface-variant text-xs font-medium hover:text-primary transition-all"
+          onClick={onBackToEmail}
+          className="otp-email-link"
         >
-          <span className="material-symbols-outlined text-[16px]">arrow_back</span>
-          Back to sign in
+          {maskedEmail}
+        </button>
+        . Enter the code below to reset your password.
+      </p>
+
+      <form onSubmit={handleSubmit} className="mt-6 space-y-5">
+        <div>
+          <label className={GLASS_LABEL}>Enter OTP</label>
+          <div className="relative">
+            <span className={`material-symbols-outlined ${GLASS_ICON}`}>pin</span>
+            <input
+              type="text"
+              inputMode="numeric"
+              autoComplete="one-time-code"
+              pattern="[0-9]*"
+              maxLength={6}
+              value={otp}
+              onChange={(e) => setOtp(e.target.value.replace(/\D/g, "").slice(0, 6))}
+              placeholder="••••••"
+              className={`${GLASS_INPUT} otp-input`}
+            />
+          </div>
+        </div>
+
+        {error && (
+          <div className={GLASS_ERROR}>
+            <span className="material-symbols-outlined text-[18px] text-red-300">error</span>
+            <span>{error}</span>
+          </div>
+        )}
+
+        {resentMessage && (
+          <div className="otp-success">
+            <span
+              className="material-symbols-outlined otp-success-icon"
+              style={{ fontVariationSettings: "'FILL' 1" }}
+            >
+              check_circle
+            </span>
+            <span className="otp-success-text">{resentMessage}</span>
+          </div>
+        )}
+
+        <button type="submit" disabled={loading || otp.length !== 6} className={GLASS_BUTTON}>
+          {loading ? (
+            <>
+              <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+              Verifying...
+            </>
+          ) : (
+            <>
+              Verify OTP
+              <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
+            </>
+          )}
         </button>
 
-        <h2 className="font-headline-lg text-2xl font-bold text-on-surface mt-6">Verify your email</h2>
-        <p className="text-on-surface-variant text-sm mt-1 leading-relaxed">
-          We've sent a 6-digit OTP to{" "}
-          <button
-            type="button"
-            onClick={onBackToEmail}
-            className="text-primary font-semibold hover:underline"
-          >
-            {maskedEmail}
-          </button>
-          . Enter the code below to reset your password.
-        </p>
-
-        <form onSubmit={handleSubmit} className="mt-6 space-y-5">
-          <div>
-            <label className="block font-label-md text-[11px] uppercase tracking-wider text-on-surface-variant mb-2">
-              Enter OTP
-            </label>
-            <div className="relative">
-              <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[20px]">
-                pin
-              </span>
-              <input
-                type="text"
-                inputMode="numeric"
-                autoComplete="one-time-code"
-                pattern="[0-9]*"
-                maxLength={6}
-                value={otp}
-                onChange={(e) => setOtp(e.target.value.replace(/\D/g, "").slice(0, 6))}
-                placeholder="••••••"
-                className="w-full pl-10 pr-4 py-3 rounded-xl border border-outline-variant/40 bg-surface-container-low text-on-surface text-sm tracking-[0.5em] font-bold focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
-              />
-            </div>
-          </div>
-
-          {error && (
-            <div className="flex items-center gap-2 px-4 py-3 rounded-xl bg-error/10 border border-error/30 text-on-surface text-sm">
-              <span className="material-symbols-outlined text-[18px] text-error">error</span>
-              <span>{error}</span>
-            </div>
+        <div className="otp-footer">
+          Didn't receive the code?{" "}
+          {resendCountdown > 0 ? (
+            <span className="otp-countdown">Resend in {resendCountdown}s</span>
+          ) : (
+            <button
+              type="button"
+              onClick={handleResend}
+              disabled={resending}
+              className="otp-resend"
+            >
+              {resending ? "Sending..." : "Resend OTP"}
+            </button>
           )}
-
-          {resentMessage && (
-            <div className="flex items-center gap-2 px-4 py-3 rounded-xl bg-emerald-50 border border-emerald-200 text-sm">
-              <span className="material-symbols-outlined text-[18px] text-emerald-600" style={{ fontVariationSettings: "'FILL' 1" }}>
-                check_circle
-              </span>
-              <span className="text-emerald-800">{resentMessage}</span>
-            </div>
-          )}
-
-          <button
-            type="submit"
-            disabled={loading || otp.length !== 6}
-            className="w-full py-3.5 bg-primary text-on-primary rounded-xl font-bold text-sm hover:opacity-90 transition-all shadow-lg shadow-primary/20 flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
-          >
-            {loading ? (
-              <>
-                <span className="w-4 h-4 border-2 border-on-primary border-t-transparent rounded-full animate-spin" />
-                Verifying...
-              </>
-            ) : (
-              <>
-                Verify OTP
-                <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
-              </>
-            )}
-          </button>
-
-          <div className="text-center text-xs text-on-surface-variant">
-            Didn't receive the code?{" "}
-            {resendCountdown > 0 ? (
-              <span className="text-on-surface-variant">Resend in {resendCountdown}s</span>
-            ) : (
-              <button
-                type="button"
-                onClick={handleResend}
-                disabled={resending}
-                className="text-primary font-medium hover:underline disabled:opacity-60"
-              >
-                {resending ? "Sending..." : "Resend OTP"}
-              </button>
-            )}
-          </div>
-        </form>
-      </div>
+        </div>
+      </form>
     </AuthLayout>
   );
 }

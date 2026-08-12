@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { projectService, userService, getApiError } from "../services/api";
 import TopHeader from "../components/TopHeader";
+import "./ProjectsPage.css";
 
 const STATUS_COLORS = {
   DISCOVERY: "bg-blue-100 text-blue-700",
@@ -269,7 +270,7 @@ export default function ProjectsPage({ onSelectProject }) {
               setEditingProject(null);
               setShowCreate(true);
             }}
-            className="px-5 py-2.5 bg-primary text-on-primary rounded-xl font-bold text-sm hover:opacity-90 transition-all flex items-center gap-2 shadow-lg shadow-primary/20"
+            className="projects-new-btn"
           >
             <span className="material-symbols-outlined text-[18px]">add</span>
             New Project
@@ -280,7 +281,7 @@ export default function ProjectsPage({ onSelectProject }) {
       {/* Filters */}
       <div className="flex flex-col sm:flex-row gap-3">
         <div className="relative flex-1">
-          <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[20px]">
+          <span className="material-symbols-outlined projects-search-icon">
             search
           </span>
           <input
@@ -288,13 +289,13 @@ export default function ProjectsPage({ onSelectProject }) {
             placeholder="Search projects..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-outline-variant/40 bg-white text-on-surface text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
+            className="projects-search-input"
           />
         </div>
         <select
           value={filterStatus}
           onChange={(e) => setFilterStatus(e.target.value)}
-          className="px-4 py-2.5 rounded-xl border border-outline-variant/40 bg-white text-on-surface text-sm focus:outline-none focus:border-primary"
+          className="projects-filter-select"
         >
           <option value="ALL">All Status</option>
           <option value="DISCOVERY">Discovery</option>
@@ -311,39 +312,39 @@ export default function ProjectsPage({ onSelectProject }) {
           <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
         </div>
       ) : filtered.length === 0 ? (
-        <div className="bg-white rounded-xl soft-shadow border border-outline-variant/20 p-16 text-center">
-          <span className="material-symbols-outlined text-[48px] text-outline-variant">folder_open</span>
-          <p className="text-on-surface-variant mt-3 text-sm">No projects found</p>
+        <div className="projects-empty soft-shadow">
+          <span className="material-symbols-outlined projects-empty-icon">folder_open</span>
+          <p className="projects-empty-text">No projects found</p>
           <button
             onClick={() => {
               resetForm();
               setEditingProject(null);
               setShowCreate(true);
             }}
-            className="mt-4 px-4 py-2 bg-primary text-on-primary rounded-lg text-sm font-medium hover:opacity-90"
+            className="projects-empty-btn"
           >
             Create your first project
           </button>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+        <div className="projects-grid">
           {filtered.map((project) => (
             <div
               key={project.id}
-              className="bg-white rounded-xl soft-shadow border border-outline-variant/20 p-5 hover:shadow-md transition-shadow cursor-pointer group"
+              className="projects-card group soft-shadow"
               onClick={() => onSelectProject(project.id)}
             >
-              <div className="flex items-start justify-between mb-3">
-                <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+              <div className="projects-card-header">
+                <div className="projects-card-icon">
                   <span className="material-symbols-outlined text-primary">folder</span>
                 </div>
-                <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                <div className="projects-card-actions">
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
                       handleEdit(project);
                     }}
-                    className="p-1.5 rounded-lg hover:bg-surface-container transition-colors"
+                    className="projects-card-action"
                   >
                     <span className="material-symbols-outlined text-[18px] text-outline-variant">edit</span>
                   </button>
@@ -352,36 +353,36 @@ export default function ProjectsPage({ onSelectProject }) {
                       e.stopPropagation();
                       handleDelete(project.id);
                     }}
-                    className="p-1.5 rounded-lg hover:bg-red-50 transition-colors"
+                    className="projects-card-action-danger"
                   >
                     <span className="material-symbols-outlined text-[18px] text-red-500">delete</span>
                   </button>
                 </div>
               </div>
-              <h3 className="font-semibold text-on-surface text-sm">{project.project_name}</h3>
-              <p className="text-xs text-on-surface-variant mt-0.5">{project.company_name}</p>
+              <h3 className="projects-card-title">{project.project_name}</h3>
+              <p className="projects-card-company">{project.company_name}</p>
               {project.industry && (
-                <span className="inline-block mt-2 px-2 py-0.5 bg-surface-container rounded text-[10px] text-on-surface-variant font-medium">
+                <span className="projects-card-industry">
                   {project.industry}
                 </span>
               )}
-              <div className="mt-4 flex items-center justify-between">
+              <div className="projects-card-footer">
                 <span
-                  className={`px-2 py-1 rounded text-[10px] font-bold ${STATUS_COLORS[project.status] || "bg-gray-100 text-gray-600"
+                  className={`projects-card-status ${STATUS_COLORS[project.status] || "bg-gray-100 text-gray-600"
                     }`}
                 >
                   {project.status}
                 </span>
                 {project.readiness_score != null && (
-                  <span className="text-xs text-on-surface-variant">
+                  <span className="projects-card-readiness">
                     {project.readiness_score}% ready
                   </span>
                 )}
               </div>
               {project.readiness_score != null && (
-                <div className="w-full h-1.5 bg-surface-container rounded-full mt-2 overflow-hidden">
+                <div className="projects-card-progress">
                   <div
-                    className="h-full bg-primary rounded-full transition-all"
+                    className="projects-card-progress-fill"
                     style={{ width: `${project.readiness_score}%` }}
                   />
                 </div>
@@ -393,10 +394,10 @@ export default function ProjectsPage({ onSelectProject }) {
 
       {/* Create / Edit Modal */}
       {showCreate && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[100] p-4">
-          <div className="bg-white rounded-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto soft-shadow">
-            <div className="p-6 border-b border-outline-variant/20 flex items-center justify-between">
-              <h3 className="font-headline-lg text-lg font-bold text-on-surface">
+        <div className="projects-modal-overlay">
+          <div className="projects-modal-panel soft-shadow">
+            <div className="projects-modal-header">
+              <h3 className="projects-modal-title">
                 {editingProject ? "Edit Project" : "New Project"}
               </h3>
               <button
@@ -405,15 +406,15 @@ export default function ProjectsPage({ onSelectProject }) {
                   setEditingProject(null);
                   setFormError(null);
                 }}
-                className="p-2 rounded-lg hover:bg-surface-container transition-colors"
+                className="projects-modal-close"
               >
                 <span className="material-symbols-outlined text-[20px]">close</span>
               </button>
             </div>
 
-            <form onSubmit={handleSubmit} className="p-6 space-y-4">
+            <form onSubmit={handleSubmit} className="projects-form">
               {formError && (
-                <div className="flex items-start gap-2 px-4 py-3 rounded-xl bg-error/10 border border-error/30 text-on-surface text-sm">
+                <div className="projects-form-error">
                   <span className="material-symbols-outlined text-[18px] text-error shrink-0">error</span>
                   <span>{formError}</span>
                 </div>
@@ -421,7 +422,7 @@ export default function ProjectsPage({ onSelectProject }) {
 
               {/* Company Name */}
               <div>
-                <label className="block font-label-md text-[11px] uppercase tracking-wider text-on-surface-variant mb-1.5">
+                <label className="projects-field-label">
                   Company Name *
                 </label>
                 <input
@@ -430,13 +431,13 @@ export default function ProjectsPage({ onSelectProject }) {
                   value={form.company_name}
                   onChange={(e) => setForm({ ...form, company_name: e.target.value })}
                   placeholder="e.g. Acme Corp"
-                  className="w-full px-4 py-2.5 rounded-xl border border-outline-variant/40 bg-surface-container-low text-on-surface text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
+                  className="projects-input"
                 />
               </div>
 
               {/* Project Name */}
               <div>
-                <label className="block font-label-md text-[11px] uppercase tracking-wider text-on-surface-variant mb-1.5">
+                <label className="projects-field-label">
                   Project Name *
                 </label>
                 <input
@@ -445,19 +446,19 @@ export default function ProjectsPage({ onSelectProject }) {
                   value={form.project_name}
                   onChange={(e) => setForm({ ...form, project_name: e.target.value })}
                   placeholder="e.g. Digital Transformation Initiative"
-                  className="w-full px-4 py-2.5 rounded-xl border border-outline-variant/40 bg-surface-container-low text-on-surface text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
+                  className="projects-input"
                 />
               </div>
 
               {/* Industry */}
               <div>
-                <label className="block font-label-md text-[11px] uppercase tracking-wider text-on-surface-variant mb-1.5">
+                <label className="projects-field-label">
                   Industry
                 </label>
                 <select
                   value={form.industry}
                   onChange={(e) => setForm({ ...form, industry: e.target.value })}
-                  className="w-full px-4 py-2.5 rounded-xl border border-outline-variant/40 bg-surface-container-low text-on-surface text-sm focus:outline-none focus:border-primary"
+                  className="projects-select"
                 >
                   <option value="">Select industry</option>
                   {INDUSTRY_OPTIONS.map((ind) => (
@@ -468,23 +469,23 @@ export default function ProjectsPage({ onSelectProject }) {
 
               {/* ========== OBJECTIVES (from Internet) ========== */}
               <div>
-                <label className="block font-label-md text-[11px] uppercase tracking-wider text-on-surface-variant mb-1.5">
+                <label className="projects-field-label">
                   Objectives
                 </label>
 
                 {/* Selected chips */}
                 {form.objectives.length > 0 && (
-                  <div className="flex flex-wrap gap-2 mb-2">
+                  <div className="projects-chips">
                     {form.objectives.map((obj) => (
                       <span
                         key={obj}
-                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-primary/10 text-primary text-xs font-medium"
+                        className="projects-chip"
                       >
                         {obj}
                         <button
                           type="button"
                           onClick={() => removeObjective(obj)}
-                          className="ml-0.5 hover:bg-primary/20 rounded-full p-0.5 transition-colors"
+                          className="projects-chip-remove"
                         >
                           <span className="material-symbols-outlined text-[14px]">close</span>
                         </button>
@@ -504,18 +505,18 @@ export default function ProjectsPage({ onSelectProject }) {
                     onBlur={() => setTimeout(() => setShowObjectiveDropdown(false), 150)}
                     onKeyDown={handleObjectiveKeyDown}
                     placeholder="Search and add objectives"
-                    className="w-full px-4 py-2.5 rounded-xl border border-outline-variant/40 bg-surface-container-low text-on-surface text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
+                    className="projects-input"
                   />
 
                   {showObjectiveDropdown && (objectiveSearch || loadingObjectives) && (
-                    <div className="absolute z-20 mt-1 w-full max-h-48 overflow-y-auto bg-white border border-outline-variant/40 rounded-xl shadow-lg">
+                    <div className="projects-dropdown">
                       {loadingObjectives ? (
-                        <div className="px-4 py-3 text-sm text-on-surface-variant flex items-center gap-2">
+                        <div className="projects-dropdown-msg">
                           <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />
                           Searching internet...
                         </div>
                       ) : objectiveSuggestions.length === 0 ? (
-                        <div className="px-4 py-3 text-sm text-on-surface-variant">
+                        <div className="projects-dropdown-empty">
                           {objectiveSearch.length >= 2
                             ? "No suggestions found. Press Enter to add custom."
                             : "Type at least 2 characters"}
@@ -527,7 +528,7 @@ export default function ProjectsPage({ onSelectProject }) {
                             type="button"
                             onMouseDown={(e) => e.preventDefault()}
                             onClick={() => addObjective(sug)}
-                            className="w-full text-left px-4 py-2.5 text-sm text-on-surface hover:bg-surface-container transition-colors"
+                            className="projects-dropdown-option"
                           >
                             {sug}
                           </button>
@@ -540,23 +541,23 @@ export default function ProjectsPage({ onSelectProject }) {
 
               {/* ========== TEAM MEMBERS (from DB) ========== */}
               <div>
-                <label className="block font-label-md text-[11px] uppercase tracking-wider text-on-surface-variant mb-1.5">
+                <label className="projects-field-label">
                   Team Members
                 </label>
 
                 {/* Selected chips */}
                 {form.team_members.length > 0 && (
-                  <div className="flex flex-wrap gap-2 mb-2">
+                  <div className="projects-chips">
                     {form.team_members.map((member) => (
                       <span
                         key={member.id}
-                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-primary/10 text-primary text-xs font-medium"
+                        className="projects-chip"
                       >
                         {member.name || member.full_name || member.email}
                         <button
                           type="button"
                           onClick={() => removeTeamMember(member.id)}
-                          className="ml-0.5 hover:bg-primary/20 rounded-full p-0.5 transition-colors"
+                          className="projects-chip-remove"
                         >
                           <span className="material-symbols-outlined text-[14px]">close</span>
                         </button>
@@ -578,13 +579,13 @@ export default function ProjectsPage({ onSelectProject }) {
                     onFocus={() => setShowMemberDropdown(true)}
                     onBlur={() => setTimeout(() => setShowMemberDropdown(false), 150)}
                     placeholder="Search and add team members"
-                    className="w-full px-4 py-2.5 rounded-xl border border-outline-variant/40 bg-surface-container-low text-on-surface text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
+                    className="projects-input"
                   />
 
                   {showMemberDropdown && (
-                    <div className="absolute z-20 mt-1 w-full max-h-48 overflow-y-auto bg-white border border-outline-variant/40 rounded-xl shadow-lg">
+                    <div className="projects-dropdown">
                       {filteredUsers.length === 0 ? (
-                        <div className="px-4 py-3 text-sm text-on-surface-variant">
+                        <div className="projects-dropdown-empty">
                           {memberSearch ? "No matching members found" : "No users available"}
                         </div>
                       ) : (
@@ -594,7 +595,7 @@ export default function ProjectsPage({ onSelectProject }) {
                             type="button"
                             onMouseDown={(e) => e.preventDefault()}
                             onClick={() => addTeamMember(user)}
-                            className="w-full text-left px-4 py-2.5 text-sm text-on-surface hover:bg-surface-container transition-colors flex items-center gap-2"
+                            className="projects-dropdown-option-member"
                           >
                             <span className="material-symbols-outlined text-[18px] text-outline-variant">
                               person
@@ -617,7 +618,7 @@ export default function ProjectsPage({ onSelectProject }) {
 
               {/* Expected Timeline */}
               <div>
-                <label className="block font-label-md text-[11px] uppercase tracking-wider text-on-surface-variant mb-1.5">
+                <label className="projects-field-label">
                   Expected Timeline
                 </label>
                 <input
@@ -625,11 +626,11 @@ export default function ProjectsPage({ onSelectProject }) {
                   value={form.expected_timeline}
                   onChange={(e) => setForm({ ...form, expected_timeline: e.target.value })}
                   placeholder="e.g. 12 weeks"
-                  className="w-full px-4 py-2.5 rounded-xl border border-outline-variant/40 bg-surface-container-low text-on-surface text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
+                  className="projects-input"
                 />
               </div>
 
-              <div className="flex gap-3 pt-2">
+              <div className="projects-actions">
                 <button
                   type="button"
                   onClick={() => {
@@ -637,14 +638,14 @@ export default function ProjectsPage({ onSelectProject }) {
                     setEditingProject(null);
                     setFormError(null);
                   }}
-                  className="flex-1 py-2.5 rounded-xl border border-outline-variant/40 text-on-surface-variant text-sm font-medium hover:bg-surface-container transition-colors"
+                  className="projects-cancel-btn"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="flex-1 py-2.5 rounded-xl bg-primary text-on-primary text-sm font-bold hover:opacity-90 transition-all disabled:opacity-50"
+                  className="projects-submit-btn"
                 >
                   {submitting ? "Saving..." : editingProject ? "Update Project" : "Create Project"}
                 </button>

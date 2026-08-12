@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { projectService } from "../services/api";
 import TopHeader from "../components/TopHeader";
+import "./ReportsPage.css";
 
 export default function ReportsPage({ projectId, onSelectProject }) {
   const [projects, setProjects] = useState([]);
@@ -51,11 +52,11 @@ export default function ReportsPage({ projectId, onSelectProject }) {
       <TopHeader title="Reports" subtitle="Verification and project reports" />
 
       {/* Project Selector */}
-      <div className="bg-white rounded-xl soft-shadow border border-outline-variant/20 p-6">
+      <div className="reports-card soft-shadow">
         <select
           value={selectedId}
           onChange={(e) => handleProjectSelect(e.target.value)}
-          className="w-full px-4 py-2.5 rounded-xl border border-outline-variant/40 bg-surface-container-low text-on-surface text-sm focus:outline-none focus:border-primary"
+          className="reports-select"
         >
           <option value="">Select a project</option>
           {projects.map((p) => (
@@ -67,48 +68,48 @@ export default function ReportsPage({ projectId, onSelectProject }) {
       {selectedId && project && (
         <>
           {/* Summary Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div className="bg-white p-5 rounded-xl soft-shadow border border-outline-variant/20">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                  <span className="material-symbols-outlined text-primary text-[22px]">analytics</span>
+          <div className="reports-summary-grid">
+            <div className="reports-summary-card soft-shadow">
+              <div className="reports-summary-inner">
+                <div className="reports-summary-icon bg-primary/10 text-primary">
+                  <span className="material-symbols-outlined">analytics</span>
                 </div>
                 <div>
-                  <p className="text-xl font-bold text-on-surface">{project.readiness_score ?? "N/A"}%</p>
-                  <p className="text-xs text-on-surface-variant">Readiness Score</p>
+                  <p className="reports-summary-value">{project.readiness_score ?? "N/A"}%</p>
+                  <p className="reports-summary-label">Readiness Score</p>
                 </div>
               </div>
             </div>
-            <div className="bg-white p-5 rounded-xl soft-shadow border border-outline-variant/20">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center">
-                  <span className="material-symbols-outlined text-blue-600 text-[22px]">description</span>
+            <div className="reports-summary-card soft-shadow">
+              <div className="reports-summary-inner">
+                <div className="reports-summary-icon bg-blue-50 text-blue-600">
+                  <span className="material-symbols-outlined">description</span>
                 </div>
                 <div>
-                  <p className="text-xl font-bold text-on-surface">{project.documents?.length || 0}</p>
-                  <p className="text-xs text-on-surface-variant">Documents</p>
+                  <p className="reports-summary-value">{project.documents?.length || 0}</p>
+                  <p className="reports-summary-label">Documents</p>
                 </div>
               </div>
             </div>
-            <div className="bg-white p-5 rounded-xl soft-shadow border border-outline-variant/20">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-lg bg-emerald-50 flex items-center justify-center">
-                  <span className="material-symbols-outlined text-emerald-600 text-[22px]">check_circle</span>
+            <div className="reports-summary-card soft-shadow">
+              <div className="reports-summary-inner">
+                <div className="reports-summary-icon bg-emerald-50 text-emerald-600">
+                  <span className="material-symbols-outlined">check_circle</span>
                 </div>
                 <div>
-                  <p className="text-xl font-bold text-on-surface">{reportDocuments?.filter(d => d.passed).length || 0}</p>
-                  <p className="text-xs text-on-surface-variant">Passed</p>
+                  <p className="reports-summary-value">{reportDocuments?.filter(d => d.passed).length || 0}</p>
+                  <p className="reports-summary-label">Passed</p>
                 </div>
               </div>
             </div>
-            <div className="bg-white p-5 rounded-xl soft-shadow border border-outline-variant/20">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-lg bg-red-50 flex items-center justify-center">
-                  <span className="material-symbols-outlined text-red-600 text-[22px]">cancel</span>
+            <div className="reports-summary-card soft-shadow">
+              <div className="reports-summary-inner">
+                <div className="reports-summary-icon bg-red-50 text-red-600">
+                  <span className="material-symbols-outlined">cancel</span>
                 </div>
                 <div>
-                  <p className="text-xl font-bold text-on-surface">{reportDocuments?.filter(d => !d.passed).length || 0}</p>
-                  <p className="text-xs text-on-surface-variant">Failed</p>
+                  <p className="reports-summary-value">{reportDocuments?.filter(d => !d.passed).length || 0}</p>
+                  <p className="reports-summary-label">Failed</p>
                 </div>
               </div>
             </div>
@@ -116,56 +117,56 @@ export default function ReportsPage({ projectId, onSelectProject }) {
 
           {/* Verification Report */}
           {reportDocuments.length > 0 ? (
-            <div className="bg-white rounded-xl soft-shadow border border-outline-variant/20 p-6">
-              <h3 className="font-headline-sm text-base font-semibold text-on-surface mb-4">Verification Report</h3>
-              <p className="text-xs text-on-surface-variant mb-4">Generated: {report?.generated_at ? new Date(report.generated_at).toLocaleString() : "N/A"}</p>
+            <div className="reports-report-card soft-shadow">
+              <h3 className="reports-report-title">Verification Report</h3>
+              <p className="reports-generated">Generated: {report?.generated_at ? new Date(report.generated_at).toLocaleString() : "N/A"}</p>
               <div className="space-y-4">
                 {reportDocuments.map((doc, idx) => (
-                  <div key={idx} className="p-4 rounded-xl border border-outline-variant/20">
-                    <div className="flex items-center gap-3 mb-3">
-                      <span className={`w-3 h-3 rounded-full ${doc.passed ? "bg-emerald-500" : "bg-red-500"}`} />
-                      <span className="font-semibold text-on-surface text-sm">{doc.doc_type} Document</span>
-                      <span className={`ml-auto px-3 py-1 rounded-lg text-xs font-bold ${
+                  <div key={idx} className="reports-doc-card">
+                    <div className="reports-doc-header">
+                      <span className={`reports-doc-dot ${doc.passed ? "bg-emerald-500" : "bg-red-500"}`} />
+                      <span className="reports-doc-title">{doc.doc_type} Document</span>
+                      <span className={`reports-doc-score ${
                         doc.passed ? "bg-emerald-100 text-emerald-700" : "bg-red-100 text-red-700"
                       }`}>
                         {doc.score}%
                       </span>
                     </div>
-                    <div className="w-full h-2 bg-surface-container rounded-full overflow-hidden mb-3">
+                    <div className="reports-score-track">
                       <div
-                        className={`h-full rounded-full ${doc.passed ? "bg-emerald-500" : "bg-red-500"}`}
+                        className={`reports-score-fill ${doc.passed ? "bg-emerald-500" : "bg-red-500"}`}
                         style={{ width: `${doc.score}%` }}
                       />
                     </div>
-                    <div className="grid grid-cols-2 gap-4 text-xs">
+                    <div className="reports-missing-grid">
                       <div>
-                        <p className="text-on-surface-variant font-medium mb-1">Missing Keywords</p>
+                        <p className="reports-missing-label">Missing Keywords</p>
                         {doc.missing_keywords?.length > 0 ? (
-                          <div className="flex flex-wrap gap-1">
+                          <div className="reports-chip-wrap">
                             {doc.missing_keywords.map((kw, i) => (
-                              <span key={i} className="px-2 py-0.5 bg-red-50 text-red-600 rounded">{kw}</span>
+                              <span key={i} className="reports-chip-red">{kw}</span>
                             ))}
                           </div>
                         ) : (
-                          <span className="text-emerald-600">None</span>
+                          <span className="reports-none">None</span>
                         )}
                       </div>
                       <div>
-                        <p className="text-on-surface-variant font-medium mb-1">Missing Sections</p>
+                        <p className="reports-missing-label">Missing Sections</p>
                         {doc.missing_sections?.length > 0 ? (
-                          <div className="flex flex-wrap gap-1">
+                          <div className="reports-chip-wrap">
                             {doc.missing_sections.map((sec, i) => (
-                              <span key={i} className="px-2 py-0.5 bg-amber-50 text-amber-600 rounded">{sec}</span>
+                              <span key={i} className="reports-chip-amber">{sec}</span>
                             ))}
                           </div>
                         ) : (
-                          <span className="text-emerald-600">None</span>
+                          <span className="reports-none">None</span>
                         )}
                       </div>
                     </div>
                     {doc.ai_feedback && (
-                      <div className="mt-3 p-2 bg-blue-50 rounded-lg">
-                        <p className="text-xs text-blue-800">{doc.ai_feedback}</p>
+                      <div className="reports-ai">
+                        <p className="reports-ai-text">{doc.ai_feedback}</p>
                       </div>
                     )}
                   </div>
@@ -173,9 +174,9 @@ export default function ReportsPage({ projectId, onSelectProject }) {
               </div>
             </div>
           ) : (
-            <div className="text-center py-16">
-              <span className="material-symbols-outlined text-[56px] text-outline-variant">analytics</span>
-              <p className="text-on-surface-variant mt-3 text-sm">
+            <div className="reports-empty">
+              <span className="material-symbols-outlined reports-empty-icon">analytics</span>
+              <p className="reports-empty-text">
                 {project.documents?.length ? "Run verification to generate a report" : "Upload documents and run verification first"}
               </p>
             </div>
@@ -184,9 +185,9 @@ export default function ReportsPage({ projectId, onSelectProject }) {
       )}
 
       {!selectedId && !loading && (
-        <div className="text-center py-16">
-          <span className="material-symbols-outlined text-[56px] text-outline-variant">analytics</span>
-          <p className="text-on-surface-variant mt-3 text-sm">Select a project to view reports</p>
+        <div className="reports-empty">
+          <span className="material-symbols-outlined reports-empty-icon">analytics</span>
+          <p className="reports-empty-text">Select a project to view reports</p>
         </div>
       )}
     </div>

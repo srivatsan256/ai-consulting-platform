@@ -1,0 +1,95 @@
+.clientchat-locked-card {
+  @apply bg-white rounded-xl soft-shadow border border-outline-variant/20 p-8 text-center;
+}
+
+.clientchat-locked-icon {
+  @apply text-[56px] text-outline-variant;
+}
+
+.clientchat-locked-title {
+  @apply font-headline-sm text-lg font-bold text-on-surface mt-3;
+}
+
+.clientchat-locked-desc {
+  @apply text-on-surface-variant text-sm mt-1 max-w-md mx-auto;
+}
+
+.clientchat-selector-card {
+  @apply bg-white rounded-xl soft-shadow border border-outline-variant/20 p-4;
+}
+
+.clientchat-select {
+  @apply w-full px-4 py-2.5 rounded-xl border border-outline-variant/40 bg-surface-container-low text-on-surface text-sm focus:outline-none focus:border-primary;
+}
+
+.clientchat-card {
+  @apply bg-white rounded-xl soft-shadow border border-outline-variant/20 overflow-hidden;
+}
+
+.clientchat-messages {
+  @apply h-[500px] overflow-y-auto p-6 space-y-4;
+}
+
+.clientchat-empty {
+  @apply text-center py-16;
+}
+
+.clientchat-empty-icon {
+  @apply text-[56px] text-outline-variant;
+}
+
+.clientchat-empty-title {
+  @apply font-headline-sm text-lg font-bold text-on-surface mt-3;
+}
+
+.clientchat-empty-desc {
+  @apply text-on-surface-variant text-sm mt-1 max-w-md mx-auto;
+}
+
+.clientchat-suggestions {
+  @apply flex flex-wrap gap-2 justify-center mt-6;
+}
+
+.clientchat-suggestion-btn {
+  @apply px-3 py-2 bg-surface-container-low rounded-lg border border-outline-variant/30 text-xs text-on-surface-variant hover:border-primary/50 hover:bg-primary/5 transition-colors;
+}
+
+.clientchat-bubble {
+  @apply max-w-[75%] px-4 py-3 rounded-2xl text-sm leading-relaxed;
+}
+
+.clientchat-bubble-user {
+  @apply bg-primary text-on-primary rounded-br-md;
+}
+
+.clientchat-bubble-assistant {
+  @apply bg-surface-container-low border border-outline-variant/20 text-on-surface rounded-bl-md;
+}
+
+.clientchat-typing {
+  @apply bg-surface-container-low border border-outline-variant/20 px-4 py-3 rounded-2xl rounded-bl-md;
+}
+
+.clientchat-typing-dots {
+  @apply flex gap-1.5;
+}
+
+.clientchat-typing-dot {
+  @apply w-2 h-2 bg-outline-variant rounded-full animate-bounce;
+}
+
+.clientchat-input-area {
+  @apply border-t border-outline-variant/20 p-4;
+}
+
+.clientchat-input {
+  @apply flex-1 px-4 py-3 rounded-xl border border-outline-variant/40 text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 disabled:opacity-50;
+}
+
+.clientchat-send-btn {
+  @apply px-5 py-3 bg-primary text-on-primary rounded-xl font-bold text-sm hover:opacity-90 disabled:opacity-50 transition-all flex items-center gap-2;
+}
+
+.clientchat-send-icon {
+  @apply text-[18px];
+}

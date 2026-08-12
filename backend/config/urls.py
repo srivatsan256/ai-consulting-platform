@@ -138,6 +138,9 @@ urlpatterns = [
     # File Management
     path("api/file-management/", include("file_management.urls")),
 
+    # Contact (public marketing form)
+    path("api/contact/", include("contact.urls")),
+
     # Home
     path("", RedirectView.as_view(url="/api/docs/", permanent=False)),
 ]

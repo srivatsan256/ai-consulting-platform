@@ -1,4 +1,5 @@
 import React from "react";
+import "./SidebarNavigation.css";
 
 const roleBasedNavItems = {
   super_admin: [
@@ -168,36 +169,36 @@ export default function SidebarNavigation({ activeView, setActiveView, role, use
   };
 
   return (
-    <aside className="w-64 flex flex-col bg-[#0b0f19] border-r border-[#1e293b]/40 text-slate-200">
+    <aside className="sidenav-root">
       {/* Brand Header */}
-      <div className="p-4 flex flex-col gap-1">
-        <h1 className="text-white font-bold text-base">RequirementAI</h1>
-        <p className="text-slate-400 text-xs">
+      <div className="sidenav-brand">
+        <h1 className="sidenav-brand-title">RequirementAI</h1>
+        <p className="sidenav-brand-sub">
           {user?.dashboard_name || (role === "admin" ? "Consultant Portal" : "Client Portal")}
         </p>
       </div>
 
       {/* Role Badge */}
-      <div className="mx-4 mb-4 px-3 py-2 rounded-lg bg-[#1e293b]/40 border border-[#1e293b]/60">
-        <div className="flex items-center gap-2">
-          <span className="material-symbols-outlined text-indigo-400 text-[18px]">
+      <div className="sidenav-badge">
+        <div className="sidenav-badge-row">
+          <span className="material-symbols-outlined sidenav-badge-icon">
             {getRoleIcon()}
           </span>
-          <div className="min-w-0">
-            <p className="text-white text-xs font-bold truncate">{user?.name || "User"}</p>
-            <p className="text-slate-400 text-[10px] truncate">{user?.assigned_role || user?.email}</p>
+          <div className="sidenav-badge-info">
+            <p className="sidenav-badge-name">{user?.name || "User"}</p>
+            <p className="sidenav-badge-meta">{user?.assigned_role || user?.email}</p>
           </div>
         </div>
         {user?.company && (
-          <div className="mt-2 pt-2 border-t border-[#1e293b]/60">
-            <p className="text-slate-400 text-[10px] truncate">{user.company}</p>
+          <div className="sidenav-badge-company">
+            <p className="sidenav-badge-meta">{user.company}</p>
           </div>
         )}
       </div>
 
       {/* Main Navigation */}
-      <nav className="flex-1 px-2 space-y-1 overflow-y-auto">
-        <p className="px-4 pt-2 pb-1 text-slate-500 font-label-md text-[10px] uppercase tracking-widest">
+      <nav className="sidenav-nav">
+        <p className="sidenav-label">
           Navigation
         </p>
         {navItems.map((item) => {
@@ -209,28 +210,28 @@ export default function SidebarNavigation({ activeView, setActiveView, role, use
                 if (onNavigate) onNavigate(item.id);
                 else if (setActiveView) setActiveView(item.id);
               }}
-              className={`w-full flex items-center gap-3 px-4 py-3 transition-colors duration-200 ${
+              className={`sidenav-item ${
                 isActive
-                  ? "bg-[#1e293b]/60 border-l-2 border-indigo-500 text-white font-bold"
-                  : "text-slate-400 hover:text-white hover:bg-[#1e293b]/30 border-l-2 border-transparent"
+                  ? "sidenav-item-active"
+                  : "sidenav-item-default"
               }`}
             >
-              <span className="material-symbols-outlined text-[20px]">{item.icon}</span>
-              <span className="font-body-md text-[13px]">{item.label}</span>
+              <span className="material-symbols-outlined sidenav-item-icon">{item.icon}</span>
+              <span className="sidenav-item-label">{item.label}</span>
             </button>
           );
         })}
       </nav>
 
       {/* Footer */}
-      <div className="mt-auto p-4">
-        <div className="pt-3 border-t border-[#1e293b]/60">
+      <div className="sidenav-footer">
+        <div className="sidenav-footer-border">
           <button
             onClick={onLogout}
-            className="w-full flex items-center gap-3 px-4 py-2.5 text-slate-400 hover:text-white transition-colors rounded-lg hover:bg-[#1e293b]/30"
+            className="sidenav-logout"
           >
-            <span className="material-symbols-outlined text-[20px]">logout</span>
-            <span className="font-body-md text-[13px]">Sign Out</span>
+            <span className="material-symbols-outlined sidenav-item-icon">logout</span>
+            <span className="sidenav-item-label">Sign Out</span>
           </button>
         </div>
       </div>

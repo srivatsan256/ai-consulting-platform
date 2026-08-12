@@ -1,0 +1,159 @@
+  .filemgmt-input {
+    @apply w-full px-4 py-2.5 rounded-xl border border-outline-variant/40 bg-surface-container-low text-on-surface text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20;
+  }
+
+  .filemgmt-label {
+    @apply block font-label-md text-[11px] uppercase tracking-wider text-on-surface-variant mb-1.5;
+  }
+
+  .filemgmt-overlay {
+    @apply fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4;
+  }
+
+  .filemgmt-modal-panel {
+    @apply bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto;
+  }
+
+  .filemgmt-modal-panel-sm {
+    @apply bg-white rounded-2xl shadow-2xl w-full max-w-md;
+  }
+
+  .filemgmt-modal-header {
+    @apply flex items-center justify-between px-6 py-4 border-b border-outline-variant/20;
+  }
+
+  .filemgmt-modal-title {
+    @apply font-semibold text-on-surface;
+  }
+
+  .filemgmt-close-btn {
+    @apply text-on-surface-variant hover:text-on-surface;
+  }
+
+  .filemgmt-modal-body {
+    @apply p-6 space-y-4;
+  }
+
+  .filemgmt-error {
+    @apply text-xs text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2;
+  }
+
+  .filemgmt-cancel-btn {
+    @apply px-4 py-2 rounded-xl border border-outline-variant/40 text-on-surface-variant text-sm font-semibold;
+  }
+
+  .filemgmt-primary-btn {
+    @apply px-5 py-2 bg-primary text-on-primary rounded-xl font-bold text-sm hover:opacity-90 transition-all disabled:opacity-50 flex items-center gap-2;
+  }
+
+  .filemgmt-primary-btn-sm {
+    @apply px-4 py-2 bg-primary text-on-primary rounded-xl font-bold text-sm hover:opacity-90 transition-all disabled:opacity-50;
+  }
+
+  .filemgmt-primary-btn-lg {
+    @apply px-5 py-2.5 bg-primary text-on-primary rounded-xl font-bold text-sm hover:opacity-90 transition-all flex items-center gap-2 shadow-lg shadow-primary/20;
+  }
+
+  .filemgmt-color-input {
+    @apply w-full h-11 rounded-xl border border-outline-variant/40 bg-surface-container-low;
+  }
+
+  .filemgmt-perm-row {
+    @apply flex items-center justify-between gap-3 p-3 rounded-lg bg-surface-container-low border border-outline-variant/20;
+  }
+
+  .filemgmt-card {
+    @apply bg-white rounded-xl border border-outline-variant/20 p-6;
+  }
+
+  .filemgmt-table-card {
+    @apply bg-white rounded-xl border border-outline-variant/20 overflow-hidden;
+  }
+
+  .filemgmt-h3 {
+    @apply font-semibold text-on-surface text-sm;
+  }
+
+  .filemgmt-edit-btn {
+    @apply px-3 py-1.5 rounded-lg border border-outline-variant/40 text-on-surface-variant text-xs font-semibold hover:text-primary;
+  }
+
+  .filemgmt-quota-track {
+    @apply h-3 rounded-full bg-surface-container-low overflow-hidden;
+  }
+
+  .filemgmt-save-btn {
+    @apply px-4 py-2.5 bg-primary text-on-primary rounded-xl font-bold text-sm disabled:opacity-50;
+  }
+
+  .filemgmt-enforce-panel {
+    @apply mt-4 flex items-center justify-between p-4 rounded-lg bg-surface-container-low;
+  }
+
+  .filemgmt-toggle {
+    @apply w-12 h-6 rounded-full transition-colors relative;
+  }
+
+  .filemgmt-tabs {
+    @apply flex gap-2 border-b border-outline-variant/20 flex-wrap;
+  }
+
+  .filemgmt-tab {
+    @apply px-4 py-2.5 text-sm font-semibold border-b-2 transition-colors;
+  }
+
+  .filemgmt-tab-active {
+    @apply border-primary text-primary;
+  }
+
+  .filemgmt-tab-idle {
+    @apply border-transparent text-on-surface-variant hover:text-on-surface;
+  }
+
+  .filemgmt-filters {
+    @apply bg-white rounded-xl border border-outline-variant/20 p-4 grid grid-cols-1 md:grid-cols-3 gap-3;
+  }
+
+  .filemgmt-scan-badge {
+    @apply inline-flex items-center gap-1 text-[11px] font-semibold;
+  }
+
+  .filemgmt-th-row {
+    @apply text-left text-[11px] uppercase tracking-wider text-on-surface-variant border-b border-outline-variant/20 bg-surface-container-low;
+  }
+
+  .filemgmt-th {
+    @apply px-4 py-3;
+  }
+
+  .filemgmt-tr {
+    @apply border-b border-outline-variant/10 hover:bg-surface-container-low/50;
+  }
+
+  .filemgmt-td {
+    @apply px-4 py-3;
+  }
+
+  .filemgmt-td-muted {
+    @apply px-4 py-3 text-on-surface-variant;
+  }
+
+  .filemgmt-cat-select {
+    @apply px-2 py-1.5 rounded-lg border border-outline-variant/40 bg-surface-container-low text-xs focus:outline-none focus:border-primary max-w-[140px];
+  }
+
+  .filemgmt-icon-btn {
+    @apply p-2 rounded-lg hover:bg-surface-container-low text-on-surface-variant hover:text-primary;
+  }
+
+  .filemgmt-icon-btn-sm {
+    @apply p-1.5 rounded-lg hover:bg-surface-container-low text-on-surface-variant hover:text-primary;
+  }
+
+  .filemgmt-cat-card {
+    @apply border border-outline-variant/20 rounded-xl p-4 flex flex-col;
+  }
+
+  .filemgmt-cat-footer {
+    @apply flex items-center gap-2 mt-3 pt-3 border-t border-outline-variant/10 text-xs text-on-surface-variant;
+  }

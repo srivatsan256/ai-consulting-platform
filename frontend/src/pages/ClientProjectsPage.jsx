@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { projectService } from "../services/api";
 import TopHeader from "../components/TopHeader";
+import "./ClientProjectsPage.css";
 
 const STATUS_COLORS = {
   DISCOVERY: "bg-blue-100 text-blue-700",
@@ -67,14 +68,14 @@ export default function ClientProjectsPage({ projectId, onSelectProject, onBack 
       <TopHeader title="My Projects" subtitle="View your consulting engagements" />
 
       {/* Project Selector */}
-      <div className="bg-white rounded-xl soft-shadow border border-outline-variant/20 p-6">
-        <label className="block font-label-md text-[11px] uppercase tracking-wider text-on-surface-variant mb-2">
+      <div className="clientprojects-selector-card">
+        <label className="clientprojects-label">
           Select Project
         </label>
         <select
           value={selectedId}
           onChange={(e) => handleProjectSelect(e.target.value)}
-          className="w-full px-4 py-2.5 rounded-xl border border-outline-variant/40 bg-surface-container-low text-on-surface text-sm focus:outline-none focus:border-primary"
+          className="clientprojects-select"
         >
           <option value="">Choose a project</option>
           {projects.map((p) => (
@@ -86,89 +87,89 @@ export default function ClientProjectsPage({ projectId, onSelectProject, onBack 
       </div>
 
       {!selectedId && !loading && (
-        <div className="text-center py-16">
-          <span className="material-symbols-outlined text-[56px] text-outline-variant">folder_open</span>
-          <p className="text-on-surface-variant mt-3 text-sm">Select a project to view its details</p>
+        <div className="clientprojects-empty">
+          <span className="material-symbols-outlined clientprojects-empty-icon">folder_open</span>
+          <p className="clientprojects-empty-text">Select a project to view its details</p>
         </div>
       )}
 
       {selectedId && detailLoading && (
-        <div className="flex items-center justify-center py-20">
-          <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+        <div className="clientprojects-spinner-wrap">
+          <div className="clientprojects-spinner" />
         </div>
       )}
 
       {selectedId && project && (
         <div className="space-y-6">
-          <div className="bg-white rounded-xl soft-shadow border border-outline-variant/20 p-6">
-            <div className="flex flex-wrap items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
-                <span className="material-symbols-outlined text-primary">folder</span>
+          <div className="clientprojects-card">
+            <div className="clientprojects-detail-head">
+              <div className="clientprojects-icon-box">
+                <span className="material-symbols-outlined clientprojects-icon">folder</span>
               </div>
-              <div className="flex-1 min-w-0">
-                <h3 className="font-headline-sm text-lg font-bold text-on-surface">{project.project_name}</h3>
-                <p className="text-xs text-on-surface-variant mt-0.5">
+              <div className="clientprojects-title-wrap">
+                <h3 className="clientprojects-title">{project.project_name}</h3>
+                <p className="clientprojects-subtitle">
                   {project.company_name} · {project.industry || "General"}
                 </p>
               </div>
-              <div className="flex items-center gap-2">
+              <div className="clientprojects-badges">
                 {project.readiness_score != null && (
-                  <span className={`px-3 py-1.5 rounded-lg text-xs font-bold ${
+                  <span className={`clientprojects-badge ${
                     project.readiness_score >= 90 ? "bg-emerald-100 text-emerald-700" : project.readiness_score >= 70 ? "bg-amber-100 text-amber-700" : "bg-red-100 text-red-700"
                   }`}>
                     {project.readiness_score}% ready
                   </span>
                 )}
-                <span className={`px-3 py-1.5 rounded-lg text-xs font-bold ${STATUS_COLORS[project.status] || "bg-gray-100 text-gray-600"}`}>
+                <span className={`clientprojects-badge ${STATUS_COLORS[project.status] || "bg-gray-100 text-gray-600"}`}>
                   {project.status}
                 </span>
               </div>
             </div>
-            <div className="mt-4 w-full h-2 bg-surface-container rounded-full overflow-hidden">
-              <div className="h-full bg-primary rounded-full" style={{ width: `${project.readiness_score || 0}%` }} />
+            <div className="clientprojects-progress-track">
+              <div className="clientprojects-progress-fill" style={{ width: `${project.readiness_score || 0}%` }} />
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-5">
+            <div className="clientprojects-stats">
               <div>
-                <p className="text-[11px] uppercase tracking-wider text-on-surface-variant mb-1">Current Level</p>
-                <p className="text-sm font-bold text-on-surface">L{Math.max(1, project.current_level || 1)}</p>
+                <p className="clientprojects-stat-label">Current Level</p>
+                <p className="clientprojects-stat-value">L{Math.max(1, project.current_level || 1)}</p>
               </div>
               <div>
-                <p className="text-[11px] uppercase tracking-wider text-on-surface-variant mb-1">Documents</p>
-                <p className="text-sm font-bold text-on-surface">{project.documents?.length || 0}</p>
+                <p className="clientprojects-stat-label">Documents</p>
+                <p className="clientprojects-stat-value">{project.documents?.length || 0}</p>
               </div>
               <div>
-                <p className="text-[11px] uppercase tracking-wider text-on-surface-variant mb-1">Expected Timeline</p>
-                <p className="text-sm font-bold text-on-surface">{project.expected_timeline || "N/A"}</p>
+                <p className="clientprojects-stat-label">Expected Timeline</p>
+                <p className="clientprojects-stat-value">{project.expected_timeline || "N/A"}</p>
               </div>
             </div>
           </div>
 
           {/* Objectives */}
           {project.objectives && (
-            <div className="bg-white rounded-xl soft-shadow border border-outline-variant/20 p-6">
-              <h4 className="font-label-md text-[11px] uppercase tracking-wider text-on-surface-variant mb-2">Objectives</h4>
+            <div className="clientprojects-card">
+              <h4 className="clientprojects-label">Objectives</h4>
               <p className="text-sm text-on-surface leading-relaxed">{project.objectives}</p>
             </div>
           )}
 
           {/* Documents */}
-          <div className="bg-white rounded-xl soft-shadow border border-outline-variant/20 p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="font-headline-sm text-base font-bold text-on-surface">Documents</h3>
-              <span className="text-xs text-on-surface-variant">{project.documents?.length || 0} uploaded</span>
+          <div className="clientprojects-card">
+            <div className="clientprojects-section-head">
+              <h3 className="clientprojects-section-title">Documents</h3>
+              <span className="clientprojects-section-meta">{project.documents?.length || 0} uploaded</span>
             </div>
             {project.documents?.length ? (
-              <div className="space-y-2">
+              <div className="clientprojects-doc-list">
                 {project.documents.map((doc) => (
-                  <div key={doc.id} className="flex items-center gap-3 p-3 rounded-lg border border-outline-variant/10">
-                    <span className="material-symbols-outlined text-primary text-[20px]">description</span>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm text-on-surface truncate">{doc.original_name}</p>
-                      <p className="text-xs text-on-surface-variant">
+                  <div key={doc.id} className="clientprojects-doc-row">
+                    <span className="material-symbols-outlined clientprojects-doc-icon">description</span>
+                    <div className="clientprojects-doc-info">
+                      <p className="clientprojects-doc-name">{doc.original_name}</p>
+                      <p className="clientprojects-doc-meta">
                         {doc.doc_type} · Level {doc.level} · Uploaded {doc.uploaded_at ? new Date(doc.uploaded_at).toLocaleDateString() : "N/A"}
                       </p>
                     </div>
-                    <span className={`px-2 py-1 rounded text-[10px] font-bold ${
+                    <span className={`clientprojects-doc-badge ${
                       doc.verification_status ? "bg-emerald-100 text-emerald-700" : "bg-amber-100 text-amber-700"
                     }`}>
                       {doc.verification_status ? "Passed" : "Pending"}
@@ -176,40 +177,40 @@ export default function ClientProjectsPage({ projectId, onSelectProject, onBack 
                     <button
                       onClick={() => openDocument(doc.file_url)}
                       disabled={!doc.file_url}
-                      className="px-3 py-1.5 rounded-lg text-xs font-medium border border-outline-variant/30 text-on-surface-variant hover:bg-surface-container disabled:opacity-40 flex items-center gap-1"
+                      className="clientprojects-doc-btn"
                     >
-                      <span className="material-symbols-outlined text-[14px]">open_in_new</span>
+                      <span className="material-symbols-outlined clientprojects-doc-btn-icon">open_in_new</span>
                       View
                     </button>
                   </div>
                 ))}
               </div>
             ) : (
-              <p className="text-sm text-on-surface-variant text-center py-8">No documents uploaded yet</p>
+              <p className="clientprojects-no-docs">No documents uploaded yet</p>
             )}
           </div>
 
           {/* Verification Report */}
           {reportResults.length > 0 && (
-            <div className="bg-white rounded-xl soft-shadow border border-outline-variant/20 p-6">
-              <h3 className="font-headline-sm text-base font-bold text-on-surface mb-4">Verification Report</h3>
-              <div className="space-y-3">
+            <div className="clientprojects-card">
+              <h3 className="clientprojects-report-title">Verification Report</h3>
+              <div className="clientprojects-report-list">
                 {reportResults.map((result, idx) => (
-                  <div key={idx} className="p-4 rounded-xl border border-outline-variant/20">
-                    <div className="flex items-center gap-3 mb-2">
-                      <span className={`w-2 h-2 rounded-full ${result.passed ? "bg-emerald-500" : "bg-red-500"}`} />
-                      <span className="font-semibold text-on-surface text-sm">{result.doc_type} Document</span>
-                      <span className={`ml-auto px-3 py-1 rounded-lg text-xs font-bold ${
+                  <div key={idx} className="clientprojects-report-item">
+                    <div className="clientprojects-report-head">
+                      <span className={`clientprojects-report-dot ${result.passed ? "bg-emerald-500" : "bg-red-500"}`} />
+                      <span className="clientprojects-report-type">{result.doc_type} Document</span>
+                      <span className={`clientprojects-report-score ${
                         result.passed ? "bg-emerald-100 text-emerald-700" : "bg-red-100 text-red-700"
                       }`}>
                         {result.score}%
                       </span>
                     </div>
                     {result.evidence && (
-                      <p className="text-xs text-on-surface-variant p-3 rounded-lg bg-surface-container-low leading-relaxed">{result.evidence}</p>
+                      <p className="clientprojects-report-evidence">{result.evidence}</p>
                     )}
                     {result.ai_feedback && (
-                      <p className="text-xs text-on-surface-variant mt-2 p-2 bg-blue-50 rounded-lg">{result.ai_feedback}</p>
+                      <p className="clientprojects-report-feedback">{result.ai_feedback}</p>
                     )}
                   </div>
                 ))}

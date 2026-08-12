@@ -1,0 +1,83 @@
+  .authlayout-root {
+    @apply min-h-screen relative flex overflow-hidden;
+  }
+
+  .authlayout-bg {
+    @apply absolute inset-0 bg-cover bg-center;
+  }
+
+  .authlayout-overlay {
+    @apply absolute inset-0 bg-gradient-to-br from-black/70 via-black/60 to-black/75;
+  }
+
+  .authlayout-content {
+    @apply relative z-10 flex w-full min-h-screen;
+  }
+
+  .authlayout-brand {
+    @apply hidden lg:flex lg:w-[48%] items-center justify-center p-12;
+  }
+
+  .authlayout-brand-inner {
+    @apply max-w-md;
+  }
+
+  .authlayout-brand-head {
+    @apply flex items-center gap-3 mb-8;
+  }
+
+  .authlayout-brand-icon {
+    @apply text-primary-fixed text-[40px];
+  }
+
+  .authlayout-brand-title {
+    @apply font-display-lg text-[28px] font-bold text-white;
+  }
+
+  .authlayout-brand-sub {
+    @apply text-white/70 font-label-md text-[10px] uppercase tracking-widest;
+  }
+
+  .authlayout-brand-h2 {
+    @apply font-headline-lg text-3xl font-bold text-white leading-tight;
+  }
+
+  .authlayout-brand-p {
+    @apply text-white/75 mt-4 text-sm leading-relaxed;
+  }
+
+  .authlayout-feature-grid {
+    @apply mt-10 grid grid-cols-2 gap-4;
+  }
+
+  .authlayout-feature-item {
+    @apply flex items-center gap-2 px-4 py-3 rounded-xl bg-white/10 border border-white/15 backdrop-blur-sm;
+  }
+
+  .authlayout-feature-icon {
+    @apply text-primary-fixed text-[20px];
+  }
+
+  .authlayout-feature-label {
+    @apply text-white text-sm font-medium;
+  }
+
+  .authlayout-form-wrap {
+    @apply flex-1 flex items-center justify-center p-6 sm:p-8;
+  }
+
+  .authlayout-form-inner {
+    @apply w-full max-w-md;
+  }
+
+  .authlayout-mobile-logo {
+    @apply lg:hidden mb-8 text-center;
+  }
+
+  .authlayout-mobile-title {
+    @apply font-display-lg text-2xl font-bold text-white;
+  }
+
+  .authlayout-mobile-sub {
+    @apply text-white/70 text-xs uppercase tracking-widest mt-1;
+  }

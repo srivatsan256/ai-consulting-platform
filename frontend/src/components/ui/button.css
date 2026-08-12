@@ -1,0 +1,43 @@
+  .ui-btn {
+    @apply inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50;
+  }
+
+  .ui-btn-default {
+    @apply bg-primary hover:bg-primary/90;
+  }
+
+  .ui-btn-destructive {
+    @apply bg-destructive text-destructive-foreground hover:bg-destructive/90;
+  }
+
+  .ui-btn-outline {
+    @apply border border-input bg-background hover:bg-accent hover:text-accent-foreground;
+  }
+
+  .ui-btn-secondary {
+    @apply bg-secondary hover:bg-secondary/80;
+  }
+
+  .ui-btn-ghost {
+    @apply hover:bg-accent hover:text-accent-foreground;
+  }
+
+  .ui-btn-link {
+    @apply text-primary underline-offset-4 hover:underline;
+  }
+
+  .ui-btn-size-default {
+    @apply h-10 px-4 py-2;
+  }
+
+  .ui-btn-sm {
+    @apply h-9 rounded-md px-3;
+  }
+
+  .ui-btn-lg {
+    @apply h-11 rounded-md px-8;
+  }
+
+  .ui-btn-icon {
+    @apply h-10 w-10;
+  }
