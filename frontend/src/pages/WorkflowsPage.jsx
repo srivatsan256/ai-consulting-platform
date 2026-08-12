@@ -217,10 +217,6 @@ function WorkflowFormModal({ initial, onClose, onSaved }) {
       setError("Trigger event is required.");
       return;
     }
-    if (!form.project) {
-      setError("Project is required.");
-      return;
-    }
 
     setSaving(true);
     setError("");

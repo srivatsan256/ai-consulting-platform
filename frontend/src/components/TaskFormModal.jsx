@@ -83,10 +83,9 @@ export default function TaskFormModal({ open, onClose, onSubmit, submitting, for
           <div className="taskform-grid">
             <div>
               <label className="taskform-label">
-                Project *
+                Project
               </label>
               <select
-                required
                 value={form.project || ""}
                 onChange={(e) => setForm({ ...form, project: e.target.value })}
                 className="taskform-select"

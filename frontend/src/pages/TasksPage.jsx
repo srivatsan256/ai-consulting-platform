@@ -124,10 +124,15 @@ export default function TasksPage() {
     setSubmitting(true);
     setFormError(null);
     try {
+      const payload = {
+        ...form,
+        project: form.project ? Number(form.project) : null,
+        assigned_to: form.assigned_to ? Number(form.assigned_to) : null,
+      };
       if (form.id) {
-        await taskService.update(form.id, form);
+        await taskService.update(form.id, payload);
       } else {
-        await taskService.create(form);
+        await taskService.create(payload);
       }
       setShowCreate(false);
       fetchTasks();
