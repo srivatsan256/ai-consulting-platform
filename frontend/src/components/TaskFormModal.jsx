@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import "./TaskFormModal.css";
+import "../styles/components/TaskFormModal.css";
 
 const STATUS_OPTIONS = [
   { value: "todo", label: "To Do" },

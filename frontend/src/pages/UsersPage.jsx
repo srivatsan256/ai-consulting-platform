@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { userService, membershipService, roleService, departmentService, getApiError } from "../services/api";
 import TopHeader from "../components/TopHeader";
-import "./UsersPage.css";
+import "../styles/pages/UsersPage.css";
 
 function formatDate(value) {
   if (!value) return "N/A";

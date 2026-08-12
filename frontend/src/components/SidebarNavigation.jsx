@@ -1,5 +1,5 @@
 import React from "react";
-import "./SidebarNavigation.css";
+import "../styles/components/SidebarNavigation.css";
 
 const roleBasedNavItems = {
   super_admin: [

@@ -9,7 +9,7 @@ import {
   useParams,
 } from "react-router-dom";
 import { useAuth } from "./context/AuthContext.jsx";
-import "./App.css";
+import "./styles/App.css";
 
 import SidebarNavigation from "./components/SidebarNavigation";
 import LoginPage from "./pages/LoginPage";

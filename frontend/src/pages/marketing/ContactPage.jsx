@@ -4,7 +4,7 @@ import { Mail, Headset, Phone, MapPin, ArrowRight, Clock, Loader2, AlertCircle }
 import LandingNavbar from "../../components/LandingNavbar";
 import LandingFooter from "../../components/LandingFooter";
 import { contactService, getApiError } from "../../services/api";
-import "./ContactPage.css";
+import "../../styles/pages/marketing/ContactPage.css";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 40 },

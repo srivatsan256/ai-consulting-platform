@@ -1,6 +1,6 @@
 import React from "react";
 import LegalDocument from "../../components/LegalDocument";
-import "./PrivacyPolicyPage.css";
+import "../../styles/pages/marketing/PrivacyPolicyPage.css";
 
 const P = ({ children }) => <p className="privacy-p">{children}</p>;
 

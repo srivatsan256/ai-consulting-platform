@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { projectService } from '../services/api';
 import { useAuth } from '../context/AuthContext';
-import './DashboardPage.css';
+import "../styles/pages/DashboardPage.css";
 
 function formatDate(value) {
   if (!value) return 'N/A';

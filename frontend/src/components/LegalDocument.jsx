@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Scroll } from "lucide-react";
 import LandingNavbar from "./LandingNavbar";
 import LandingFooter from "./LandingFooter";
-import "./LegalDocument.css";
+import "../styles/components/LegalDocument.css";
 
 const tocLinkClass = "legal-toc-link";
 

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { projectService } from "../services/api";
 import TopHeader from "../components/TopHeader";
-import "./ClientProjectsPage.css";
+import "../styles/pages/ClientProjectsPage.css";
 
 const STATUS_COLORS = {
   DISCOVERY: "bg-blue-100 text-blue-700",

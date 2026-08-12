@@ -4,7 +4,7 @@ import { motion, useInView } from "framer-motion";
 import { Check, CheckCircle2, ArrowRight } from "lucide-react";
 import LandingNavbar from "../../components/LandingNavbar";
 import LandingFooter from "../../components/LandingFooter";
-import "./PricingPage.css";
+import "../../styles/pages/marketing/PricingPage.css";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 40 },

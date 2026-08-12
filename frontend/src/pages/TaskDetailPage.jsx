@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { taskService, projectService, userService, getApiError } from "../services/api";
 import TopHeader from "../components/TopHeader";
 import TaskFormModal from "../components/TaskFormModal";
-import "./TaskDetailPage.css";
+import "../styles/pages/TaskDetailPage.css";
 
 const STATUS_STYLES = {
   todo: "bg-gray-100 text-gray-700",

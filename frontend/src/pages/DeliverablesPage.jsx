@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { projectService, deliverableService } from "../services/api";
 import TopHeader from "../components/TopHeader";
-import "./DeliverablesPage.css";
+import "../styles/pages/DeliverablesPage.css";
 
 export default function DeliverablesPage({ projectId, onSelectProject }) {
   const [projects, setProjects] = useState([]);

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { projectService, chatService, getApiError } from "../services/api";
 import { useAuth } from "../context/AuthContext";
 import TopHeader from "../components/TopHeader";
-import "./ClientChatPage.css";
+import "../styles/pages/ClientChatPage.css";
 
 export default function ClientChatPage({ projectId }) {
   const { plan } = useAuth();

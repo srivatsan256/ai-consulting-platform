@@ -1,5 +1,5 @@
 import React from "react";
-import "./TopHeader.css";
+import "../styles/components/TopHeader.css";
 
 export default function TopHeader({ title, subtitle, actions }) {
   return (

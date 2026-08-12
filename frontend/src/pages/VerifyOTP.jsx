@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import AuthLayout from "../components/AuthLayout";
 import { authService } from "../services/api";
 import { GLASS_INPUT, GLASS_LABEL, GLASS_ICON, GLASS_BUTTON, GLASS_ERROR } from "../constants/auth";
-import "./VerifyOTP.css";
+import "../styles/pages/VerifyOTP.css";
 
 function maskEmail(email) {
   const [local, domain] = email.split("@");

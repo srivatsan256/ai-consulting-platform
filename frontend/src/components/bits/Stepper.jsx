@@ -1,6 +1,6 @@
 import React, { Children, useLayoutEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
-import "./Stepper.css";
+import "../../styles/components/bits/Stepper.css";
 
 export default function Stepper({
   children,

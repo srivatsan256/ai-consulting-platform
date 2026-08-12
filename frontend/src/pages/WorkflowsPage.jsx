@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { workflowService, getApiError } from "../services/api";
 import TopHeader from "../components/TopHeader";
-import "./WorkflowsPage.css";
+import "../styles/pages/WorkflowsPage.css";
 
 const inputCls = "workflows-input";
 const labelCls = "workflows-label";

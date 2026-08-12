@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { projectService, deliverableService } from "../services/api";
 import TopHeader from "../components/TopHeader";
-import "./ClientDownloads.css";
+import "../styles/pages/ClientDownloads.css";
 
 export default function ClientDownloads({ projectId }) {
   const [projects, setProjects] = useState([]);

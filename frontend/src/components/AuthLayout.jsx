@@ -1,7 +1,7 @@
 import React from "react";
 import AuroraOverlay from "./AuroraOverlay";
 import { AUTH_BACKGROUND_STYLE, GLASS_CARD } from "../constants/auth";
-import "./AuthLayout.css";
+import "../styles/components/AuthLayout.css";
 
 export default function AuthLayout({ children }) {
   return (

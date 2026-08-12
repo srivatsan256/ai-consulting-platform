@@ -6,7 +6,7 @@ import {
   getApiError,
 } from "../services/api";
 import TopHeader from "../components/TopHeader";
-import "./RolesPage.css";
+import "../styles/pages/RolesPage.css";
 
 function inputCls() {
   return "roles-input";

@@ -6,7 +6,7 @@ import {
   getApiError,
 } from "../services/api";
 import TopHeader from "../components/TopHeader";
-import "./FileManagementPage.css";
+import "../styles/pages/FileManagementPage.css";
 
 const inputCls = "filemgmt-input";
 const labelCls = "filemgmt-label";

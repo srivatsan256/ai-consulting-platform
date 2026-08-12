@@ -6,7 +6,7 @@ import { motion, useScroll, useMotionValueEvent } from "framer-motion";
 import { Menu, Cpu } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
-import "./navigation-menu.css";
+import "../../styles/components/ui/navigation-menu.css";
 
 const navItems = [
   { name: "Home", href: "#home" },

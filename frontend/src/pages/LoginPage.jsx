@@ -9,7 +9,7 @@ import {
   GLASS_ICON,
   GLASS_ERROR,
 } from "../constants/auth";
-import "./LoginPage.css";
+import "../styles/pages/LoginPage.css";
 
 export default function LoginPage({ onLogin, onShowSignup, onForgotPassword }) {
   const [email, setEmail] = useState("");

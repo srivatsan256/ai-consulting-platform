@@ -6,7 +6,7 @@ import {
   getApiError,
 } from "../services/api";
 import TopHeader from "../components/TopHeader";
-import "./TeamsDepartmentsPage.css";
+import "../styles/pages/TeamsDepartmentsPage.css";
 
 function FormModal({ title, open, onClose, onSubmit, submitting, formError, children }) {
   if (!open) return null;

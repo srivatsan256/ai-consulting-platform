@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { projectService, documentService } from "../services/api";
 import TopHeader from "../components/TopHeader";
-import "./UploadPage.css";
+import "../styles/pages/UploadPage.css";
 
 export default function UploadPage({ projectId, onSelectProject }) {
   const [projects, setProjects] = useState([]);

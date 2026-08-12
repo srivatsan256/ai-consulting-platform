@@ -36,7 +36,7 @@ import {
 } from "lucide-react";
 import LandingNavbar from "../components/LandingNavbar";
 import LandingFooter from "../components/LandingFooter";
-import "./LandingPage.css";
+import "../styles/pages/LandingPage.css";
 
 // ─── Animation Variants ──────────────────────────────────────────────────────
 const fadeUp = {

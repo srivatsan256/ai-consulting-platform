@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { projectService, chatService, getApiError } from "../services/api";
 import { useAuth } from "../context/AuthContext";
 import TopHeader from "../components/TopHeader";
-import "./AIChatPage.css";
+import "../styles/pages/AIChatPage.css";
 
 export default function AIChatPage({ projectId, onSelectProject }) {
   const { plan } = useAuth();

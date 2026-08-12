@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { projectService } from "../services/api";
 import TopHeader from "../components/TopHeader";
-import "./ReportsPage.css";
+import "../styles/pages/ReportsPage.css";
 
 export default function ReportsPage({ projectId, onSelectProject }) {
   const [projects, setProjects] = useState([]);

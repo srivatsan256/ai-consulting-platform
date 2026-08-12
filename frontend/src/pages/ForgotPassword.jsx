@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import AuthLayout from "../components/AuthLayout";
 import { authService } from "../services/api";
 import { GLASS_INPUT, GLASS_LABEL, GLASS_ICON, GLASS_BUTTON, GLASS_ERROR } from "../constants/auth";
-import "./ForgotPassword.css";
+import "../styles/pages/ForgotPassword.css";
 
 export default function ForgotPassword({ onBackToLogin, onSent }) {
   const [email, setEmail] = useState("");

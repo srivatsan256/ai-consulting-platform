@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import AuthLayout from "../components/AuthLayout";
 import { GLASS_INPUT, GLASS_INPUT_ERROR, GLASS_LABEL, GLASS_ICON, GLASS_BUTTON, GLASS_ERROR } from "../constants/auth";
-import "./SignupPage.css";
+import "../styles/pages/SignupPage.css";
 
 export default function SignupPage({ onRegister, onShowLogin }) {
   const [accountType, setAccountType] = useState("client");

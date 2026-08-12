@@ -3,7 +3,7 @@ import { motion, useInView } from "framer-motion";
 import { Search, Book, Compass, PlayCircle, FileText, Code2, FileSearch } from "lucide-react";
 import LandingNavbar from "../../components/LandingNavbar";
 import LandingFooter from "../../components/LandingFooter";
-import "./ResourcesPage.css";
+import "../../styles/pages/marketing/ResourcesPage.css";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 40 },

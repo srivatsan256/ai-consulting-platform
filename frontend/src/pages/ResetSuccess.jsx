@@ -1,6 +1,6 @@
 import React from "react";
 import AuthLayout from "../components/AuthLayout";
-import "./ResetSuccess.css";
+import "../styles/pages/ResetSuccess.css";
 
 export default function ResetSuccess({ onBackToLogin }) {
   return (

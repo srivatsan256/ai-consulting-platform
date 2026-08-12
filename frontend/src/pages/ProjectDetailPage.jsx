@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { projectService, documentService, verificationService, chatService, deliverableService } from "../services/api";
 import { LEVEL_MODULES, EXECUTIVE_SUMMARY_DOCS, DOC_TYPE_OPTIONS } from "../constants/levelModules";
 import TopHeader from "../components/TopHeader";
-import "./ProjectDetailPage.css";
+import "../styles/pages/ProjectDetailPage.css";
 
 const STATUS_COLORS = {
   DISCOVERY: "bg-blue-100 text-blue-700",

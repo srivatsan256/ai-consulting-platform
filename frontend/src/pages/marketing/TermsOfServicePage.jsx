@@ -1,6 +1,6 @@
 import React from "react";
 import LegalDocument from "../../components/LegalDocument";
-import "./TermsOfServicePage.css";
+import "../../styles/pages/marketing/TermsOfServicePage.css";
 
 const Section = ({ heading, children }) => (
   <section>

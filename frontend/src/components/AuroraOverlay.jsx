@@ -1,6 +1,6 @@
 import React from "react";
 import { motion } from "motion/react";
-import "./AuroraOverlay.css";
+import "../styles/components/AuroraOverlay.css";
 
 const BLOBS = [
   { size: 520, x: "6%", y: "-10%", color: "rgba(124,58,237,0.55)", duration: 16, delay: 0 },

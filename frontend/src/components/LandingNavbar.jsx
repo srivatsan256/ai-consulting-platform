@@ -4,7 +4,7 @@ import { motion, useScroll, useMotionValueEvent } from "framer-motion";
 import { Menu, X, Cpu, Sun, Moon, ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useTheme } from "@/context/ThemeContext";
-import "./LandingNavbar.css";
+import "../styles/components/LandingNavbar.css";
 
 const navItems = [
   { name: "Pricing", href: "/pricing", active: (p) => p.startsWith("/pricing") },

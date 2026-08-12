@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { projectService, verificationService } from "../services/api";
 import TopHeader from "../components/TopHeader";
-import "./VerificationPage.css";
+import "../styles/pages/VerificationPage.css";
 
 export default function VerificationPage({ projectId, onSelectProject }) {
   const [projects, setProjects] = useState([]);
