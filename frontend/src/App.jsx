@@ -39,6 +39,9 @@ import TaskDetailPage from "./pages/TaskDetailPage";
 import UsersPage from "./pages/UsersPage";
 import TeamsDepartmentsPage from "./pages/TeamsDepartmentsPage";
 import RolesPage from "./pages/RolesPage";
+import AssignRolesPage from "./pages/AssignRolesPage";
+import PermissionsPage from "./pages/PermissionsPage";
+import AssignmentHistoryPage from "./pages/AssignmentHistoryPage";
 import FileManagementPage from "./pages/FileManagementPage";
 import WorkflowsPage from "./pages/WorkflowsPage";
 
@@ -507,6 +510,36 @@ export default function App() {
             <RequireAdmin>
               <AppLayout>
                 <RolesPage />
+              </AppLayout>
+            </RequireAdmin>
+          }
+        />
+        <Route
+          path="/roles/assign"
+          element={
+            <RequireAdmin>
+              <AppLayout>
+                <AssignRolesPage />
+              </AppLayout>
+            </RequireAdmin>
+          }
+        />
+        <Route
+          path="/roles/permissions"
+          element={
+            <RequireAdmin>
+              <AppLayout>
+                <PermissionsPage />
+              </AppLayout>
+            </RequireAdmin>
+          }
+        />
+        <Route
+          path="/roles/history"
+          element={
+            <RequireAdmin>
+              <AppLayout>
+                <AssignmentHistoryPage />
               </AppLayout>
             </RequireAdmin>
           }

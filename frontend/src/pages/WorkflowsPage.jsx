@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { workflowService, getApiError } from "../services/api";
+import { workflowService, projectService, getApiError } from "../services/api";
 import TopHeader from "../components/TopHeader";
 import "../styles/pages/WorkflowsPage.css";
 
@@ -143,6 +143,7 @@ function HistoryTimeline({ events }) {
 // ─────────────────────────────────────────────────────────────
 function WorkflowFormModal({ initial, onClose, onSaved }) {
   const isEdit = Boolean(initial?.id);
+  const [projects, setProjects] = useState([]);
   const [form, setForm] = useState(() => {
     if (!initial) return emptyForm();
     return {
@@ -165,6 +166,20 @@ function WorkflowFormModal({ initial, onClose, onSaved }) {
   });
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    projectService
+      .list()
+      .then((res) => {
+        const list = Array.isArray(res) ? res : res?.results || [];
+        setProjects(list);
+        if (isEdit && !form.project && list.length > 0) {
+          setForm((f) => ({ ...f, project: list[0].id }));
+        }
+      })
+      .catch(() => setProjects([]));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const updateField = (key, value) => setForm((f) => ({ ...f, [key]: value }));
 
@@ -200,6 +215,10 @@ function WorkflowFormModal({ initial, onClose, onSaved }) {
     }
     if (!form.trigger_event.trim()) {
       setError("Trigger event is required.");
+      return;
+    }
+    if (!form.project) {
+      setError("Project is required.");
       return;
     }
 
@@ -285,15 +304,20 @@ function WorkflowFormModal({ initial, onClose, onSaved }) {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className={labelCls}>Project ID</label>
-              <input
+              <label className={labelCls}>Project *</label>
+              <select
                 className={inputCls}
-                type="number"
-                min="1"
                 value={form.project}
                 onChange={(e) => updateField("project", e.target.value)}
-                placeholder="Project primary key"
-              />
+                required
+              >
+                <option value="">-- Select a project --</option>
+                {projects.map((p) => (
+                  <option key={p.id} value={p.id}>
+                    {p.project_name} ({p.id})
+                  </option>
+                ))}
+              </select>
             </div>
             <div>
               <label className={labelCls}>Status</label>
