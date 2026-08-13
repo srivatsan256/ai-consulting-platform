@@ -1,0 +1,241 @@
+/* =====================================================
+   AI Intervention Pain Areas Tracker - Record Page Styles
+   ===================================================== */
+
+.pain-page {
+  @apply flex flex-col gap-6 pb-8;
+}
+
+/* ---------- Primary Button ---------- */
+.pain-primary-btn {
+  @apply inline-flex items-center gap-2 px-4 py-2 bg-primary text-on-primary rounded-lg text-sm font-bold hover:opacity-90 disabled:opacity-50 transition-all;
+}
+
+.pain-primary-btn .material-symbols-outlined {
+  @apply text-[18px];
+}
+
+/* ---------- Filters ---------- */
+.pain-filters {
+  @apply bg-white rounded-xl border border-outline-variant/20 p-4;
+}
+
+.pain-filters-inner {
+  @apply flex items-center gap-5 flex-wrap;
+}
+
+.pain-filter-group {
+  @apply flex items-center gap-2;
+}
+
+.pain-filter-label {
+  @apply text-xs font-medium text-on-surface-variant;
+}
+
+.pain-select {
+  @apply px-3 py-1.5 rounded-lg border border-outline-variant/40 text-sm bg-white focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 appearance-none cursor-pointer min-w-[120px];
+}
+
+.pain-filter-count {
+  @apply ml-auto text-xs text-on-surface-variant;
+}
+
+.pain-filter-count strong {
+  @apply text-on-surface font-bold;
+}
+
+/* ---------- KPI Cards ---------- */
+.pain-kpi-grid {
+  @apply grid grid-cols-2 gap-4;
+}
+
+@media (min-width: 768px) {
+  .pain-kpi-grid {
+    @apply grid-cols-3;
+  }
+}
+
+@media (min-width: 1280px) {
+  .pain-kpi-grid {
+    @apply grid-cols-6;
+  }
+}
+
+.pain-kpi-card {
+  @apply bg-white rounded-xl border border-outline-variant/20 p-5 transition-all hover:-translate-y-0.5 hover:shadow-md;
+}
+
+.pain-kpi-card.border-left-red {
+  @apply border-l-4 border-l-error;
+}
+
+.pain-kpi-label {
+  @apply text-xs font-medium text-on-surface-variant mb-1;
+}
+
+.pain-kpi-value {
+  @apply text-3xl font-bold text-on-surface leading-tight;
+}
+
+.pain-kpi-value.red {
+  @apply text-error;
+}
+
+.pain-kpi-value.green {
+  @apply text-green-600;
+}
+
+.pain-kpi-value.indigo {
+  @apply text-indigo-600;
+}
+
+.pain-kpi-sub {
+  @apply text-xs text-on-surface-variant mt-1;
+}
+
+.pain-kpi-sub.teal {
+  @apply text-teal-600;
+}
+
+/* ---------- Panels & Charts ---------- */
+.pain-panel {
+  @apply bg-white rounded-xl border border-outline-variant/20 p-6;
+}
+
+.pain-h3 {
+  @apply font-headline-sm text-base font-bold text-on-surface m-0;
+}
+
+.pain-charts-grid {
+  @apply grid grid-cols-1 gap-6;
+}
+
+@media (min-width: 1280px) {
+  .pain-charts-grid {
+    @apply grid-cols-2;
+  }
+}
+
+.pain-chart-empty {
+  @apply h-64 flex items-center justify-center text-on-surface-variant text-sm;
+}
+
+.pie-center-label {
+  @apply text-2xl font-bold;
+  fill: hsl(var(--on-surface));
+}
+
+.chart-tooltip {
+  @apply bg-white border border-outline-variant/20 rounded-lg shadow-md px-3 py-2 text-xs;
+}
+
+.chart-tooltip-label {
+  @apply font-semibold text-on-surface mb-1;
+}
+
+/* ---------- Table ---------- */
+.pain-table-header {
+  @apply flex items-center justify-between mb-4;
+}
+
+.pain-table-wrap {
+  @apply overflow-x-auto border border-outline-variant/20 rounded-xl;
+}
+
+.pain-table {
+  @apply w-full border-collapse text-[13px];
+}
+
+.pain-table-head-row {
+  @apply bg-surface-container-low border-b border-outline-variant/20;
+}
+
+.pain-th {
+  @apply text-left px-4 py-3 font-label-md text-[11px] uppercase tracking-wider text-on-surface-variant whitespace-nowrap;
+}
+
+.pain-th.text-center {
+  text-align: center;
+}
+
+.pain-row {
+  @apply border-b border-outline-variant/10 hover:bg-surface-container-low/40 transition-colors;
+}
+
+.pain-td {
+  @apply px-4 py-3 text-on-surface align-middle;
+}
+
+.pain-td.muted {
+  @apply text-on-surface-variant;
+}
+
+.pain-td.nowrap {
+  @apply whitespace-nowrap;
+}
+
+.pain-td.max-180 {
+  max-width: 180px;
+}
+
+.pain-td.max-220 {
+  max-width: 220px;
+}
+
+.pain-td .truncate {
+  @apply overflow-hidden text-ellipsis whitespace-nowrap m-0;
+}
+
+/* ---------- Pills ---------- */
+.pain-pill {
+  @apply inline-flex px-2.5 py-1 rounded-full text-[10px] font-bold;
+}
+
+/* ---------- Actions ---------- */
+.pain-actions {
+  @apply flex items-center justify-center gap-1;
+}
+
+.pain-action-btn {
+  @apply inline-flex items-center justify-center w-8 h-8 p-1.5 rounded-lg text-on-surface-variant hover:bg-surface-container transition-colors;
+}
+
+.pain-action-btn.danger {
+  @apply text-error;
+}
+
+.pain-action-btn.danger:hover {
+  @apply bg-error/10;
+}
+
+.pain-action-btn .material-symbols-outlined {
+  @apply text-[18px];
+}
+
+/* ---------- Loading & Empty ---------- */
+.pain-loading {
+  @apply flex items-center justify-center py-16;
+}
+
+.pain-spinner {
+  @apply w-8 h-8 border-4 border-outline-variant border-t-primary rounded-full;
+  animation: pain-spin 0.7s linear infinite;
+}
+
+@keyframes pain-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.pain-empty {
+  @apply text-center py-16 px-4 text-on-surface-variant;
+}
+
+.pain-empty-icon {
+  @apply text-[48px] text-outline-variant;
+}
+
+.pain-empty p {
+  @apply mt-3 text-sm;
+}
