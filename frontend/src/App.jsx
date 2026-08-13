@@ -44,6 +44,8 @@ import PermissionsPage from "./pages/PermissionsPage";
 import AssignmentHistoryPage from "./pages/AssignmentHistoryPage";
 import FileManagementPage from "./pages/FileManagementPage";
 import WorkflowsPage from "./pages/WorkflowsPage";
+import AIInterventionPainAreasTrackerRecord from "./pages/AIInterventionPainAreasTrackerRecord";
+import AIInterventionPainAreasTrackerForm from "./pages/AIInterventionPainAreasTrackerForm";
 
 import ClientDashboard from "./pages/ClientDashboard";
 import ClientProjectsPage from "./pages/ClientProjectsPage";
@@ -185,6 +187,7 @@ const VIEW_ROUTE_MAP = {
   roles: "/roles",
   files: "/file-management",
   workflows: "/workflows",
+  "ai-pain-areas": "/ai-pain-areas",
   reports: "/projects",
   upload: "/projects",
   verification: "/projects",
@@ -221,6 +224,7 @@ function AppLayout({ children }) {
     if (path.startsWith("/roles")) return "roles";
     if (path.startsWith("/file-management")) return "files";
     if (path.startsWith("/workflows")) return "workflows";
+    if (path.startsWith("/ai-pain-areas")) return "ai-pain-areas";
     if (path.startsWith("/client-dashboard")) return "client-dashboard";
     if (path.startsWith("/client-projects")) return "client-projects";
     return "";
@@ -336,19 +340,35 @@ function ClientDashboardWrapper() {
 function ClientProjectsWrapper() {
   const { projectId } = useParams();
   const navigate = useNavigate();
-  return <ClientProjectsPage projectId={projectId} onSelectProject={(id) => navigate(`/client-projects/${id}`)} onBack={() => navigate(-1)} />;
+  return (
+    <ClientProjectsPage
+      projectId={projectId}
+      onSelectProject={(id) => navigate(`/client-projects/${id}`)}
+      onBack={() => navigate(-1)}
+    />
+  );
 }
 
 function ClientChatWrapper() {
   const { projectId } = useParams();
   const navigate = useNavigate();
-  return <ClientChatPage projectId={projectId} onSelectProject={(id) => navigate(`/client-projects/${id}`)} />;
+  return (
+    <ClientChatPage
+      projectId={projectId}
+      onSelectProject={(id) => navigate(`/client-projects/${id}`)}
+    />
+  );
 }
 
 function ClientDownloadsWrapper() {
   const { projectId } = useParams();
   const navigate = useNavigate();
-  return <ClientDownloads projectId={projectId} onSelectProject={(id) => navigate(`/client-projects/${id}`)} />;
+  return (
+    <ClientDownloads
+      projectId={projectId}
+      onSelectProject={(id) => navigate(`/client-projects/${id}`)}
+    />
+  );
 }
 
 // ─────────────────────────────────────────────────────────────
@@ -560,6 +580,36 @@ export default function App() {
             <RequireAdmin>
               <AppLayout>
                 <WorkflowsPage />
+              </AppLayout>
+            </RequireAdmin>
+          }
+        />
+        <Route
+          path="/ai-pain-areas"
+          element={
+            <RequireAdmin>
+              <AppLayout>
+                <AIInterventionPainAreasTrackerRecord />
+              </AppLayout>
+            </RequireAdmin>
+          }
+        />
+        <Route
+          path="/ai-pain-areas/new"
+          element={
+            <RequireAdmin>
+              <AppLayout>
+                <AIInterventionPainAreasTrackerForm />
+              </AppLayout>
+            </RequireAdmin>
+          }
+        />
+        <Route
+          path="/ai-pain-areas/:id/edit"
+          element={
+            <RequireAdmin>
+              <AppLayout>
+                <AIInterventionPainAreasTrackerForm />
               </AppLayout>
             </RequireAdmin>
           }

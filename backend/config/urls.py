@@ -17,7 +17,9 @@ urlpatterns = [
 
     # Admin
     path("admin/", admin.site.urls),
-
+    
+    # AI Intervention Pain Areas Tracker
+    path("api/ai-intervention-pain-areas/", include("AI_Intervention_Pain_Areas_Tracker.urls")),
     # Health check (unauthenticated)
     path("api/health/", HealthCheckAPIView.as_view(), name="health-check"),
 
@@ -143,6 +145,7 @@ urlpatterns = [
 
     # Home
     path("", RedirectView.as_view(url="/api/docs/", permanent=False)),
+
 ]
 
 if settings.DEBUG:

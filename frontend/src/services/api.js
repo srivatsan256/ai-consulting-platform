@@ -154,7 +154,14 @@ export const membershipService = {
 };
 
 export const companyService = {
-  context: () => api.get("/companies/context/"),
+  context: () => api.get("/companies/companies/context/"),
+};
+
+export const painAreaService = {
+  list: () => api.get("/ai-intervention-pain-areas/"),
+  create: (data) => api.post("/ai-intervention-pain-areas/", data),
+  update: (id, data) => api.put(`/ai-intervention-pain-areas/${id}/`, data),
+  remove: (id) => api.delete(`/ai-intervention-pain-areas/${id}/`),
 };
 
 export const subscriptionService = {

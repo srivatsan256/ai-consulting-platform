@@ -8,6 +8,7 @@ const roleBasedNavItems = {
     { id: "tasks", label: "Tasks", icon: "checklist" },
     { id: "files", label: "File Management", icon: "folder_managed" },
     { id: "workflows", label: "Workflows", icon: "account_tree" },
+    { id: "ai-pain-areas", label: "AI Pain Areas", icon: "psychology" },
     { id: "users", label: "Users", icon: "group" },
     { id: "teams", label: "Teams & Departments", icon: "account_tree" },
     { id: "roles", label: "Roles & Permissions", icon: "admin_panel_settings" },
@@ -18,6 +19,7 @@ const roleBasedNavItems = {
     { id: "tasks", label: "Tasks", icon: "checklist" },
     { id: "files", label: "File Management", icon: "folder_managed" },
     { id: "workflows", label: "Workflows", icon: "account_tree" },
+    { id: "ai-pain-areas", label: "AI Pain Areas", icon: "psychology" },
     { id: "users", label: "Users", icon: "group" },
     { id: "teams", label: "Teams & Departments", icon: "account_tree" },
     { id: "roles", label: "Roles & Permissions", icon: "admin_panel_settings" },
@@ -49,6 +51,7 @@ const roleBasedNavItems = {
     { id: "dashboard", label: "AI Dashboard", icon: "dashboard" },
     { id: "upload", label: "Configure Models", icon: "upload_file" },
     { id: "verification", label: "Validation Results", icon: "verified" },
+    { id: "ai-pain-areas", label: "AI Pain Areas", icon: "psychology" },
     { id: "reports", label: "AI Logs", icon: "assessment" },
   ],
   backend_developer: [

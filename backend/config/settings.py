@@ -73,6 +73,7 @@ INSTALLED_APPS = [
     # Local Apps
     "authentication",
     "accounts",
+    "AI_Intervention_Pain_Areas_Tracker",
     "companies",
     "company_members",
     "roles",
