@@ -162,6 +162,11 @@ export const painAreaService = {
   create: (data) => api.post("/ai-intervention-pain-areas/", data),
   update: (id, data) => api.put(`/ai-intervention-pain-areas/${id}/`, data),
   remove: (id) => api.delete(`/ai-intervention-pain-areas/${id}/`),
+  uploadCsv: (formData, onUploadProgress) =>
+    api.post("/ai-intervention-pain-areas/import_csv/", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+      onUploadProgress,
+    }),
 };
 
 export const subscriptionService = {

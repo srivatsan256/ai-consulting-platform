@@ -15,12 +15,12 @@ import {
   Label,
 } from "recharts";
 import TopHeader from "../components/TopHeader";
+import CsvUploadFlow from "../components/CsvUploadFlow/CsvUploadFlow";
 import { painAreaService, getApiError } from "../services/api";
 import "../styles/pages/AIInterventionPainAreasTrackerRecord.css";
 
 const PRIORITY_OPTIONS = ["High", "Medium", "Low"];
 const STATUS_OPTIONS = ["Open", "In Progress", "Completed", "On Hold", "Cancelled"];
-
 const CHART_COLORS = {
   High: "#DC2626",
   Medium: "#D97706",
@@ -40,6 +40,7 @@ export default function AIInterventionPainAreasTrackerRecord() {
   const [filterStatus, setFilterStatus] = useState("All");
   const [filterPriority, setFilterPriority] = useState("All");
   const [filterDepartment, setFilterDepartment] = useState("All");
+  const [isUploadFlowOpen, setUploadFlowOpen] = useState(false);
 
   const fetchRecords = async () => {
     setLoading(true);
@@ -60,7 +61,6 @@ export default function AIInterventionPainAreasTrackerRecord() {
 
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this record?")) return;
-
     try {
       await painAreaService.remove(id);
       await fetchRecords();
@@ -197,14 +197,42 @@ export default function AIInterventionPainAreasTrackerRecord() {
         title="AI Intervention Pain Areas Tracker"
         subtitle="Modern dashboard · Process pain points & AI intervention opportunities"
         actions={
-          <button
-            onClick={() => navigate("/ai-pain-areas/new")}
-            className="pain-primary-btn"
-          >
-            <span className="material-symbols-outlined text-[18px]">add</span>
-            Add New Record
-          </button>
+          <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+            <button
+              onClick={() => setUploadFlowOpen(true)}
+              className="pain-secondary-btn"
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "6px",
+                padding: "8px 14px",
+                border: "1px solid #CBD5E1",
+                borderRadius: "6px",
+                background: "#FFFFFF",
+                color: "#334155",
+                fontWeight: 500,
+                cursor: "pointer",
+              }}
+            >
+              <span className="material-symbols-outlined text-[18px]">upload_file</span>
+              Upload Using CSV
+            </button>
+            <button
+              onClick={() => navigate("/ai-pain-areas/new")}
+              className="pain-primary-btn"
+            >
+              <span className="material-symbols-outlined text-[18px]">add</span>
+              Add New Record
+            </button>
+          </div>
         }
+      />
+
+      {/* CSV Upload Wizard Modal */}
+      <CsvUploadFlow
+        isOpen={isUploadFlowOpen}
+        onClose={() => setUploadFlowOpen(false)}
+        onComplete={fetchRecords}
       />
 
       {/* Filters */}
@@ -223,7 +251,6 @@ export default function AIInterventionPainAreasTrackerRecord() {
               ))}
             </select>
           </div>
-
           <div className="pain-filter-group">
             <span className="pain-filter-label">Priority</span>
             <select
@@ -237,7 +264,6 @@ export default function AIInterventionPainAreasTrackerRecord() {
               ))}
             </select>
           </div>
-
           <div className="pain-filter-group">
             <span className="pain-filter-label">Department</span>
             <select
@@ -251,7 +277,6 @@ export default function AIInterventionPainAreasTrackerRecord() {
               ))}
             </select>
           </div>
-
           <div className="pain-filter-count">
             Showing <strong>{filteredRecords.length}</strong> of <strong>{records.length}</strong> records
           </div>
@@ -327,7 +352,6 @@ export default function AIInterventionPainAreasTrackerRecord() {
             </ResponsiveContainer>
           )}
         </div>
-
         <div className="pain-panel soft-shadow">
           <h3 className="pain-h3">Priority Breakdown</h3>
           {priorityPieData.length === 0 ? (
@@ -376,7 +400,6 @@ export default function AIInterventionPainAreasTrackerRecord() {
             </ResponsiveContainer>
           )}
         </div>
-
         <div className="pain-panel soft-shadow">
           <h3 className="pain-h3">Count by Priority × Status</h3>
           {priorityStatusBarData.every((d) => STATUS_OPTIONS.every((s) => d[s] === 0)) ? (
@@ -403,7 +426,6 @@ export default function AIInterventionPainAreasTrackerRecord() {
         <div className="pain-table-header">
           <h3 className="pain-h3">Records</h3>
         </div>
-
         {loading ? (
           <div className="pain-loading">
             <div className="pain-spinner" />

@@ -1,0 +1,47 @@
+.stepper-container {
+  @apply mx-auto w-full;
+}
+
+.stepper-header {
+  @apply flex w-full items-center px-2 pb-4;
+}
+
+.stepper-footer-inner {
+  @apply mt-8 flex;
+}
+
+.stepper-back {
+  @apply rounded-lg px-4 py-2.5 text-sm font-semibold transition-colors;
+}
+
+.stepper-back-disabled {
+  @apply pointer-events-none opacity-50;
+}
+
+.stepper-back-enabled {
+  @apply text-on-surface-variant hover:bg-surface-container hover:text-on-surface;
+}
+
+.stepper-next {
+  @apply flex items-center justify-center gap-2 rounded-xl bg-primary px-6 py-2.5 text-sm font-bold text-white transition-all hover:opacity-90 active:opacity-80;
+}
+
+.stepper-indicator {
+  @apply relative outline-none focus:outline-none;
+}
+
+.stepper-indicator-circle {
+  @apply flex h-8 w-8 items-center justify-center rounded-full font-semibold;
+}
+
+.stepper-indicator-dot {
+  @apply h-3 w-3 rounded-full bg-white;
+}
+
+.stepper-connector {
+  @apply relative mx-2 h-0.5 flex-1 overflow-hidden rounded bg-outline-variant/30;
+}
+
+.stepper-connector-fill {
+  @apply absolute left-0 top-0 h-full;
+}
