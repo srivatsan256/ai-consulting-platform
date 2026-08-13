@@ -1,3 +1,20 @@
 
+# Python
+__pycache__/
+*.py[cod]
+*.pyc
+.venv/
+venv/
+
+# Environment
 backend/media
 backend/.env
+
+# Logs
+backend/logs/
+
+# Frontend build output
+frontend/dist/
+
+# macOS
+.DS_Store

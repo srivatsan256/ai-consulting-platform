@@ -54,19 +54,19 @@ export default function CsvUploadFlow({ isOpen, onClose, onComplete }) {
   const [error, setError] = useState("");
   const [phase, setPhase] = useState("idle"); // idle | uploading | parsing | inserting | success | error
   const [progress, setProgress] = useState({ current: 0, total: 0 });
-  const [summary, setSummary] = useState(null);
   const cancelRef = useRef(false);
+  const abortRef = useRef(null);
 
   if (!isOpen) return null;
 
   const resetAndClose = () => {
     cancelRef.current = true;
+    abortRef.current?.abort();
     setStep(1);
     setFile(null);
     setError("");
     setPhase("idle");
     setProgress({ current: 0, total: 0 });
-    setSummary(null);
     onClose();
   };
 
@@ -102,6 +102,8 @@ export default function CsvUploadFlow({ isOpen, onClose, onComplete }) {
     }
     setError("");
     cancelRef.current = false;
+    abortRef.current = new AbortController();
+    setProgress({ current: 0, total: 0 });
     setStep(3);
     setPhase("uploading");
 
@@ -109,26 +111,17 @@ export default function CsvUploadFlow({ isOpen, onClose, onComplete }) {
       const formData = new FormData();
       formData.append("file", file);
 
-      setPhase("parsing");
-      // Backend does the real parse/insert; we call once and reflect
-      // stage-by-stage UI while awaiting the response.
-      setPhase("inserting");
-
-      const response = painAreaService.uploadCsv
-        ? await painAreaService.uploadCsv(formData, (evt) => {
-            if (evt.total) {
-              setProgress({ current: evt.loaded, total: evt.total });
-            }
-          })
-        : await painAreaService.create(formData);
+      // Backend parses + inserts in a single request; the progress callback
+      // drives the phase list (uploading -> inserting) as bytes are sent.
+      const response = await painAreaService.uploadCsv(formData, (evt) => {
+        if (evt.total) {
+          setProgress({ current: evt.loaded, total: evt.total });
+          if (evt.progress >= 1) setPhase("inserting");
+        }
+      }, abortRef.current.signal);
 
       if (cancelRef.current) return;
 
-      setSummary({
-        inserted: response?.data?.inserted ?? response?.inserted ?? 0,
-        skipped: response?.data?.skipped ?? response?.skipped ?? 0,
-        warnings: response?.data?.warnings ?? response?.warnings ?? [],
-      });
       setPhase("success");
       setStep(4);
       onComplete?.(response);
@@ -142,6 +135,7 @@ export default function CsvUploadFlow({ isOpen, onClose, onComplete }) {
 
   const handleCancel = () => {
     cancelRef.current = true;
+    abortRef.current?.abort();
     setPhase("idle");
     setStep(2);
   };
@@ -225,12 +219,6 @@ export default function CsvUploadFlow({ isOpen, onClose, onComplete }) {
             <div className="csv-flow-done">
               <span className="material-symbols-outlined csv-flow-done-icon">check_circle</span>
               <h2>Import Complete</h2>
-              {summary && (
-                <p className="csv-flow-subtext">
-                  {summary.inserted} record{summary.inserted === 1 ? "" : "s"} imported
-                  {summary.skipped ? `, ${summary.skipped} skipped` : ""}.
-                </p>
-              )}
               <div className="csv-flow-footer">
                 <button type="button" className="csv-flow-primary-btn" onClick={resetAndClose}>
                   Done

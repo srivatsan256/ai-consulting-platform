@@ -41,6 +41,7 @@ export default function AIInterventionPainAreasTrackerRecord() {
   const [filterPriority, setFilterPriority] = useState("All");
   const [filterDepartment, setFilterDepartment] = useState("All");
   const [isUploadFlowOpen, setUploadFlowOpen] = useState(false);
+  const [lastImport, setLastImport] = useState(null);
 
   const fetchRecords = async () => {
     setLoading(true);
@@ -203,8 +204,9 @@ export default function AIInterventionPainAreasTrackerRecord() {
               className="pain-secondary-btn"
               style={{
                 display: "inline-flex",
-                alignItems: "center",
-                gap: "6px",
+                flexDirection: "column",
+                alignItems: "flex-start",
+                gap: "2px",
                 padding: "8px 14px",
                 border: "1px solid #CBD5E1",
                 borderRadius: "6px",
@@ -212,10 +214,28 @@ export default function AIInterventionPainAreasTrackerRecord() {
                 color: "#334155",
                 fontWeight: 500,
                 cursor: "pointer",
+                lineHeight: 1.25,
               }}
             >
-              <span className="material-symbols-outlined text-[18px]">upload_file</span>
-              Upload Using CSV
+              <span
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "6px",
+                }}
+              >
+                <span className="material-symbols-outlined text-[18px]">upload_file</span>
+                Upload Using CSV
+              </span>
+              {lastImport && (
+                <span className="pain-import-summary">
+                  {lastImport.inserted} imported
+                  {lastImport.skipped ? ` · ${lastImport.skipped} skipped` : ""}
+                  {lastImport.warnings?.length
+                    ? ` · ${lastImport.warnings.length} warning${lastImport.warnings.length === 1 ? "" : "s"}`
+                    : ""}
+                </span>
+              )}
             </button>
             <button
               onClick={() => navigate("/ai-pain-areas/new")}
@@ -232,7 +252,15 @@ export default function AIInterventionPainAreasTrackerRecord() {
       <CsvUploadFlow
         isOpen={isUploadFlowOpen}
         onClose={() => setUploadFlowOpen(false)}
-        onComplete={fetchRecords}
+        onComplete={(response) => {
+          fetchRecords();
+          const data = response?.data ?? response ?? {};
+          setLastImport({
+            inserted: data.inserted ?? 0,
+            skipped: data.skipped ?? 0,
+            warnings: data.warnings ?? [],
+          });
+        }}
       />
 
       {/* Filters */}

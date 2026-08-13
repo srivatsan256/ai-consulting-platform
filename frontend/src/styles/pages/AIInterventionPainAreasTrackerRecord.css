@@ -23,6 +23,10 @@
   @apply text-[18px];
 }
 
+.pain-import-summary {
+  @apply text-[11px] font-medium text-on-surface-variant;
+}
+
 /* ---------- Shadows & Utilities ---------- */
 .soft-shadow {
   @apply shadow-sm hover:shadow transition-shadow;
