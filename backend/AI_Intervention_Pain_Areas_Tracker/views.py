@@ -1,5 +1,7 @@
 import csv
+import datetime
 import io
+import re
 import uuid
 
 from django.db import connection, transaction
@@ -12,25 +14,6 @@ from django_filters.rest_framework import DjangoFilterBackend # type: ignore
 
 from .models import AIInterventionPainArea
 from .serializers import AIInterventionPainAreaSerializer
-
-WRITABLE_FIELDS = {
-    "date",
-    "department",
-    "process_activity",
-    "pain_area",
-    "current_method",
-    "frequency",
-    "time_spent_hrs",
-    "impact_area",
-    "ai_intervention",
-    "expected_benefit",
-    "priority",
-    "feasibility",
-    "owner",
-    "target_date",
-    "status",
-    "remarks",
-}
 
 STAGING_TABLE = "ai_pain_area_csv_staging"
 STAGING_FUNCTION = "process_pain_area_csv_import"
@@ -56,17 +39,137 @@ STAGING_COLUMNS = [
 MAX_UPLOAD_SIZE = 10 * 1024 * 1024  # 10 MB
 MAX_IMPORT_ROWS = 5000
 
+DATE_FIELDS = {"date", "target_date"}
+CHOICE_FIELDS = {"priority", "feasibility", "status"}
 
-def _normalize_row(row):
+CHOICES = {
+    "priority": ["High", "Medium", "Low"],
+    "feasibility": ["High", "Medium", "Low"],
+    "status": ["Open", "In Progress", "Completed", "On Hold", "Cancelled"],
+}
+
+# Header names are slugified (lowercased, non-alphanumerics dropped) and
+# matched against these aliases so real-world CSVs (Excel exports, spaced or
+# title-cased headers) import cleanly.
+HEADER_ALIASES = {
+    "date": "date",
+    "targetdate": "target_date",
+    "target_date": "target_date",
+    "department": "department",
+    "processactivity": "process_activity",
+    "process_activity": "process_activity",
+    "painarea": "pain_area",
+    "pain_area": "pain_area",
+    "currentmethod": "current_method",
+    "current_method": "current_method",
+    "frequency": "frequency",
+    "timespent": "time_spent_hrs",
+    "timespenthrs": "time_spent_hrs",
+    "time_spent": "time_spent_hrs",
+    "time_spent_hrs": "time_spent_hrs",
+    "hrs": "time_spent_hrs",
+    "hours": "time_spent_hrs",
+    "impactarea": "impact_area",
+    "impact_area": "impact_area",
+    "aiintervention": "ai_intervention",
+    "ai_intervention": "ai_intervention",
+    "expectedbenefit": "expected_benefit",
+    "expected_benefit": "expected_benefit",
+    "priority": "priority",
+    "feasibility": "feasibility",
+    "owner": "owner",
+    "status": "status",
+    "remarks": "remarks",
+    "notes": "remarks",
+}
+
+EXCEL_EPOCH = datetime.date(1899, 12, 30)
+
+DATE_FORMATS = (
+    "%d/%m/%Y",
+    "%d-%m-%Y",
+    "%d.%m.%Y",
+    "%Y/%m/%d",
+    "%Y-%m-%d",
+    "%m/%d/%Y",
+    "%d %b %Y",
+    "%d-%b-%Y",
+    "%b %d, %Y",
+)
+
+
+def _slugify_header(name):
+    return re.sub(r"[^a-z0-9]+", "", (name or "").lower().strip())
+
+
+def _build_header_map(fieldnames):
+    mapping = {}
+    for header in fieldnames or []:
+        field = HEADER_ALIASES.get(_slugify_header(header))
+        if field:
+            mapping[header] = field
+    return mapping
+
+
+def _detect_delimiter(raw):
+    first_line = raw.splitlines()[0] if raw.splitlines() else ""
+    counts = {
+        ",": first_line.count(","),
+        ";": first_line.count(";"),
+        "\t": first_line.count("\t"),
+        "|": first_line.count("|"),
+    }
+    best = max(counts, key=counts.get)
+    return best if counts[best] > 0 else ","
+
+
+def _parse_flexible_date(value):
+    s = str(value).strip()
+    if not s:
+        return None
+    # Excel serial date numbers (days since 1899-12-30), e.g. 45800.
+    if re.fullmatch(r"\d{4,6}", s):
+        try:
+            return EXCEL_EPOCH + datetime.timedelta(days=int(s))
+        except (OverflowError, ValueError):
+            return None
+    for fmt in DATE_FORMATS:
+        try:
+            return datetime.datetime.strptime(s, fmt).date()
+        except ValueError:
+            continue
+    return None
+
+
+def _normalize_choice(field, value):
+    v = str(value).strip()
+    for canonical in CHOICES[field]:
+        if v.lower() == canonical.lower():
+            return canonical
+    return v  # let the serializer report the invalid choice
+
+
+def _normalize_row(row, header_map):
     data = {}
-    for field, value in row.items():
-        key = (field or "").strip()
-        if not key or key not in WRITABLE_FIELDS:
+    for raw_header, value in row.items():
+        field = header_map.get(raw_header)
+        if not field:
             continue
         val = value.strip() if isinstance(value, str) else value
         if val == "":
             continue
-        data[key] = val
+        if field in DATE_FIELDS:
+            parsed = _parse_flexible_date(val)
+            if parsed is not None:
+                data[field] = parsed.isoformat()
+            else:
+                data[field] = val  # serializer reports a clear date error
+        elif field in CHOICE_FIELDS:
+            data[field] = _normalize_choice(field, val)
+        elif field == "time_spent_hrs":
+            data[field] = val.replace(",", "")
+        else:
+            data[field] = val
     return data
 
 
@@ -116,7 +219,9 @@ class AIInterventionPainAreaViewSet(viewsets.ModelViewSet):
                 {"detail": "CSV file must be UTF-8 encoded."},
                 status=status.HTTP_400_BAD_REQUEST,
             )
-        reader = csv.DictReader(io.StringIO(raw))
+        delimiter = _detect_delimiter(raw)
+        reader = csv.DictReader(io.StringIO(raw), delimiter=delimiter)
+        header_map = _build_header_map(reader.fieldnames)
 
         skipped = 0
         warnings = []
@@ -126,7 +231,7 @@ class AIInterventionPainAreaViewSet(viewsets.ModelViewSet):
         for index, row in enumerate(reader, start=1):
             if row is None:
                 continue
-            data = _normalize_row(row)
+            data = _normalize_row(row, header_map)
             if not data:
                 continue
             data_rows += 1
