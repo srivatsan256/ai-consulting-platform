@@ -323,6 +323,7 @@ function DashboardWrapper() {
       onOpenProject={(id) => navigate(`/projects/${id}`)}
       onNewProject={() => navigate("/projects")}
       onViewAllProjects={() => navigate("/projects")}
+      onOpenPainAreas={() => navigate("/ai-pain-areas")}
     />
   );
 }

@@ -47,7 +47,7 @@ function QuotaBar({ label, used, limit }) {
   );
 }
 
-export default function DashboardPage({ user, onOpenProject, onNewProject, onViewAllProjects }) {
+export default function DashboardPage({ user, onOpenProject, onNewProject, onViewAllProjects, onOpenPainAreas }) {
   const { plan } = useAuth();
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -117,13 +117,23 @@ export default function DashboardPage({ user, onOpenProject, onNewProject, onVie
               : "Live portfolio overview from backend projects and verification status."}
           </p>
         </div>
-        <button
-          onClick={onNewProject}
-          className="dash-new-btn"
-        >
-          <span className="material-symbols-outlined text-[18px]">add</span>
-          New Project
-        </button>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={onOpenPainAreas}
+            className="dash-pain-areas-btn"
+            title="Open AI Intervention Pain Areas Tracker"
+          >
+            <span className="material-symbols-outlined text-[18px]">healing</span>
+            Pain Areas Tracker
+          </button>
+          <button
+            onClick={onNewProject}
+            className="dash-new-btn"
+          >
+            <span className="material-symbols-outlined text-[18px]">add</span>
+            New Project
+          </button>
+        </div>
       </div>
 
       <div className="dash-stats-grid">
