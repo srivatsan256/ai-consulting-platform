@@ -373,3 +373,120 @@ class AIInterventionPainAreaViewSet(viewsets.ModelViewSet):
                 inserted, skipped, fn_warnings = cursor.fetchone()
 
         return inserted, skipped, list(fn_warnings or [])
+
+
+def classify_phase(quadrant, total_score):
+    """
+    Classify an opportunity into a roadmap phase based on Quadrant and Total Score.
+
+    Total Score (impact + feasibility + priority) ranges from 3 to 9.
+    Classification rules (normalized to the existing 3-9 scale):
+    - Phase 1 "Quick Wins": Quadrant = Quick Win AND Total Score >= 7
+    - Phase 2 "Major Projects": Quadrant = Major Project
+    - Phase 3 "Strategic Initiatives": Total Score between 4 and 6
+    - Phase 4 "Future Consideration": Quadrant = Reconsider (maps to Revisit)
+    """
+    # Phase 1: Quick Wins - Quick Win quadrant AND high total score
+    if quadrant == "Quick Win" and total_score >= 7:
+        return 1
+    # Phase 2: Major Projects - Quadrant = Major Project
+    # Note: "Major Project" quadrant may need to be set on records via API/admin
+    if quadrant == "Major Project":
+        return 2
+    # Phase 3: Strategic Initiatives - Total Score between 4 and 6
+    if 4 <= total_score <= 6:
+        return 3
+    # Phase 4: Future Consideration - Reconsider quadrant maps to Revisit
+    if quadrant in ("Revisit", "Reconsider"):
+        return 4
+    return None
+
+
+class RoadmapViewSet(viewsets.ViewSet):
+    """
+    API endpoint that returns opportunities grouped by roadmap phase,
+    plus summary statistics.
+    """
+    permission_classes = [IsAuthenticated]
+    authentication_classes = []  # Will use default from setting
+
+    def list(self, request):
+        from .models import AIInterventionPainArea
+        from .serializers import AIInterventionPainAreaSerializer
+
+        # Fetch all records
+        records = AIInterventionPainArea.objects.all()
+        serializer = AIInterventionPainAreaSerializer(records, many=True)
+        data = serializer.data
+
+        # Classify each record into a phase
+        phases = {1: [], 2: [], 3: [], 4: []}
+        phase_counts = {1: 0, 2: 0, 3: 0, 4: 0}
+        total_hours_saved = 0
+
+        for record in data:
+            quadrant = record.get("quadrant", "")
+            total_score = record.get("total_score", 0) or 0
+            hours_saved = record.get("time_spent_hrs") or 0
+
+            total_hours_saved += hours_saved or 0
+
+            phase = classify_phase(quadrant, total_score)
+            if phase is not None:
+                phases[phase].append(record)
+                phase_counts[phase] += 1
+
+        # Build summary
+        summary = {
+            "total_projects": sum(phase_counts.values()),
+            "phase_counts": phase_counts,
+            "estimated_total_hours_saved": round(total_hours_saved, 2),
+        }
+
+        # Build response
+        response_data = {
+            "phases": {
+                1: {
+                    "name": "Quick Wins",
+                    "description": "Quadrant = Quick Win AND Total Score >= 7",
+                    "projects": phases[1],
+                    "count": phase_counts[1],
+                },
+                2: {
+                    "name": "Major Projects",
+                    "description": "Quadrant = Major Project",
+                    "projects": phases[2],
+                    "count": phase_counts[2],
+                },
+                3: {
+                    "name": "Strategic Initiatives",
+                    "description": "Total Score between 4 and 6",
+                    "projects": phases[3],
+                    "count": phase_counts[3],
+                },
+                4: {
+                    "name": "Future Consideration",
+                    "description": "Quadrant = Reconsider (maps to Revisit)",
+                    "projects": phases[4],
+                    "count": phase_counts[4],
+                },
+            },
+            "summary": summary,
+        }
+
+        return Response(response_data)
+
+
+class AssistantView(viewsets.ViewSet):
+    """
+    Rule-based AI assistant that answers natural-language questions about the
+    AI pain area portfolio by converting them into filtered queries. No LLM.
+    """
+    permission_classes = [IsAuthenticated]
+
+    def create(self, request):
+        from .assistant import answer as assistant_answer
+
+        question = request.data.get("question", "")
+        result = assistant_answer(question)
+        return Response(result, status=status.HTTP_200_OK)

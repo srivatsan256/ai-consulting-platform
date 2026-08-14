@@ -618,3 +618,25 @@
 .pain-report-btn.xlsx {
   @apply bg-emerald-50 text-emerald-700 hover:bg-emerald-100;
 }
+
+/* Workspace section tabs (Phases 6-10) */
+.pain-workspace-tabs {
+  @apply flex items-center gap-1 flex-wrap p-1.5 bg-white rounded-xl mb-4;
+}
+.pain-workspace-tab {
+  @apply inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold text-slate-600 bg-transparent cursor-pointer transition-colors;
+}
+.pain-workspace-tab:hover {
+  @apply bg-slate-100 text-slate-800;
+}
+.pain-workspace-tab-active {
+  @apply bg-primary text-white;
+}
+
+/* Roadmap view */
+.roadmap-timeline {
+  @apply grid grid-cols-1 md:grid-cols-2 gap-4 mt-2;
+}
+.roadmap-view {
+  @apply flex flex-col gap-4;
+}

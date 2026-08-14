@@ -22,6 +22,7 @@ import {
 import TopHeader from "../components/TopHeader";
 import CsvUploadFlow from "../components/CsvUploadFlow/CsvUploadFlow";
 import { painAreaService, getApiError } from "../services/api";
+import RoadmapView from "./phases/RoadmapView";
 import "../styles/pages/AIInterventionPainAreasTrackerRecord.css";
 
 const PRIORITY_OPTIONS = ["High", "Medium", "Low"];
@@ -139,6 +140,18 @@ export default function AIInterventionPainAreasTrackerRecord() {
   // Executive reports (Phase 5)
   const [reportData, setReportData] = useState(null);
   const [exportingReport, setExportingReport] = useState(null);
+
+  // Workspace sections (Phases 6-10)
+  const SECTIONS = [
+    { id: "tracker", label: "Tracker", icon: "table_chart" },
+    { id: "roadmap", label: "Roadmap", icon: "route" },
+    { id: "assistant", label: "AI Assistant", icon: "smart_toy" },
+    { id: "departments", label: "Departments", icon: "account_balance" },
+    { id: "executive", label: "Executive", icon: "monitoring" },
+    { id: "workspace", label: "Workspace", icon: "folder_open" },
+  ];
+  const [activeSection, setActiveSection] = useState("tracker");
+  const [selectedWorkspaceRecord, setSelectedWorkspaceRecord] = useState(null);
 
   const fetchRecords = async () => {
     setLoading(true);
@@ -706,8 +719,22 @@ export default function AIInterventionPainAreasTrackerRecord() {
           </div>
         }
       />
+{/* Workspace section tabs (Phases 6-10) */}
+      <div className="pain-workspace-tabs soft-shadow">
+        {SECTIONS.map((section) => (
+          <button
+            key={section.id}
+            onClick={() => setActiveSection(section.id)}
+            className={`pain-workspace-tab ${activeSection === section.id ? "pain-workspace-tab-active" : ""}`}
+          >
+            <span className="material-symbols-outlined text-[18px]">{section.icon}</span>
+            {section.label}
+          </button>
+        ))}
+      </div>
 
-      {/* CSV Upload Wizard Modal */}
+      {activeSection === "tracker" && (
+        <>
       <CsvUploadFlow
         isOpen={isUploadFlowOpen}
         onClose={() => setUploadFlowOpen(false)}
@@ -1776,6 +1803,38 @@ export default function AIInterventionPainAreasTrackerRecord() {
               </button>
             </div>
           </div>
+        </div>
+      )}
+        </>
+      )}
+
+      {activeSection === "roadmap" && <RoadmapView records={records} />}
+
+      {activeSection === "assistant" && (
+        <div className="pain-panel soft-shadow">
+          <h3 className="pain-h3">AI Assistant</h3>
+          <span className="pain-subtitle-sm">Phase 7</span>
+        </div>
+      )}
+
+      {activeSection === "departments" && (
+        <div className="pain-panel soft-shadow">
+          <h3 className="pain-h3">Departments</h3>
+          <span className="pain-subtitle-sm">Phase 8</span>
+        </div>
+      )}
+
+      {activeSection === "executive" && (
+        <div className="pain-panel soft-shadow">
+          <h3 className="pain-h3">Executive Dashboard</h3>
+          <span className="pain-subtitle-sm">Phase 9</span>
+        </div>
+      )}
+
+      {activeSection === "workspace" && (
+        <div className="pain-panel soft-shadow">
+          <h3 className="pain-h3">Consulting Workspace</h3>
+          <span className="pain-subtitle-sm">Phase 10</span>
         </div>
       )}
     </div>

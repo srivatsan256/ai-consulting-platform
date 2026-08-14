@@ -1,7 +1,16 @@
 import React, { useState, useEffect, useRef } from "react";
-import { projectService, chatService, getApiError } from "../services/api";
+import { projectService, chatService, painAreaService, getApiError } from "../services/api";
 import { useAuth } from "../context/AuthContext";
 import "../styles/pages/AIChatPage.css";
+
+const PORTFOLIO_SUGGESTIONS = [
+  "Show quick wins",
+  "Top 5 opportunities",
+  "Highest manual effort department",
+  "Open opportunities",
+  "High priority opportunities",
+  "Show roadmap",
+];
 
 export default function AIChatPopup() {
   const { plan } = useAuth();
@@ -10,6 +19,7 @@ export default function AIChatPopup() {
   const [isOpen, setIsOpen] = useState(false);
   const [projects, setProjects] = useState([]);
   const [selectedId, setSelectedId] = useState("");
+  const [assistantMode, setAssistantMode] = useState("portfolio");
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
@@ -35,23 +45,50 @@ export default function AIChatPopup() {
   };
 
   const handleSend = async () => {
-    if (!input.trim() || !selectedId) return;
+    if (!input.trim()) return;
+    if (assistantMode === "documents" && !selectedId) return;
     const q = input.trim();
     setInput("");
     setMessages((prev) => [...prev, { role: "user", content: q }]);
     setLoading(true);
     try {
-      const res = await chatService.ask(selectedId, q);
-      setMessages((prev) => [...prev, { role: "assistant", content: res.data.answer }]);
+      let answerMsg = "";
+      let payload = null;
+      if (assistantMode === "portfolio") {
+        if (/roadmap|road map/i.test(q)) {
+          const rm = await painAreaService.roadmap();
+          const s = rm.data?.summary || {};
+          const pc = s.phase_counts || {};
+          answerMsg =
+            `Roadmap summary: ${s.total_projects || 0} total projects · ` +
+            `${pc[1] || 0} Quick Wins · ${pc[2] || 0} Major Projects · ` +
+            `${pc[3] || 0} Strategic · ${pc[4] || 0} Future · ` +
+            `${s.estimated_total_hours_saved || 0} hrs saved.`;
+        } else {
+          const res = await painAreaService.assistant(q);
+          answerMsg = res.data?.message || "No answer.";
+          payload = res.data?.data ?? null;
+        }
+      } else {
+        const res = await chatService.ask(selectedId, q);
+        answerMsg = res.data.answer;
+      }
+      setMessages((prev) => [...prev, { role: "assistant", content: answerMsg, data: payload }]);
     } catch (err) {
       const detail = getApiError(
         err,
-        "Failed to get a response. Please ensure the backend is running and documents are uploaded."
+        "Failed to get a response. Please ensure the backend is running."
       );
-      setMessages((prev) => [...prev, { role: "assistant", content: detail }]);
+      setMessages((prev) => [...prev, { role: "assistant", content: detail, data: null }]);
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleModeChange = (mode) => {
+    setAssistantMode(mode);
+    setMessages([]);
+    setInput("");
   };
 
   const handleProjectChange = (id) => {
@@ -59,13 +96,15 @@ export default function AIChatPopup() {
     setMessages([]);
   };
 
-  const suggestedQuestions = [
+  const docQuestions = [
     "What are the main business requirements?",
     "Summarize the project objectives",
     "What risks are identified in the documents?",
     "List all stakeholders mentioned",
     "What is the expected timeline?",
   ];
+  const activeQuestions =
+    assistantMode === "portfolio" ? PORTFOLIO_SUGGESTIONS : docQuestions;
 
   return (
     <>
@@ -93,7 +132,11 @@ export default function AIChatPopup() {
                 </span>
                 <div>
                   <h3 className="aichat-popup-title">AI Assistant</h3>
-                  <p className="aichat-popup-subtitle">Chat with project knowledge</p>
+                  <p className="aichat-popup-subtitle">
+                    {assistantMode === "portfolio"
+                      ? "Chat with your AI opportunity portfolio"
+                      : "Chat with project knowledge"}
+                  </p>
                 </div>
               </div>
               <button
@@ -101,6 +144,24 @@ export default function AIChatPopup() {
                 className="aichat-close-btn"
               >
                 <span className="material-symbols-outlined">close</span>
+              </button>
+            </div>
+
+            {/* Mode toggle */}
+            <div className="aichat-mode-toggle">
+              <button
+                className={`aichat-mode-btn ${assistantMode === "portfolio" ? "aichat-mode-active" : ""}`}
+                onClick={() => handleModeChange("portfolio")}
+              >
+                <span className="material-symbols-outlined text-[16px]">route</span>
+                Portfolio
+              </button>
+              <button
+                className={`aichat-mode-btn ${assistantMode === "documents" ? "aichat-mode-active" : ""}`}
+                onClick={() => handleModeChange("documents")}
+              >
+                <span className="material-symbols-outlined text-[16px]">description</span>
+                Documents
               </button>
             </div>
 
@@ -120,21 +181,23 @@ export default function AIChatPopup() {
               </div>
             ) : (
               <>
-                {/* Project Selector */}
-                <div className="aichat-selector-card">
-                  <select
-                    value={selectedId}
-                    onChange={(e) => handleProjectChange(e.target.value)}
-                    className="aichat-select"
-                  >
-                    <option value="">Select a project to chat about</option>
-                    {projects.map((p) => (
-                      <option key={p.id} value={p.id}>
-                        {p.project_name} ({p.company_name})
-                      </option>
-                    ))}
-                  </select>
-                </div>
+                {/* Project Selector (documents mode only) */}
+                {assistantMode === "documents" && (
+                  <div className="aichat-selector-card">
+                    <select
+                      value={selectedId}
+                      onChange={(e) => handleProjectChange(e.target.value)}
+                      className="aichat-select"
+                    >
+                      <option value="">Select a project to chat about</option>
+                      {projects.map((p) => (
+                        <option key={p.id} value={p.id}>
+                          {p.project_name} ({p.company_name})
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                )}
 
                 {/* Messages Area */}
                 <div className="aichat-messages">
@@ -143,16 +206,23 @@ export default function AIChatPopup() {
                       <span className="material-symbols-outlined aichat-empty-icon">
                         smart_toy
                       </span>
-                      <h3 className="aichat-empty-title">AI Document Assistant</h3>
+                      <h3 className="aichat-empty-title">
+                        {assistantMode === "portfolio"
+                          ? "AI Portfolio Assistant"
+                          : "AI Document Assistant"}
+                      </h3>
                       <p className="aichat-empty-desc">
-                        {selectedId
+                        {assistantMode === "portfolio"
+                          ? "Ask about your AI opportunity portfolio — quick wins, priorities, departments and more"
+                          : selectedId
                           ? "Ask questions about this project's uploaded documents"
                           : "Select a project above to start chatting"}
                       </p>
 
-                      {selectedId && (
+                      {(assistantMode === "portfolio" ||
+                        (assistantMode === "documents" && selectedId)) && (
                         <div className="aichat-suggestions">
-                          {suggestedQuestions.map((q) => (
+                          {activeQuestions.map((q) => (
                             <button
                               key={q}
                               onClick={() => setInput(q)}
@@ -181,6 +251,33 @@ export default function AIChatPopup() {
                         }`}
                       >
                         {msg.content}
+                        {msg.role === "assistant" && Array.isArray(msg.data) && msg.data.length > 0 && (
+                          <div className="aichat-data-table">
+                            <table>
+                              <thead>
+                                <tr>
+                                  {Object.keys(msg.data[0]).map((k) => (
+                                    <th key={k}>{k.replace(/_/g, " ")}</th>
+                                  ))}
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {msg.data.slice(0, 20).map((row, ri) => (
+                                  <tr key={ri}>
+                                    {Object.keys(msg.data[0]).map((k) => (
+                                      <td key={k}>{row[k] ?? "—"}</td>
+                                    ))}
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                            {msg.data.length > 20 && (
+                              <div className="aichat-data-hint">
+                                Showing first 20 of {msg.data.length} results.
+                              </div>
+                            )}
+                          </div>
+                        )}
                       </div>
                     </div>
                   ))}
@@ -217,17 +314,25 @@ export default function AIChatPopup() {
                       onChange={(e) => setInput(e.target.value)}
                       onKeyDown={(e) => e.key === "Enter" && handleSend()}
                       placeholder={
-                        selectedId
+                        assistantMode === "portfolio"
+                          ? "Ask about your AI opportunities..."
+                          : selectedId
                           ? "Ask a question about the project documents..."
                           : "Select a project first"
                       }
-                      disabled={!selectedId || !aiEnabled}
+                      disabled={
+                        !aiEnabled ||
+                        (assistantMode === "documents" && !selectedId)
+                      }
                       className="aichat-input"
                     />
                     <button
                       onClick={handleSend}
                       disabled={
-                        !input.trim() || !selectedId || loading || !aiEnabled
+                        loading ||
+                        !input.trim() ||
+                        !aiEnabled ||
+                        (assistantMode === "documents" && !selectedId)
                       }
                       className="aichat-send-btn"
                     >

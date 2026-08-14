@@ -189,6 +189,9 @@ export const painAreaService = {
       params: { file_format: fileFormat },
       responseType: "blob",
     }),
+  roadmap: () => api.get("/ai-intervention-pain-areas/roadmap/"),
+  assistant: (question) =>
+    api.post("/ai-intervention-pain-areas/ai-assistant/", { question }),
 };
 
 export const subscriptionService = {
