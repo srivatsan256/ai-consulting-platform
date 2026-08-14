@@ -442,3 +442,179 @@
 .pain-score-badge-lg {
   @apply w-9 h-9 text-[13px];
 }
+
+/* ---------- AI Recommendations (Modules 4.1 - 4.3) ---------- */
+.pain-rec-note {
+  @apply inline-flex items-center gap-1.5 text-[11px] font-medium text-on-surface-variant;
+}
+
+.pain-rec-grid {
+  @apply grid grid-cols-1 gap-6;
+}
+
+@media (min-width: 1280px) {
+  .pain-rec-grid {
+    @apply grid-cols-[minmax(0,2fr)_minmax(0,3fr)];
+  }
+}
+
+.pain-rec-h4 {
+  @apply text-xs font-bold uppercase tracking-wide text-on-surface-variant mb-3 m-0;
+}
+
+/* Solution distribution bars */
+.pain-rec-dist {
+  @apply flex flex-col gap-3;
+}
+
+.pain-rec-dist-row {
+  @apply flex items-center gap-3;
+}
+
+.pain-rec-dist-label {
+  @apply flex items-center gap-2 text-[13px] font-medium text-on-surface w-[46%] whitespace-nowrap overflow-hidden text-ellipsis;
+}
+
+.pain-rec-dist-icon {
+  @apply text-[18px];
+}
+
+.pain-rec-dist-count {
+  @apply text-xs font-bold text-on-surface-variant min-w-5 text-right;
+}
+
+/* Confidence bars */
+.pain-conf-bar {
+  @apply flex-1 h-2 rounded-full bg-surface-container-low overflow-hidden;
+}
+
+.pain-conf-bar-sm {
+  @apply h-1.5 w-24 min-w-20;
+}
+
+.pain-conf-fill {
+  @apply h-full rounded-full transition-all;
+}
+
+/* Recommendation cards */
+.pain-rec-list {
+  @apply flex flex-col gap-3 max-h-[560px] overflow-y-auto pr-1;
+}
+
+.pain-rec-card {
+  @apply bg-surface-container-low/50 border border-outline-variant/20 rounded-xl p-3.5 cursor-pointer transition-all hover:border-primary/40 hover:bg-white hover:shadow-md;
+}
+
+.pain-rec-card-head {
+  @apply flex items-start justify-between gap-3;
+}
+
+.pain-rec-card-title {
+  @apply flex flex-col gap-1.5 min-w-0;
+}
+
+.pain-rec-solution {
+  @apply inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white border text-[11px] font-bold text-on-surface self-start;
+}
+
+.pain-rec-solution-icon {
+  @apply text-[16px];
+}
+
+.pain-rec-process {
+  @apply text-sm font-bold text-on-surface truncate;
+}
+
+.pain-rec-dept {
+  @apply text-on-surface-variant font-medium;
+}
+
+.pain-rec-conf {
+  @apply flex flex-col items-end gap-1 shrink-0;
+}
+
+.pain-rec-conf-pct {
+  @apply text-sm font-bold;
+}
+
+.pain-rec-reason {
+  @apply text-[12.5px] leading-5 text-on-surface-variant m-0 mt-2 line-clamp-3;
+}
+
+.pain-rec-card-foot {
+  @apply flex items-center gap-2 mt-2.5;
+}
+
+.pain-rec-card-foot .pain-subtitle-sm {
+  @apply ml-auto;
+}
+
+/* Detail panel recommendation */
+.pain-rec-detail {
+  @apply bg-surface-container-low/60 border border-outline-variant/20 rounded-xl p-4 mb-5;
+}
+
+.pain-rec-detail-head {
+  @apply flex items-center justify-between gap-3 flex-wrap;
+}
+
+.pain-rec-detail-conf {
+  @apply flex flex-col items-end gap-1.5 w-44;
+}
+
+.pain-rec-detail-reason {
+  @apply text-[13px] leading-5 text-on-surface m-0 mt-2.5;
+}
+
+/* ---------- Executive Reports (Phase 5) ---------- */
+.pain-report-grid {
+  @apply grid grid-cols-1 gap-4;
+}
+
+@media (min-width: 640px) {
+  .pain-report-grid {
+    @apply grid-cols-2;
+  }
+}
+
+@media (min-width: 1280px) {
+  .pain-report-grid {
+    @apply grid-cols-3;
+  }
+}
+
+.pain-report-card {
+  @apply bg-white rounded-xl border border-outline-variant/20 p-5 flex flex-col gap-2 transition-all hover:-translate-y-0.5 hover:shadow-md;
+}
+
+.pain-report-icon {
+  @apply w-10 h-10 rounded-xl bg-teal-50 text-teal-700 flex items-center justify-center;
+}
+
+.pain-report-icon .material-symbols-outlined {
+  @apply text-[22px];
+}
+
+.pain-report-title {
+  @apply text-sm font-bold text-on-surface m-0;
+}
+
+.pain-report-desc {
+  @apply text-xs text-on-surface-variant m-0 leading-5;
+}
+
+.pain-report-actions {
+  @apply flex items-center gap-2 mt-auto pt-2;
+}
+
+.pain-report-btn {
+  @apply inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-bold transition-colors disabled:opacity-40 disabled:cursor-not-allowed;
+}
+
+.pain-report-btn.pdf {
+  @apply bg-rose-50 text-rose-700 hover:bg-rose-100;
+}
+
+.pain-report-btn.xlsx {
+  @apply bg-emerald-50 text-emerald-700 hover:bg-emerald-100;
+}

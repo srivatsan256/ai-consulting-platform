@@ -183,6 +183,12 @@ export const painAreaService = {
       onUploadProgress,
       signal,
     }),
+  reports: () => api.get("/ai-intervention-pain-areas/reports/"),
+  exportReport: (reportType, fileFormat) =>
+    api.get(`/ai-intervention-pain-areas/reports/${reportType}/export/`, {
+      params: { file_format: fileFormat },
+      responseType: "blob",
+    }),
 };
 
 export const subscriptionService = {

@@ -326,3 +326,152 @@ class PainAreaCSVUploadTests(TestCase):
                 [record_id],
             )
             return cursor.fetchone()
+
+
+class PainAreaRecommendationTests(TestCase):
+    """Module 4.1-4.3: recommendation engine, confidence and reasoning."""
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        with connection.cursor() as cursor:
+            cursor.execute(TEST_TABLE_SQL)
+
+    def setUp(self):
+        self.client = APIClient()
+        self.user = self._make_user()
+        self.client.force_authenticate(user=self.user)
+
+    def _make_user(self):
+        from django.contrib.auth import get_user_model
+
+        User = get_user_model()
+        return User.objects.create_user(
+            email="rec.tester@example.com",
+            username="rectester",
+            password="testpass123",
+        )
+
+    def _create(self, **kwargs):
+        defaults = {
+            "date": "2026-08-01",
+            "process_activity": "Invoice processing",
+            "pain_area": "Staff manually type invoice data into the ERP",
+            "current_method": "Manual data entry and copying",
+            "time_spent_hrs": 60,
+            "priority": "High",
+            "feasibility": "High",
+        }
+        defaults.update(kwargs)
+        return AIInterventionPainArea.objects.create(**defaults)
+
+    def test_api_exposes_recommendation_fields(self):
+        record = self._create()
+        response = self.client.get(
+            reverse("pain-area-detail", args=[record.id]), format="json"
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        data = response.data
+        self.assertEqual(data["ai_recommendation"], "Workflow Automation")
+        self.assertEqual(data["ai_recommendation_key"], "workflow_automation")
+        self.assertGreaterEqual(data["ai_confidence"], 55)
+        self.assertLessEqual(data["ai_confidence"], 98)
+        self.assertIn("hours per month", data["ai_reasoning"])
+        self.assertIn("Workflow Automation", data["ai_reasoning"])
+
+    def test_recommendation_examples(self):
+        cases = [
+            (
+                {
+                    "process_activity": "Customer support",
+                    "pain_area": "Agents answer repetitive customer queries via chat",
+                    "current_method": "Manual chat and email replies",
+                    "ai_intervention": "Chatbot",
+                    "time_spent_hrs": 40,
+                },
+                "Conversational AI",
+            ),
+            (
+                {
+                    "process_activity": "Report generation",
+                    "pain_area": "Analysts hand-write monthly reports",
+                    "current_method": "Writing reports in Word",
+                    "ai_intervention": "Generate reports",
+                    "time_spent_hrs": 45,
+                },
+                "Generative AI Assistant",
+            ),
+            (
+                {
+                    "process_activity": "Employee onboarding",
+                    "pain_area": "New hires ask the same questions repeatedly",
+                    "current_method": "Manual answers from scattered documents",
+                    "ai_intervention": "Knowledge base",
+                    "time_spent_hrs": 50,
+                },
+                "AI Knowledge Base",
+            ),
+            (
+                {
+                    "process_activity": "Compliance review",
+                    "pain_area": "Team manually reviews contracts and PDFs",
+                    "current_method": "Reading scanned documents",
+                    "ai_intervention": "Extract from documents",
+                    "time_spent_hrs": 50,
+                },
+                "Document Intelligence",
+            ),
+        ]
+        for fields, expected in cases:
+            record = self._create(**fields)
+            response = self.client.get(
+                reverse("pain-area-detail", args=[record.id]), format="json"
+            )
+            self.assertEqual(response.data["ai_recommendation"], expected)
+
+    def test_reports_endpoint_lists_types(self):
+        self._create()
+        response = self.client.get(reverse("pain-area-reports"), format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        keys = {r["key"] for r in response.data["report_types"]}
+        self.assertEqual(
+            keys,
+            {
+                "opportunity-assessment",
+                "department-summary",
+                "executive-summary",
+                "adoption-roadmap",
+                "opportunity-register",
+            },
+        )
+        self.assertGreaterEqual(response.data["data"]["report_count"], 1)
+
+    def test_export_pdf(self):
+        self._create()
+        url = reverse("pain-area-report-export", args=["executive-summary"])
+        response = self.client.get(url, {"file_format": "pdf"})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response["Content-Type"], "application/pdf")
+        self.assertTrue(response.content.startswith(b"%PDF"))
+        self.assertIn("filename", response["Content-Disposition"])
+
+    def test_export_xlsx(self):
+        self._create()
+        url = reverse("pain-area-report-export", args=["opportunity-register"])
+        response = self.client.get(url, {"file_format": "xlsx"})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn(
+            "spreadsheetml",
+            response["Content-Type"],
+        )
+        self.assertTrue(response.content[:2] == b"PK")
+
+    def test_export_unknown_report_404(self):
+        url = reverse("pain-area-report-export", args=["does-not-exist"])
+        response = self.client.get(url, {"file_format": "pdf"})
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_export_invalid_format_400(self):
+        url = reverse("pain-area-report-export", args=["executive-summary"])
+        response = self.client.get(url, {"file_format": "docx"})
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)

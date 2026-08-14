@@ -6,6 +6,7 @@ import uuid
 
 from django.db import connection, transaction
 from django.db.utils import OperationalError, ProgrammingError
+from django.http import HttpResponse
 from rest_framework import viewsets, filters, status
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
@@ -14,6 +15,7 @@ from django_filters.rest_framework import DjangoFilterBackend # type: ignore
 
 from .models import AIInterventionPainArea
 from .serializers import AIInterventionPainAreaSerializer
+from .report_generation import REPORT_TYPES, build_report_data, export_report
 
 STAGING_TABLE = "ai_pain_area_csv_staging"
 STAGING_FUNCTION = "process_pain_area_csv_import"
@@ -198,6 +200,49 @@ class AIInterventionPainAreaViewSet(viewsets.ModelViewSet):
     search_fields = ["process_activity", "pain_area", "ai_intervention", "owner", "department", "remarks"]
     ordering_fields = ["date", "created_at", "updated_at", "priority", "status"]
     ordering = ["-date", "-created_at"]
+
+    @action(detail=False, methods=["get"], url_path="reports", url_name="reports")
+    def reports(self, request):
+        """List available executive reports and their computed data."""
+        records = list(self.get_queryset())
+        data = build_report_data(records)
+        return Response(
+            {
+                "report_types": [
+                    {"key": key, **meta} for key, meta in REPORT_TYPES.items()
+                ],
+                "data": data,
+            }
+        )
+
+    @action(
+        detail=False,
+        methods=["get"],
+        url_path=r"reports/(?P<report_type>[^/.]+)/export",
+        url_name="report-export",
+    )
+    def export_report(self, request, report_type=None):
+        """Download a report as PDF or Excel.
+
+        GET /reports/<report_type>/export/?file_format=pdf|xlsx
+        """
+        if report_type not in REPORT_TYPES:
+            return Response(
+                {"detail": f"Unknown report type '{report_type}'."},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+        fmt = (request.query_params.get("file_format") or "pdf").lower()
+        if fmt not in ("pdf", "xlsx"):
+            return Response(
+                {"detail": "file_format must be 'pdf' or 'xlsx'."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        records = list(self.get_queryset())
+        mimetype, extension, payload = export_report(report_type, fmt, records)
+        filename = f"{report_type}-{datetime.date.today().isoformat()}.{extension}"
+        response = HttpResponse(payload, content_type=mimetype)
+        response["Content-Disposition"] = f'attachment; filename="{filename}"'
+        return response
 
     @action(detail=False, methods=["post"], url_path="upload-csv", url_name="upload-csv")
     def upload_csv(self, request):

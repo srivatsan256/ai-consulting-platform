@@ -52,6 +52,50 @@ const QUADRANT_COLORS = {
 
 const SCORE_DIST_COLORS = ["#059669", "#D97706", "#DC2626"];
 
+const SOLUTION_META = {
+  "Generative AI Assistant": { icon: "auto_awesome", color: "#8B5CF6", badge: "bg-violet-100 text-violet-700" },
+  "AI Knowledge Base": { icon: "database", color: "#0D9488", badge: "bg-teal-100 text-teal-700" },
+  "Workflow Automation": { icon: "sync_alt", color: "#2563EB", badge: "bg-blue-100 text-blue-700" },
+  "Predictive Analytics": { icon: "trending_up", color: "#EA580C", badge: "bg-orange-100 text-orange-700" },
+  "Intelligent Search": { icon: "search", color: "#0EA5E9", badge: "bg-sky-100 text-sky-700" },
+  "Document Intelligence": { icon: "description", color: "#16A34A", badge: "bg-green-100 text-green-700" },
+  "AI Decision Support": { icon: "psychology", color: "#4F46E5", badge: "bg-indigo-100 text-indigo-700" },
+  "Conversational AI": { icon: "forum", color: "#F43F5E", badge: "bg-rose-100 text-rose-700" },
+};
+
+const REPORT_TYPES_META = [
+  {
+    key: "opportunity-assessment",
+    title: "AI Opportunity Assessment Report",
+    icon: "insights",
+    description: "Full assessment of every AI opportunity with scoring, recommendations and confidence.",
+  },
+  {
+    key: "department-summary",
+    title: "Department Summary",
+    icon: "account_balance",
+    description: "Where AI effort is concentrated by department, hours and recommended solutions.",
+  },
+  {
+    key: "executive-summary",
+    title: "Executive Summary",
+    icon: "summarize",
+    description: "One-page leadership overview with headline KPIs and top opportunities.",
+  },
+  {
+    key: "adoption-roadmap",
+    title: "AI Adoption Roadmap",
+    icon: "route",
+    description: "A phased 0-3-6-12 month plan to turn opportunities into live AI initiatives.",
+  },
+  {
+    key: "opportunity-register",
+    title: "Opportunity Register",
+    icon: "table_view",
+    description: "The complete register of every tracked opportunity with recommendations.",
+  },
+];
+
 export default function AIInterventionPainAreasTrackerRecord() {
   const navigate = useNavigate();
   const [records, setRecords] = useState([]);
@@ -92,6 +136,10 @@ export default function AIInterventionPainAreasTrackerRecord() {
   const [isUploadFlowOpen, setUploadFlowOpen] = useState(false);
   const [lastImport, setLastImport] = useState(null);
 
+  // Executive reports (Phase 5)
+  const [reportData, setReportData] = useState(null);
+  const [exportingReport, setExportingReport] = useState(null);
+
   const fetchRecords = async () => {
     setLoading(true);
     try {
@@ -108,6 +156,14 @@ export default function AIInterventionPainAreasTrackerRecord() {
   useEffect(() => {
     fetchRecords();
   }, []);
+
+  useEffect(() => {
+    if (!records.length) return;
+    painAreaService
+      .reports()
+      .then((res) => setReportData(res.data?.data ?? res.data ?? null))
+      .catch(() => setReportData(null));
+  }, [records]);
 
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this record?")) return;
@@ -502,6 +558,64 @@ export default function AIInterventionPainAreasTrackerRecord() {
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
   };
+
+  const downloadBlob = (blob, filename) => {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  const handleExportReport = async (reportType, fileFormat) => {
+    const key = `${reportType}-${fileFormat}`;
+    setExportingReport(key);
+    try {
+      const res = await painAreaService.exportReport(reportType, fileFormat);
+      const contentType =
+        res.data.type ||
+        (fileFormat === "pdf"
+          ? "application/pdf"
+          : "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+      downloadBlob(
+        new Blob([res.data], { type: contentType }),
+        `${reportType}-${new Date().toISOString().slice(0, 10)}.${fileFormat}`
+      );
+    } catch (err) {
+      console.error("Report export error:", err);
+      alert(getApiError(err, "Failed to export report."));
+    } finally {
+      setExportingReport(null);
+    }
+  };
+
+  const getConfidenceColor = (confidence) => {
+    if (confidence >= 85) return "#16A34A";
+    if (confidence >= 70) return "#D97706";
+    return "#64748B";
+  };
+
+  const recommendationList = useMemo(() => {
+    return [...sortedRecords]
+      .filter((r) => r.ai_recommendation)
+      .sort((a, b) => (Number(b.ai_confidence) || 0) - (Number(a.ai_confidence) || 0))
+      .slice(0, 10);
+  }, [sortedRecords]);
+
+  const solutionDistData = useMemo(() => {
+    const counts = {};
+    sortedRecords.forEach((r) => {
+      if (r.ai_recommendation) {
+        counts[r.ai_recommendation] = (counts[r.ai_recommendation] || 0) + 1;
+      }
+    });
+    return Object.entries(counts)
+      .map(([name, value]) => ({ name, value }))
+      .sort((a, b) => b.value - a.value);
+  }, [sortedRecords]);
 
   const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
@@ -1135,6 +1249,114 @@ export default function AIInterventionPainAreasTrackerRecord() {
         )}
       </div>
 
+      {/* AI Recommendations (Modules 4.1 - 4.3) */}
+      <div className="pain-panel soft-shadow pain-rec-panel">
+        <div className="pain-table-header">
+          <div>
+            <h3 className="pain-h3">AI Recommendations & Confidence</h3>
+            <span className="pain-subtitle-sm">
+              Module 4 · The platform suggests the best AI solution for each opportunity, with confidence and reasoning
+            </span>
+          </div>
+          <span className="pain-rec-note">
+            <span className="material-symbols-outlined text-[16px]">auto_awesome</span>
+            Engine: pain area · current method · AI intervention · impact area · time · priority · feasibility
+          </span>
+        </div>
+
+        {recommendationList.length === 0 ? (
+          <div className="pain-chart-empty">No recommendations yet — add records to see AI suggestions.</div>
+        ) : (
+          <div className="pain-rec-grid">
+            {/* Left: solution distribution */}
+            <div className="pain-rec-dist">
+              <h4 className="pain-rec-h4">Recommended solutions</h4>
+              {solutionDistData.map(({ name, value }) => {
+                const meta = SOLUTION_META[name] || {};
+                const pct = sortedRecords.length
+                  ? Math.round((value / sortedRecords.length) * 100)
+                  : 0;
+                return (
+                  <div key={name} className="pain-rec-dist-row">
+                    <span className="pain-rec-dist-label" title={name}>
+                      <span
+                        className="material-symbols-outlined pain-rec-dist-icon"
+                        style={{ color: meta.color }}
+                      >
+                        {meta.icon || "smart_toy"}
+                      </span>
+                      {name}
+                    </span>
+                    <div className="pain-conf-bar">
+                      <div
+                        className="pain-conf-fill"
+                        style={{ width: `${pct}%`, background: meta.color }}
+                      />
+                    </div>
+                    <span className="pain-rec-dist-count">{value}</span>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Right: per-record recommendations */}
+            <div className="pain-rec-list">
+              <h4 className="pain-rec-h4">Top recommendations</h4>
+              {recommendationList.map((record) => {
+                const meta = SOLUTION_META[record.ai_recommendation] || {};
+                const conf = Number(record.ai_confidence) || 0;
+                return (
+                  <div
+                    key={record.id}
+                    className="pain-rec-card"
+                    onClick={() => setSelectedRecord(record)}
+                  >
+                    <div className="pain-rec-card-head">
+                      <div className="pain-rec-card-title">
+                        <span className="pain-rec-solution" style={{ borderColor: meta.color }}>
+                          <span
+                            className="material-symbols-outlined pain-rec-solution-icon"
+                            style={{ color: meta.color }}
+                          >
+                            {meta.icon || "smart_toy"}
+                          </span>
+                          {record.ai_recommendation}
+                        </span>
+                        <span className="pain-rec-process" title={record.process_activity}>
+                          {record.process_activity || "Untitled opportunity"}
+                          <span className="pain-rec-dept">
+                            {record.department ? ` · ${record.department}` : ""}
+                          </span>
+                        </span>
+                      </div>
+                      <div className="pain-rec-conf">
+                        <span className="pain-rec-conf-pct" style={{ color: getConfidenceColor(conf) }}>
+                          {conf}%
+                        </span>
+                        <div className="pain-conf-bar pain-conf-bar-sm">
+                          <div
+                            className="pain-conf-fill"
+                            style={{ width: `${conf}%`, background: getConfidenceColor(conf) }}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <p className="pain-rec-reason">{record.ai_reasoning}</p>
+                    <div className="pain-rec-card-foot">
+                      <span className={`pain-pill ${getQuadrantClass(record.quadrant)}`}>
+                        {record.quadrant || "—"}
+                      </span>
+                      <span className="pain-total-score">Score {getTotalScore(record)}</span>
+                      <span className="pain-subtitle-sm">Click to view details</span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+      </div>
+
       {/* Department Summary */}
       <div className="pain-panel soft-shadow">
         <div className="pain-table-header">
@@ -1173,6 +1395,59 @@ export default function AIInterventionPainAreasTrackerRecord() {
                 ))}
               </tbody>
             </table>
+          </div>
+        )}
+      </div>
+
+      {/* Executive Reports (Phase 5) */}
+      <div className="pain-panel soft-shadow">
+        <div className="pain-table-header">
+          <div>
+            <h3 className="pain-h3">Executive Reports</h3>
+            <span className="pain-subtitle-sm">
+              Phase 5 · Generate & export executive reports as PDF or Excel
+            </span>
+          </div>
+          {reportData && (
+            <span className="pain-filter-count">
+              {reportData.report_count} opportunities · {reportData.total_hours} hrs/month ·{" "}
+              {reportData.departments} departments
+            </span>
+          )}
+        </div>
+
+        <div className="pain-report-grid">
+          {REPORT_TYPES_META.map((report) => (
+            <div key={report.key} className="pain-report-card soft-shadow">
+              <div className="pain-report-icon">
+                <span className="material-symbols-outlined">{report.icon}</span>
+              </div>
+              <h4 className="pain-report-title">{report.title}</h4>
+              <p className="pain-report-desc">{report.description}</p>
+              <div className="pain-report-actions">
+                <button
+                  className="pain-report-btn pdf"
+                  disabled={!records.length || exportingReport === `${report.key}-pdf`}
+                  onClick={() => handleExportReport(report.key, "pdf")}
+                >
+                  <span className="material-symbols-outlined text-[16px]">picture_as_pdf</span>
+                  {exportingReport === `${report.key}-pdf` ? "Generating…" : "PDF"}
+                </button>
+                <button
+                  className="pain-report-btn xlsx"
+                  disabled={!records.length || exportingReport === `${report.key}-xlsx`}
+                  onClick={() => handleExportReport(report.key, "xlsx")}
+                >
+                  <span className="material-symbols-outlined text-[16px]">grid_on</span>
+                  {exportingReport === `${report.key}-xlsx` ? "Generating…" : "Excel"}
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+        {!records.length && (
+          <div className="pain-subtitle-sm" style={{ marginTop: 12 }}>
+            Add records to unlock report exports.
           </div>
         )}
       </div>
@@ -1359,6 +1634,47 @@ export default function AIInterventionPainAreasTrackerRecord() {
               <button className="pain-detail-close" onClick={() => setSelectedRecord(null)} aria-label="Close">
                 <span className="material-symbols-outlined">close</span>
               </button>
+            </div>
+
+            <div className="pain-rec-detail">
+              <div className="pain-rec-detail-head">
+                <span
+                  className="pain-rec-solution"
+                  style={{
+                    borderColor: (SOLUTION_META[selectedRecord.ai_recommendation] || {}).color,
+                  }}
+                >
+                  <span
+                    className="material-symbols-outlined pain-rec-solution-icon"
+                    style={{
+                      color: (SOLUTION_META[selectedRecord.ai_recommendation] || {}).color,
+                    }}
+                  >
+                    {(SOLUTION_META[selectedRecord.ai_recommendation] || {}).icon || "smart_toy"}
+                  </span>
+                  AI Recommendation: {selectedRecord.ai_recommendation || "—"}
+                </span>
+                <div className="pain-rec-detail-conf">
+                  <span
+                    className="pain-rec-conf-pct"
+                    style={{ color: getConfidenceColor(Number(selectedRecord.ai_confidence) || 0) }}
+                  >
+                    {selectedRecord.ai_confidence != null ? `${selectedRecord.ai_confidence}% confidence` : "—"}
+                  </span>
+                  <div className="pain-conf-bar">
+                    <div
+                      className="pain-conf-fill"
+                      style={{
+                        width: `${selectedRecord.ai_confidence ?? 0}%`,
+                        background: getConfidenceColor(Number(selectedRecord.ai_confidence) || 0),
+                      }}
+                    />
+                  </div>
+                </div>
+              </div>
+              {selectedRecord.ai_reasoning && (
+                <p className="pain-rec-detail-reason">{selectedRecord.ai_reasoning}</p>
+              )}
             </div>
 
             <div className="pain-detail-scores">

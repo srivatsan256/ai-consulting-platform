@@ -192,7 +192,6 @@ const VIEW_ROUTE_MAP = {
   upload: "/projects",
   verification: "/projects",
   deliverables: "/projects",
-  "ai-chat": "/projects",
   "client-dashboard": "/client-dashboard",
   "client-projects": "/client-projects",
   "client-chat": "/client-projects",
@@ -240,6 +239,7 @@ function AppLayout({ children }) {
         onNavigate={handleNavigate}
       />
       <div className="app-content">{children}</div>
+      <AIChatPage />
     </div>
   );
 }
@@ -291,12 +291,6 @@ function VerificationWrapper() {
   const { projectId } = useParams();
   const navigate = useNavigate();
   return <VerificationPage projectId={projectId} onSelectProject={(id) => navigate(`/projects/${id}`)} />;
-}
-
-function AIChatWrapper() {
-  const { projectId } = useParams();
-  const navigate = useNavigate();
-  return <AIChatPage projectId={projectId} onSelectProject={(id) => navigate(`/projects/${id}`)} />;
 }
 
 function DeliverablesWrapper() {
@@ -451,16 +445,6 @@ export default function App() {
             <RequireAdmin>
               <AppLayout>
                 <VerificationWrapper />
-              </AppLayout>
-            </RequireAdmin>
-          }
-        />
-        <Route
-          path="/projects/:projectId/ai-chat"
-          element={
-            <RequireAdmin>
-              <AppLayout>
-                <AIChatWrapper />
               </AppLayout>
             </RequireAdmin>
           }
