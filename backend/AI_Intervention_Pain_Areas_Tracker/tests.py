@@ -311,6 +311,7 @@ class PainAreaCSVUploadTests(TestCase):
         self.assertEqual(response.data["impact_score"], 2)
         self.assertEqual(response.data["feasibility_score"], 3)
         self.assertEqual(response.data["priority_score"], 2)
+        self.assertEqual(response.data["total_score"], 7)
         self.assertEqual(response.data["quadrant"], "Quick Win")
 
         detail = self.client.get(reverse("pain-area-detail", args=[record_id]), format="json")

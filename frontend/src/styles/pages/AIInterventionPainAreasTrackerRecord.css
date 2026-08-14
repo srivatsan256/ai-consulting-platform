@@ -61,6 +61,35 @@
   @apply text-on-surface font-bold;
 }
 
+.pain-search-input {
+  @apply px-3 py-1.5 rounded-lg border border-outline-variant/40 text-sm bg-white focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 min-w-[220px];
+}
+
+.pain-range-input {
+  @apply w-16 px-2 py-1.5 rounded-lg border border-outline-variant/40 text-sm bg-white focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20;
+}
+
+.pain-filter-reset-btn {
+  @apply inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-bold text-on-surface-variant hover:text-error hover:bg-error/10 transition-colors;
+}
+
+/* ---------- Presets ---------- */
+.pain-presets {
+  @apply bg-white rounded-xl border border-outline-variant/20 p-4;
+}
+
+.pain-presets-inner {
+  @apply flex items-center gap-3 flex-wrap;
+}
+
+.pain-preset-delete-btn {
+  @apply px-3 py-1.5 rounded-lg text-xs font-bold text-error bg-error/10 hover:bg-error/20 transition-colors;
+}
+
+.pain-subtitle-sm {
+  @apply text-xs text-on-surface-variant;
+}
+
 /* ---------- KPI Cards ---------- */
 .pain-kpi-grid {
   @apply grid grid-cols-2 gap-4;
@@ -74,7 +103,7 @@
 
 @media (min-width: 1280px) {
   .pain-kpi-grid {
-    @apply grid-cols-7;
+    @apply grid-cols-5;
   }
 }
 
@@ -82,12 +111,16 @@
   @apply bg-white rounded-xl border border-outline-variant/20 p-5 transition-all hover:-translate-y-0.5 hover:shadow-md;
 }
 
-.pain-kpi-card.border-left-red {
-  @apply border-l-4 border-l-error;
-}
-
 .pain-kpi-card.border-left-green {
   @apply border-l-4 border-l-green-600;
+}
+
+.pain-kpi-card.border-left-blue {
+  @apply border-l-4 border-l-blue-600;
+}
+
+.pain-kpi-card.border-left-amber {
+  @apply border-l-4 border-l-amber-500;
 }
 
 .pain-kpi-label {
@@ -98,12 +131,16 @@
   @apply text-3xl font-bold text-on-surface leading-tight;
 }
 
-.pain-kpi-value.red {
-  @apply text-error;
-}
-
 .pain-kpi-value.green {
   @apply text-green-600;
+}
+
+.pain-kpi-value.blue {
+  @apply text-blue-600;
+}
+
+.pain-kpi-value.amber {
+  @apply text-amber-600;
 }
 
 .pain-kpi-value.indigo {
@@ -192,8 +229,35 @@
   text-align: center;
 }
 
+.pain-th.pain-sortable {
+  cursor: pointer;
+  user-select: none;
+  transition: color 150ms;
+}
+
+.pain-th.pain-sortable:hover {
+  color: var(--on-surface);
+}
+
+.pain-sort-icon {
+  font-size: 10px;
+  margin-left: 2px;
+}
+
+.pain-sort-idle {
+  opacity: 0.35;
+}
+
+.pain-td.text-center {
+  text-align: center;
+}
+
 .pain-row {
   @apply border-b border-outline-variant/10 hover:bg-surface-container-low/40 transition-colors;
+}
+
+.pain-row-clickable {
+  cursor: pointer;
 }
 
 .pain-td {
@@ -208,10 +272,6 @@
   @apply whitespace-nowrap;
 }
 
-.pain-td.max-180 {
-  max-width: 180px;
-}
-
 .pain-td.max-220 {
   max-width: 220px;
 }
@@ -223,6 +283,26 @@
 /* ---------- Pills ---------- */
 .pain-pill {
   @apply inline-flex px-2.5 py-1 rounded-full text-[10px] font-bold;
+}
+
+.pain-score-badge {
+  @apply inline-flex items-center justify-center w-7 h-7 rounded-full text-[11px] font-bold;
+}
+
+.pain-total-score {
+  @apply inline-flex items-center justify-center min-w-8 px-2 h-7 rounded-lg bg-indigo-50 text-indigo-700 text-[12px] font-bold;
+}
+
+.pain-total-score-lg {
+  @apply min-w-10 h-9 text-sm;
+}
+
+.pain-rank-badge {
+  @apply inline-flex items-center justify-center w-7 h-7 rounded-full bg-slate-100 text-slate-600 text-[12px] font-bold;
+}
+
+.pain-rank-top {
+  @apply bg-indigo-100 text-indigo-700;
 }
 
 /* ---------- Actions ---------- */
@@ -272,4 +352,93 @@
 
 .pain-empty p {
   @apply mt-3 text-sm;
+}
+
+/* ---------- Pagination ---------- */
+.pain-pagination {
+  @apply flex items-center justify-between gap-4 mt-4 flex-wrap;
+}
+
+.pain-pagination-btns {
+  @apply flex items-center gap-1.5 flex-wrap;
+}
+
+.pain-page-btn {
+  @apply px-3 py-1.5 rounded-lg text-xs font-bold bg-white border border-outline-variant/40 text-on-surface hover:bg-surface-container-low disabled:opacity-40 disabled:cursor-not-allowed transition-colors;
+}
+
+.pain-page-btn.active {
+  @apply bg-primary text-on-primary border-primary;
+}
+
+.pain-page-gap {
+  @apply px-1 text-on-surface-variant;
+}
+
+/* ---------- Detail Panel ---------- */
+.pain-detail-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1200;
+  padding: 1rem;
+}
+
+.pain-detail-panel {
+  @apply bg-white rounded-2xl border border-outline-variant/20 shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto p-6;
+}
+
+.pain-detail-header {
+  @apply flex items-start justify-between gap-4 mb-4;
+}
+
+.pain-detail-sub {
+  @apply text-xs text-on-surface-variant mt-1 m-0;
+}
+
+.pain-detail-close {
+  @apply inline-flex items-center justify-center w-9 h-9 rounded-lg text-on-surface-variant hover:bg-surface-container transition-colors;
+}
+
+.pain-detail-scores {
+  @apply grid grid-cols-2 sm:grid-cols-5 gap-3 mb-5;
+}
+
+.pain-detail-score-card {
+  @apply flex flex-col items-center gap-1.5 bg-surface-container-low/60 rounded-xl py-3 px-2;
+}
+
+.pain-detail-score-label {
+  @apply text-[11px] font-medium text-on-surface-variant uppercase tracking-wide;
+}
+
+.pain-detail-grid {
+  @apply grid grid-cols-1 sm:grid-cols-2 gap-4;
+}
+
+.pain-detail-field {
+  @apply flex flex-col gap-1;
+}
+
+.pain-detail-field-full {
+  @apply sm:col-span-2;
+}
+
+.pain-detail-field-label {
+  @apply text-[11px] font-semibold text-on-surface-variant uppercase tracking-wide;
+}
+
+.pain-detail-field p {
+  @apply text-sm text-on-surface m-0 whitespace-pre-wrap break-words;
+}
+
+.pain-detail-footer {
+  @apply flex items-center justify-end gap-3 mt-6 pt-4 border-t border-outline-variant/20;
+}
+
+.pain-score-badge-lg {
+  @apply w-9 h-9 text-[13px];
 }

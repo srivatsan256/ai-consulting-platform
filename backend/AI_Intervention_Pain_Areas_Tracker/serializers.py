@@ -40,6 +40,7 @@ class AIInterventionPainAreaSerializer(serializers.ModelSerializer):
     impact_score = serializers.SerializerMethodField()
     feasibility_score = serializers.SerializerMethodField()
     priority_score = serializers.SerializerMethodField()
+    total_score = serializers.SerializerMethodField()
     quadrant = serializers.SerializerMethodField()
 
     class Meta: # type: ignore
@@ -65,6 +66,7 @@ class AIInterventionPainAreaSerializer(serializers.ModelSerializer):
             "impact_score",
             "feasibility_score",
             "priority_score",
+            "total_score",
             "quadrant",
             "created_at",
             "updated_at",
@@ -79,6 +81,13 @@ class AIInterventionPainAreaSerializer(serializers.ModelSerializer):
 
     def get_priority_score(self, obj):
         return score_from_priority(obj.priority)
+
+    def get_total_score(self, obj):
+        return (
+            self.get_impact_score(obj)
+            + self.get_feasibility_score(obj)
+            + self.get_priority_score(obj)
+        )
 
     def get_quadrant(self, obj):
         return quadrant_from_scores(
