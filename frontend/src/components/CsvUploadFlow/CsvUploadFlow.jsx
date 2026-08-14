@@ -3,43 +3,8 @@ import Stepper, { Step } from "../Stepper/Stepper";
 import { painAreaService, getApiError } from "../../services/api";
 import "./CsvUploadFlow.css";
 
-const TEMPLATE_HEADERS = [
-  "date",
-  "department",
-  "process_activity",
-  "pain_area",
-  "current_method",
-  "frequency",
-  "time_spent_hrs",
-  "impact_area",
-  "ai_intervention",
-  "expected_benefit",
-  "priority",
-  "feasibility",
-  "owner",
-  "target_date",
-  "status",
-  "remarks",
-];
-
-const TEMPLATE_SAMPLE_ROW = [
-  "2026-08-13",
-  "Operations",
-  "Invoice Processing",
-  "Manual data entry takes 3+ hours per day",
-  "Manual entry into spreadsheets",
-  "Daily",
-  "60",
-  "Speed, Cost",
-  "Automated invoice data extraction",
-  "Save ~50 hours per month",
-  "High",
-  "High",
-  "Jane Doe",
-  "2026-10-01",
-  "Open",
-  "Prioritize before month-end close",
-];
+const TEMPLATE_URL = "/pain_area_template.csv";
+const TEMPLATE_FILE_NAME = "AI Intervention Pain Areas Tracker - Master Tracker.csv";
 
 const PHASES = [
   { key: "uploading", label: "Uploading file" },
@@ -70,22 +35,22 @@ export default function CsvUploadFlow({ isOpen, onClose, onComplete }) {
     onClose();
   };
 
-  const handleDownloadTemplate = () => {
-    const csvContent = [
-      TEMPLATE_HEADERS.join(","),
-      TEMPLATE_SAMPLE_ROW.join(","),
-    ].join("\n");
-    const blob = new Blob(["\ufeff", csvContent], {
-      type: "text/csv;charset=utf-8;",
-    });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "pain_area_template.csv";
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+  const handleDownloadTemplate = async () => {
+    try {
+      const response = await fetch(TEMPLATE_URL);
+      if (!response.ok) throw new Error(`Template download failed (${response.status})`);
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = TEMPLATE_FILE_NAME;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error("Failed to download template:", err);
+    }
   };
 
   const handleFileChange = (e) => {
@@ -161,6 +126,7 @@ export default function CsvUploadFlow({ isOpen, onClose, onComplete }) {
             <p className="csv-flow-subtext">
               Download the CSV template, fill it in, then continue to upload.
             </p>
+            <p>If you already have a filled template, you can upload it directly. Just ignore the template download step.</p>
             <button type="button" className="csv-flow-secondary-btn" onClick={handleDownloadTemplate}>
               <span className="material-symbols-outlined">download</span>
               Download Template

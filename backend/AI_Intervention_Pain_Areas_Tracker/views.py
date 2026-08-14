@@ -60,6 +60,8 @@ HEADER_ALIASES = {
     "process_activity": "process_activity",
     "painarea": "pain_area",
     "pain_area": "pain_area",
+    "painareaproblem": "pain_area",
+    "painareaproblemstatement": "pain_area",
     "currentmethod": "current_method",
     "current_method": "current_method",
     "frequency": "frequency",
@@ -67,12 +69,15 @@ HEADER_ALIASES = {
     "timespenthrs": "time_spent_hrs",
     "time_spent": "time_spent_hrs",
     "time_spent_hrs": "time_spent_hrs",
+    "timespentmonthhrs": "time_spent_hrs",
+    "timespentpermonthhrs": "time_spent_hrs",
     "hrs": "time_spent_hrs",
     "hours": "time_spent_hrs",
     "impactarea": "impact_area",
     "impact_area": "impact_area",
     "aiintervention": "ai_intervention",
     "ai_intervention": "ai_intervention",
+    "aiinterventionrequired": "ai_intervention",
     "expectedbenefit": "expected_benefit",
     "expected_benefit": "expected_benefit",
     "priority": "priority",
@@ -87,14 +92,21 @@ EXCEL_EPOCH = datetime.date(1899, 12, 30)
 
 DATE_FORMATS = (
     "%d/%m/%Y",
+    "%d/%m/%y",
     "%d-%m-%Y",
+    "%d-%m-%y",
     "%d.%m.%Y",
+    "%d.%m.%y",
     "%Y/%m/%d",
     "%Y-%m-%d",
     "%m/%d/%Y",
+    "%m/%d/%y",
     "%d %b %Y",
+    "%d %b %y",
     "%d-%b-%Y",
+    "%d-%b-%y",
     "%b %d, %Y",
+    "%b %d, %y",
 )
 
 
@@ -119,7 +131,7 @@ def _detect_delimiter(raw):
         "\t": first_line.count("\t"),
         "|": first_line.count("|"),
     }
-    best = max(counts, key=counts.get)
+    best = max(counts, key=counts.get) # type: ignore
     return best if counts[best] > 0 else ","
 
 
@@ -127,10 +139,11 @@ def _parse_flexible_date(value):
     s = str(value).strip()
     if not s:
         return None
-    # Excel serial date numbers (days since 1899-12-30), e.g. 45800.
-    if re.fullmatch(r"\d{4,6}", s):
+    # Excel serial date numbers (days since 1899-12-30), e.g. 45800 or 45800.5.
+    if re.fullmatch(r"\d{4,6}(?:\.\d+)?", s):
         try:
-            return EXCEL_EPOCH + datetime.timedelta(days=int(s))
+            serial = int(float(s))
+            return EXCEL_EPOCH + datetime.timedelta(days=serial)
         except (OverflowError, ValueError):
             return None
     for fmt in DATE_FORMATS:
@@ -177,6 +190,8 @@ class AIInterventionPainAreaViewSet(viewsets.ModelViewSet):
     queryset = AIInterventionPainArea.objects.all()
     serializer_class = AIInterventionPainAreaSerializer
     permission_classes = [IsAuthenticated]
+    # The dashboard/table renders all records; no page size cap.
+    pagination_class = None
 
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     filterset_fields = ["status", "priority", "feasibility", "department"]

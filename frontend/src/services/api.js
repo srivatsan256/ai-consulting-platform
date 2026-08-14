@@ -158,7 +158,22 @@ export const companyService = {
 };
 
 export const painAreaService = {
-  list: () => api.get("/ai-intervention-pain-areas/"),
+  list: async (params = {}) => {
+    const all = [];
+    let page = 1;
+    for (;;) {
+      const res = await api.get("/ai-intervention-pain-areas/", {
+        params: { ...params, page, page_size: 100 },
+      });
+      if (page === 1 && !Array.isArray(res.data.results)) {
+        return res;
+      }
+      all.push(...(res.data.results || []));
+      if (!res.data.next) break;
+      page += 1;
+    }
+    return { data: all };
+  },
   create: (data) => api.post("/ai-intervention-pain-areas/", data),
   update: (id, data) => api.put(`/ai-intervention-pain-areas/${id}/`, data),
   remove: (id) => api.delete(`/ai-intervention-pain-areas/${id}/`),

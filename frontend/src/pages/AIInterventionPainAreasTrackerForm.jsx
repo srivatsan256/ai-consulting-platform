@@ -163,19 +163,6 @@ export default function AIInterventionPainAreasTrackerForm() {
         ) : (
           <form onSubmit={handleSubmit} className="space-y-5">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {/* Date */}
-              <div>
-                <label className="pain-label">Date</label>
-                <input
-                  type="date"
-                  name="date"
-                  value={form.date}
-                  onChange={handleChange}
-                  className="pain-input"
-                  required
-                />
-              </div>
-
               {/* Department */}
               <div>
                 <label className="pain-label">Department</label>
