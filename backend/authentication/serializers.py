@@ -42,11 +42,27 @@ class RegisterSerializer(serializers.Serializer):
     ``account_type`` controls the default role and company:
       - ``consultant`` -> joins the consulting firm as a Company Admin
       - ``client``     -> creates (or joins) a client company as Client Admin
+
+    ``role`` (optional) overrides the default role for ``consultant`` accounts
+    with one of the employee role keys (e.g. ``project_manager``).
     """
 
     ACCOUNT_TYPE_CHOICES = [
         ("consultant", "Consultant"),
         ("client", "Client"),
+    ]
+
+    EMPLOYEE_ROLE_KEYS = [
+        "project_manager",
+        "business_analyst",
+        "solution_architect",
+        "ai_ml_engineer",
+        "backend_developer",
+        "frontend_developer",
+        "qa_test_engineer",
+        "security_consultant",
+        "devops_engineer",
+        "document_reviewer",
     ]
 
     CONSULTING_COMPANY_NAME = "RequirementAI Consulting"
@@ -68,6 +84,11 @@ class RegisterSerializer(serializers.Serializer):
     )
     account_type = serializers.ChoiceField(
         choices=ACCOUNT_TYPE_CHOICES,
+    )
+    role = serializers.ChoiceField(
+        choices=EMPLOYEE_ROLE_KEYS,
+        required=False,
+        help_text="Employee role key for consultant accounts.",
     )
     company_name = serializers.CharField(
         max_length=255,
@@ -158,9 +179,15 @@ class RegisterSerializer(serializers.Serializer):
                     ),
                 },
             )
+            role_key = validated_data.get("role") or "company_admin"
             role, _ = Role.objects.get_or_create(
-                role_key="company_admin",
-                defaults={"display_name": "Company Admin"},
+                role_key=role_key,
+                defaults={
+                    "display_name": dict(Role.ROLE_CHOICES).get(
+                        role_key,
+                        role_key,
+                    ),
+                },
             )
 
         CompanyMember.objects.get_or_create(

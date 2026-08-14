@@ -4,12 +4,26 @@ import AuthLayout from "../components/AuthLayout";
 import { GLASS_INPUT, GLASS_INPUT_ERROR, GLASS_LABEL, GLASS_ICON, GLASS_BUTTON, GLASS_ERROR } from "../constants/auth";
 import "../styles/pages/SignupPage.css";
 
+const EMPLOYEE_ROLES = [
+  { key: "project_manager", label: "Project Manager" },
+  { key: "business_analyst", label: "Business Analyst" },
+  { key: "solution_architect", label: "Solution Architect" },
+  { key: "ai_ml_engineer", label: "AI/ML Engineer" },
+  { key: "backend_developer", label: "Backend Developer" },
+  { key: "frontend_developer", label: "Frontend Developer" },
+  { key: "qa_test_engineer", label: "QA/Test Engineer" },
+  { key: "security_consultant", label: "Security Consultant" },
+  { key: "devops_engineer", label: "DevOps Engineer" },
+  { key: "document_reviewer", label: "Document Reviewer" },
+];
+
 export default function SignupPage({ onRegister, onShowLogin }) {
   const [accountType, setAccountType] = useState("client");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [companyName, setCompanyName] = useState("");
+  const [role, setRole] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [acceptedTerms, setAcceptedTerms] = useState(false);
@@ -51,6 +65,7 @@ export default function SignupPage({ onRegister, onShowLogin }) {
         password,
         confirm_password: confirmPassword,
         account_type: accountType,
+        role,
       });
     } catch (err) {
       const { detail, fieldMap } = extractFieldErrors(err);
@@ -82,7 +97,7 @@ export default function SignupPage({ onRegister, onShowLogin }) {
       <div className="signup-toggle">
         <button
           type="button"
-          onClick={() => setAccountType("client")}
+          onClick={() => { setAccountType("client"); setRole(""); }}
           className={`signup-toggle-btn ${
             accountType === "client"
               ? "signup-toggle-btn-active"
@@ -174,6 +189,33 @@ export default function SignupPage({ onRegister, onShowLogin }) {
             </div>
             {fieldErrors.company_name && (
               <p className="signup-field-error">{fieldErrors.company_name}</p>
+            )}
+          </div>
+        )}
+
+        {accountType === "consultant" && (
+          <div>
+            <label className={GLASS_LABEL}>Your Role</label>
+            <div className="relative">
+              <span className={`material-symbols-outlined ${GLASS_ICON}`}>badge</span>
+              <select
+                value={role}
+                onChange={(e) => setRole(e.target.value)}
+                required
+                className={`${inputClass(!!fieldErrors.role)} ${role ? "" : "text-white/40"}`}
+              >
+                <option value="" disabled>
+                  Select your role
+                </option>
+                {EMPLOYEE_ROLES.map((r) => (
+                  <option key={r.key} value={r.key}>
+                    {r.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+            {fieldErrors.role && (
+              <p className="signup-field-error">{fieldErrors.role}</p>
             )}
           </div>
         )}
