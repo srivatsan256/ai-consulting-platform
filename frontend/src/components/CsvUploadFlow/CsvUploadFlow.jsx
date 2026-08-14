@@ -126,7 +126,9 @@ export default function CsvUploadFlow({ isOpen, onClose, onComplete }) {
             <p className="csv-flow-subtext">
               Download the CSV template, fill it in, then continue to upload.
             </p>
-            <p>If you already have a filled template, you can upload it directly. Just ignore the template download step.</p>
+            <p className="csv-flow-subtext">
+              If you already have a filled template, you can upload it directly. Just ignore the template download step.
+            </p>
             <button type="button" className="csv-flow-secondary-btn" onClick={handleDownloadTemplate}>
               <span className="material-symbols-outlined">download</span>
               Download Template

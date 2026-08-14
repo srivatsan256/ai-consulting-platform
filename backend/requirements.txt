@@ -17,6 +17,12 @@ langchain>=0.1
 langchain-community>=0.0.10
 langchain-text-splitters>=0.0.1
 
+# AirLLM (local LLM inference via layer-wise offloading).
+# Optional: needed only for AI_PROVIDER=airllm. The service falls back to
+# the mock client when this is not installed.
+# airllm>=2.11
+# torch>=2.2  # dependency of airllm (CPU/GPU), heavy install
+
 # Vector Database
 chromadb>=0.4
 sentence-transformers>=2.3
