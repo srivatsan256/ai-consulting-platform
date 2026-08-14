@@ -74,7 +74,7 @@
 
 @media (min-width: 1280px) {
   .pain-kpi-grid {
-    @apply grid-cols-6;
+    @apply grid-cols-7;
   }
 }
 
@@ -84,6 +84,10 @@
 
 .pain-kpi-card.border-left-red {
   @apply border-l-4 border-l-error;
+}
+
+.pain-kpi-card.border-left-green {
+  @apply border-l-4 border-l-green-600;
 }
 
 .pain-kpi-label {
@@ -148,6 +152,19 @@
 
 .chart-tooltip-label {
   @apply font-semibold text-on-surface mb-1;
+}
+
+/* ---------- Quadrant Matrix ---------- */
+.pain-quadrant-legend {
+  @apply flex items-center gap-3 flex-wrap;
+}
+
+.pain-quadrant-legend-item {
+  @apply inline-flex items-center gap-1.5 text-xs text-on-surface-variant;
+}
+
+.pain-quadrant-legend-dot {
+  @apply w-2.5 h-2.5 rounded-full;
 }
 
 /* ---------- Table ---------- */

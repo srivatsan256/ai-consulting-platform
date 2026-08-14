@@ -27,6 +27,24 @@ CREATE TABLE ai_intervention_pain_areas_tracker (
     target_date      DATE NULL,
     status           VARCHAR(20) NOT NULL DEFAULT 'Open',
     remarks          TEXT NOT NULL DEFAULT '',
+    impact_score     INTEGER GENERATED ALWAYS AS (
+        CASE WHEN time_spent_hrs IS NULL THEN 1
+             WHEN time_spent_hrs >= 40 THEN 3
+             WHEN time_spent_hrs >= 10 THEN 2
+             ELSE 1 END
+    ) STORED,
+    feasibility_score INTEGER GENERATED ALWAYS AS (
+        CASE feasibility WHEN 'High' THEN 3 WHEN 'Medium' THEN 2 ELSE 1 END
+    ) STORED,
+    priority_score    INTEGER GENERATED ALWAYS AS (
+        CASE priority WHEN 'High' THEN 3 WHEN 'Medium' THEN 2 ELSE 1 END
+    ) STORED,
+    quadrant          VARCHAR(30) GENERATED ALWAYS AS (
+        CASE WHEN impact_score >= 2 AND feasibility_score >= 2 THEN 'Quick Win'
+             WHEN impact_score >= 2 THEN 'Strategic'
+             WHEN feasibility_score >= 2 THEN 'Fill In'
+             ELSE 'Revisit' END
+    ) STORED,
     created_at       DATETIME NOT NULL,
     updated_at       DATETIME NOT NULL
 )
@@ -245,3 +263,65 @@ class PainAreaCSVUploadTests(TestCase):
         response = self._upload(csv_text)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn("no data rows", response.data["detail"].lower())
+
+    def test_calculated_fields_high_impact_quick_win(self):
+        row = AIInterventionPainArea.objects.create(
+            date="2026-08-01",
+            process_activity="Invoice processing",
+            time_spent_hrs=60,
+            priority="High",
+            feasibility="High",
+        )
+        impact_score, feasibility_score, priority_score, quadrant = self._read_calculated(row.id)
+        self.assertEqual((impact_score, feasibility_score, priority_score, quadrant), (3, 3, 3, "Quick Win"))
+
+    def test_calculated_fields_low_impact_revisit(self):
+        row = AIInterventionPainArea.objects.create(
+            date="2026-08-01",
+            process_activity="Report formatting",
+            time_spent_hrs=2,
+            priority="Low",
+            feasibility="Low",
+        )
+        impact_score, feasibility_score, priority_score, quadrant = self._read_calculated(row.id)
+        self.assertEqual((impact_score, feasibility_score, priority_score, quadrant), (1, 1, 1, "Revisit"))
+
+    def test_calculated_fields_null_hours_fill_in(self):
+        row = AIInterventionPainArea.objects.create(
+            date="2026-08-01",
+            process_activity="Archive search",
+            time_spent_hrs=None,
+            priority="Medium",
+            feasibility="High",
+        )
+        impact_score, feasibility_score, priority_score, quadrant = self._read_calculated(row.id)
+        self.assertEqual((impact_score, feasibility_score, priority_score, quadrant), (1, 3, 2, "Fill In"))
+
+    def test_api_exposes_calculated_fields_read_only(self):
+        payload = {
+            "date": "2026-08-01",
+            "process_activity": "Expense verification",
+            "time_spent_hrs": 25,
+            "priority": "Medium",
+            "feasibility": "High",
+        }
+        response = self.client.post(reverse("pain-area-list"), payload, format="json")
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        record_id = response.data["id"]
+        self.assertEqual(response.data["impact_score"], 2)
+        self.assertEqual(response.data["feasibility_score"], 3)
+        self.assertEqual(response.data["priority_score"], 2)
+        self.assertEqual(response.data["quadrant"], "Quick Win")
+
+        detail = self.client.get(reverse("pain-area-detail", args=[record_id]), format="json")
+        self.assertEqual(detail.status_code, status.HTTP_200_OK)
+        self.assertEqual(detail.data["quadrant"], "Quick Win")
+
+    def _read_calculated(self, record_id):
+        with connection.cursor() as cursor:
+            cursor.execute(
+                "SELECT impact_score, feasibility_score, priority_score, quadrant "
+                "FROM ai_intervention_pain_areas_tracker WHERE id = %s",
+                [record_id],
+            )
+            return cursor.fetchone()

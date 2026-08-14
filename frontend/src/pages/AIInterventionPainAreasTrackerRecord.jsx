@@ -13,6 +13,11 @@ import {
   Legend,
   ResponsiveContainer,
   Label,
+  ScatterChart,
+  Scatter,
+  ZAxis,
+  ReferenceArea,
+  ReferenceLine,
 } from "recharts";
 import TopHeader from "../components/TopHeader";
 import CsvUploadFlow from "../components/CsvUploadFlow/CsvUploadFlow";
@@ -21,6 +26,7 @@ import "../styles/pages/AIInterventionPainAreasTrackerRecord.css";
 
 const PRIORITY_OPTIONS = ["High", "Medium", "Low"];
 const STATUS_OPTIONS = ["Open", "In Progress", "Completed", "On Hold", "Cancelled"];
+const QUADRANT_OPTIONS = ["Quick Win", "Strategic", "Fill In", "Revisit"];
 const CHART_COLORS = {
   High: "#DC2626",
   Medium: "#D97706",
@@ -33,6 +39,13 @@ const CHART_COLORS = {
   default: ["#0D9488", "#4F46E5", "#F59E0B", "#F43F5E", "#10B981", "#8B5CF6", "#0EA5E9", "#64748B"],
 };
 
+const QUADRANT_COLORS = {
+  "Quick Win": "#16A34A",
+  Strategic: "#2563EB",
+  "Fill In": "#D97706",
+  Revisit: "#94A3B8",
+};
+
 export default function AIInterventionPainAreasTrackerRecord() {
   const navigate = useNavigate();
   const [records, setRecords] = useState([]);
@@ -40,6 +53,7 @@ export default function AIInterventionPainAreasTrackerRecord() {
   const [filterStatus, setFilterStatus] = useState("All");
   const [filterPriority, setFilterPriority] = useState("All");
   const [filterDepartment, setFilterDepartment] = useState("All");
+  const [filterQuadrant, setFilterQuadrant] = useState("All");
   const [isUploadFlowOpen, setUploadFlowOpen] = useState(false);
   const [lastImport, setLastImport] = useState(null);
 
@@ -77,9 +91,10 @@ export default function AIInterventionPainAreasTrackerRecord() {
       const statusMatch = filterStatus === "All" || r.status === filterStatus;
       const priorityMatch = filterPriority === "All" || r.priority === filterPriority;
       const deptMatch = filterDepartment === "All" || r.department === filterDepartment;
-      return statusMatch && priorityMatch && deptMatch;
+      const quadrantMatch = filterQuadrant === "All" || r.quadrant === filterQuadrant;
+      return statusMatch && priorityMatch && deptMatch && quadrantMatch;
     });
-  }, [records, filterStatus, filterPriority, filterDepartment]);
+  }, [records, filterStatus, filterPriority, filterDepartment, filterQuadrant]);
 
   const departments = useMemo(() => {
     const set = new Set(records.map((r) => r.department).filter(Boolean));
@@ -103,6 +118,7 @@ export default function AIInterventionPainAreasTrackerRecord() {
       const hasAI = r.ai_intervention && String(r.ai_intervention).trim().length > 0;
       return sum + (hasAI ? hours : 0);
     }, 0);
+    const quickWins = filteredRecords.filter((r) => r.quadrant === "Quick Win").length;
     return {
       total,
       highPriority,
@@ -112,6 +128,8 @@ export default function AIInterventionPainAreasTrackerRecord() {
       onTrackPct: total ? Math.round((onTrack / total) * 100) : 0,
       totalHours: Math.round(totalHours),
       potentialSave: Math.round(potentialSave),
+      quickWins,
+      quickWinsPct: total ? Math.round((quickWins / total) * 100) : 0,
     };
   }, [filteredRecords]);
 
@@ -159,10 +177,42 @@ export default function AIInterventionPainAreasTrackerRecord() {
     });
   }, [filteredRecords]);
 
+  const quadrantCounts = useMemo(() => {
+    const counts = { "Quick Win": 0, Strategic: 0, "Fill In": 0, Revisit: 0 };
+    filteredRecords.forEach((r) => {
+      const q = r.quadrant || "Revisit";
+      if (counts[q] !== undefined) counts[q] += 1;
+    });
+    return counts;
+  }, [filteredRecords]);
+
+  const quadrantScatterData = useMemo(() => {
+    const jitter = (seed) => ((seed * 37) % 21 - 10) / 50;
+    return filteredRecords
+      .filter((r) => r.impact_score != null && r.feasibility_score != null)
+      .map((r) => ({
+        name: r.process_activity || "Record",
+        impact: Number(r.impact_score) + jitter(r.id ?? 1),
+        feasibility: Number(r.feasibility_score) + jitter((r.id ?? 1) * 7 + 3),
+        quadrant: r.quadrant || "Revisit",
+        priority: r.priority,
+      }));
+  }, [filteredRecords]);
+
   const getPriorityClass = (priority) => {
     if (priority === "High") return "bg-red-100 text-red-700";
     if (priority === "Medium") return "bg-amber-100 text-amber-700";
     return "bg-emerald-100 text-emerald-700";
+  };
+
+  const getQuadrantClass = (quadrant) => {
+    const map = {
+      "Quick Win": "bg-emerald-100 text-emerald-700",
+      Strategic: "bg-blue-100 text-blue-700",
+      "Fill In": "bg-amber-100 text-amber-700",
+      Revisit: "bg-slate-100 text-slate-600",
+    };
+    return map[quadrant] || "bg-slate-100 text-slate-600";
   };
 
   const getStatusClass = (status) => {
@@ -186,6 +236,24 @@ export default function AIInterventionPainAreasTrackerRecord() {
               {entry.name}: <strong>{entry.value}</strong>
             </p>
           ))}
+        </div>
+      );
+    }
+    return null;
+  };
+
+  const QuadrantTooltip = ({ active, payload }) => {
+    if (active && payload && payload.length) {
+      const entry = payload[0].payload;
+      return (
+        <div className="chart-tooltip">
+          <p className="chart-tooltip-label">{entry.name}</p>
+          <p style={{ color: QUADRANT_COLORS[entry.quadrant] }}>
+            <strong>{entry.quadrant}</strong>
+          </p>
+          <p>
+            Impact {entry.impact} · Feasibility {entry.feasibility}
+          </p>
         </div>
       );
     }
@@ -305,6 +373,19 @@ export default function AIInterventionPainAreasTrackerRecord() {
               ))}
             </select>
           </div>
+          <div className="pain-filter-group">
+            <span className="pain-filter-label">Quadrant</span>
+            <select
+              value={filterQuadrant}
+              onChange={(e) => setFilterQuadrant(e.target.value)}
+              className="pain-select"
+            >
+              <option value="All">All</option>
+              {QUADRANT_OPTIONS.map((q) => (
+                <option key={q} value={q}>{q}</option>
+              ))}
+            </select>
+          </div>
           <div className="pain-filter-count">
             Showing <strong>{filteredRecords.length}</strong> of <strong>{records.length}</strong> records
           </div>
@@ -344,6 +425,11 @@ export default function AIInterventionPainAreasTrackerRecord() {
             {kpis.totalHours ? Math.round((kpis.potentialSave / kpis.totalHours) * 100) : 0}%
           </p>
           <p className="pain-kpi-sub">Hours with AI planned</p>
+        </div>
+        <div className="pain-kpi-card soft-shadow border-left-green">
+          <p className="pain-kpi-label">Quick Wins</p>
+          <p className="pain-kpi-value green">{kpis.quickWins}</p>
+          <p className="pain-kpi-sub">{kpis.quickWinsPct}% of total · high impact × high feasibility</p>
         </div>
       </div>
 
@@ -449,6 +535,66 @@ export default function AIInterventionPainAreasTrackerRecord() {
         </div>
       </div>
 
+      {/* Quadrant Matrix */}
+      <div className="pain-panel soft-shadow">
+        <div className="pain-table-header">
+          <h3 className="pain-h3">Impact × Feasibility Quadrant Matrix</h3>
+          <div className="pain-quadrant-legend">
+            {QUADRANT_OPTIONS.map((q) => (
+              <span key={q} className="pain-quadrant-legend-item">
+                <span className="pain-quadrant-legend-dot" style={{ background: QUADRANT_COLORS[q] }} />
+                {q} ({quadrantCounts[q]})
+              </span>
+            ))}
+          </div>
+        </div>
+        {quadrantScatterData.length === 0 ? (
+          <div className="pain-chart-empty">No data</div>
+        ) : (
+          <ResponsiveContainer width="100%" height={340}>
+            <ScatterChart margin={{ top: 10, right: 30, bottom: 30, left: 10 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#E2E8F0" />
+              <XAxis
+                type="number"
+                dataKey="impact"
+                name="Impact"
+                domain={[0.5, 3.5]}
+                ticks={[1, 2, 3]}
+                tick={{ fontSize: 12 }}
+                label={{ value: "Impact Score", position: "insideBottom", offset: -18, fontSize: 12 }}
+              />
+              <YAxis
+                type="number"
+                dataKey="feasibility"
+                name="Feasibility"
+                domain={[0.5, 3.5]}
+                ticks={[1, 2, 3]}
+                tick={{ fontSize: 12 }}
+                label={{ value: "Feasibility Score", angle: -90, position: "insideLeft", fontSize: 12 }}
+              />
+              <ZAxis range={[120, 120]} />
+              <ReferenceLine x={2} stroke="#CBD5E1" strokeDasharray="4 4" />
+              <ReferenceLine y={2} stroke="#CBD5E1" strokeDasharray="4 4" />
+              <ReferenceArea x1={2} x2={3.5} y1={2} y2={3.5} fill="#16A34A" fillOpacity={0.08} />
+              <ReferenceArea x1={2} x2={3.5} y1={0.5} y2={2} fill="#2563EB" fillOpacity={0.08} />
+              <ReferenceArea x1={0.5} x2={2} y1={2} y2={3.5} fill="#D97706" fillOpacity={0.08} />
+              <ReferenceArea x1={0.5} x2={2} y1={0.5} y2={2} fill="#94A3B8" fillOpacity={0.08} />
+              <Tooltip content={<QuadrantTooltip />} />
+              <Scatter data={quadrantScatterData} isAnimationActive={false}>
+                {quadrantScatterData.map((entry, index) => (
+                  <Cell
+                    key={`scatter-${index}`}
+                    fill={QUADRANT_COLORS[entry.quadrant]}
+                    stroke="#FFFFFF"
+                    strokeWidth={1}
+                  />
+                ))}
+              </Scatter>
+            </ScatterChart>
+          </ResponsiveContainer>
+        )}
+      </div>
+
       {/* Table */}
       <div className="pain-panel soft-shadow">
         <div className="pain-table-header">
@@ -474,6 +620,7 @@ export default function AIInterventionPainAreasTrackerRecord() {
                   <th className="pain-th">Process / Activity</th>
                   <th className="pain-th">Pain Area</th>
                   <th className="pain-th">Priority</th>
+                  <th className="pain-th">Quadrant</th>
                   <th className="pain-th">Status</th>
                   <th className="pain-th">Owner</th>
                   <th className="pain-th">Target Date</th>
@@ -501,6 +648,11 @@ export default function AIInterventionPainAreasTrackerRecord() {
                     <td className="pain-td">
                       <span className={`pain-pill ${getPriorityClass(record.priority)}`}>
                         {record.priority || "—"}
+                      </span>
+                    </td>
+                    <td className="pain-td">
+                      <span className={`pain-pill ${getQuadrantClass(record.quadrant)}`}>
+                        {record.quadrant || "—"}
                       </span>
                     </td>
                     <td className="pain-td">

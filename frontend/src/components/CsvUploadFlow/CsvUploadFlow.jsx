@@ -133,6 +133,9 @@ export default function CsvUploadFlow({ isOpen, onClose, onComplete }) {
               <span className="material-symbols-outlined">download</span>
               Download Template
             </button>
+
+            <ScoringReference />
+
             <div className="csv-flow-footer">
               <button
                 type="button"
@@ -195,6 +198,84 @@ export default function CsvUploadFlow({ isOpen, onClose, onComplete }) {
             </div>
           </Step>
         </Stepper>
+      </div>
+    </div>
+  );
+}
+
+function ScoringReference() {
+  const scoreRows = [
+    {
+      field: "Impact Score",
+      source: "Time Spent / Month (Hrs)",
+      rules: [
+        { condition: "≥ 40 hrs", score: 3 },
+        { condition: "≥ 10 hrs", score: 2 },
+        { condition: "< 10 hrs or blank", score: 1 },
+      ],
+    },
+    {
+      field: "Feasibility Score",
+      source: "Feasibility",
+      rules: [
+        { condition: "High", score: 3 },
+        { condition: "Medium", score: 2 },
+        { condition: "Low", score: 1 },
+      ],
+    },
+    {
+      field: "Priority Score",
+      source: "Priority",
+      rules: [
+        { condition: "High", score: 3 },
+        { condition: "Medium", score: 2 },
+        { condition: "Low", score: 1 },
+      ],
+    },
+  ];
+
+  const quadrants = [
+    { name: "Quick Win", impact: "≥ 2", feasibility: "≥ 2", color: "#16A34A" },
+    { name: "Strategic", impact: "≥ 2", feasibility: "< 2", color: "#2563EB" },
+    { name: "Fill In", impact: "< 2", feasibility: "≥ 2", color: "#D97706" },
+    { name: "Revisit", impact: "< 2", feasibility: "< 2", color: "#94A3B8" },
+  ];
+
+  return (
+    <div className="csv-flow-reference">
+      <h3>How scores are calculated</h3>
+      <p className="csv-flow-reference-sub">
+        These read-only fields are derived automatically after import — you only fill in the source columns.
+      </p>
+      <div className="csv-flow-reference-grid">
+        {scoreRows.map((row) => (
+          <div key={row.field} className="csv-flow-reference-card">
+            <p className="csv-flow-reference-field">{row.field}</p>
+            <p className="csv-flow-reference-source">from {row.source}</p>
+            <ul className="csv-flow-reference-rules">
+              {row.rules.map((rule) => (
+                <li key={rule.condition} className="csv-flow-reference-rule">
+                  <span className="csv-flow-reference-score">{rule.score}</span>
+                  <span>{rule.condition}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+        <div className="csv-flow-reference-card">
+          <p className="csv-flow-reference-field">Quadrant</p>
+          <p className="csv-flow-reference-source">from Impact × Feasibility</p>
+          <ul className="csv-flow-reference-rules">
+            {quadrants.map((q) => (
+              <li key={q.name} className="csv-flow-reference-rule">
+                <span className="csv-flow-reference-dot" style={{ background: q.color }} />
+                <span>
+                  {q.name} · impact {q.impact} &amp; feasibility {q.feasibility}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
     </div>
   );
