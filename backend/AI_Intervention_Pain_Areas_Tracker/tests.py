@@ -109,14 +109,14 @@ class PainAreaCSVUploadTests(TestCase):
             "Sl. No.,Date,Department,Process / Activity,Pain Area / Problem Statement,"
             "Current Method,Frequency,Time Spent / Month (Hrs),Impact Area,"
             "AI Intervention Required,Expected Benefit,Priority,Feasibility,Owner,"
-            "Target Date,Status,Remarks"
+            "Target Date,Status,Remarks,impact_score,feasibility_score,priority_score,quadrant"
         )
         csv_text = "\n".join(
             [
                 header,
                 "1,13/08/2026,IT,Manual data entry,Pain Area / Problem Statement example,"
                 "Typing,3,60,Operational,AI Intervention Required example,"
-                "Saves time,High,Medium,Bob,20/09/2026,Open,None",
+                "Saves time,High,Medium,Bob,20/09/2026,Open,None,3,2,3,Quick Win",
             ]
         )
         response = self._upload(csv_text)
