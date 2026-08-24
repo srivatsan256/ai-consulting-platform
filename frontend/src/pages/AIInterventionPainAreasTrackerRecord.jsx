@@ -151,10 +151,6 @@ export default function AIInterventionPainAreasTrackerRecord() {
   const SECTIONS = [
     { id: "tracker", label: "Tracker", icon: "table_chart" },
     { id: "roadmap", label: "Roadmap", icon: "route" },
-    { id: "assistant", label: "AI Assistant", icon: "smart_toy" },
-    { id: "departments", label: "Departments", icon: "account_balance" },
-    { id: "executive", label: "Executive", icon: "monitoring" },
-    { id: "workspace", label: "Workspace", icon: "folder_open" },
   ];
   const [activeSection, setActiveSection] = useState("tracker");
   const [selectedWorkspaceRecord, setSelectedWorkspaceRecord] = useState(null);
@@ -1855,34 +1851,6 @@ export default function AIInterventionPainAreasTrackerRecord() {
     switch (activeSection) {
       case "roadmap":
         return <RoadmapView records={records} />;
-      case "assistant":
-        return (
-          <div className="pain-panel soft-shadow">
-            <h3 className="pain-h3">AI Assistant</h3>
-            <span className="pain-subtitle-sm">Phase 7</span>
-          </div>
-        );
-      case "departments":
-        return (
-          <div className="pain-panel soft-shadow">
-            <h3 className="pain-h3">Departments</h3>
-            <span className="pain-subtitle-sm">Phase 8</span>
-          </div>
-        );
-      case "executive":
-        return (
-          <div className="pain-panel soft-shadow">
-            <h3 className="pain-h3">Executive Dashboard</h3>
-            <span className="pain-subtitle-sm">Phase 9</span>
-          </div>
-        );
-      case "workspace":
-        return (
-          <div className="pain-panel soft-shadow">
-            <h3 className="pain-h3">Consulting Workspace</h3>
-            <span className="pain-subtitle-sm">Phase 10</span>
-          </div>
-        );
       default:
         return renderTrackerSection();
     }
