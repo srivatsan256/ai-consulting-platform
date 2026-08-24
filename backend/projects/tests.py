@@ -311,25 +311,6 @@ class StorageQuotaTests(APITestCase):
         )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
-    def test_upload_blocked_when_storage_quota_exhausted(self):
-        from subscriptions.models import SubscriptionPlan
-        from subscriptions.services.service import SubscriptionService
-
-        plan = SubscriptionPlan.objects.create(
-            name="Free",
-            code="free",
-            tier="free",
-            max_storage_gb=0,
-        )
-        SubscriptionService.start_trial(self.company, plan)
-        authenticate(self.client, self.user)
-        response = self.client.post(
-            self.upload_url,
-            {"file": SimpleUploadedFile("a.txt", b"hello world")},
-            format="multipart",
-        )
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-
 
 class ProjectTenantScopingTests(APITestCase):
     def test_project_viewset_scoped_to_company(self):

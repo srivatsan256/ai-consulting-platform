@@ -23,7 +23,7 @@ it testable in isolation.
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Dict, Optional
+from typing import TYPE_CHECKING, Optional
 
 from django.utils.functional import cached_property
 
@@ -34,13 +34,10 @@ if TYPE_CHECKING:
     from accounts.models import User
     from companies.models import Company
     from company_members.models import CompanyMember
-    from subscriptions.models import CompanySubscription
 
     from django.http import HttpRequest
 
 COMPANY_ID_HEADER = "X-Company-ID"
-
-FEATURE_PREFIX = "allows_"
 
 
 class TenantResolutionService:
@@ -92,14 +89,10 @@ class TenantResolutionService:
             self._sync_context(context)
             return context
 
-        subscription = self._resolve_subscription(company=membership.company)
-
         context = TenantContext(
             company=membership.company,
             membership=membership,
             role=membership.role,
-            subscription=subscription,
-            features=self._resolve_features(subscription),
         )
         self._sync_context(context)
         return context
@@ -154,48 +147,6 @@ class TenantResolutionService:
                 return membership
 
         return memberships.first()
-
-    def _resolve_subscription(
-        self,
-        company: "Company",
-    ) -> Optional["CompanySubscription"]:
-        """
-        Return the current active or trialing subscription for the
-        company, if any.
-        """
-        from subscriptions.models import CompanySubscription, SubscriptionStatus
-
-        return (
-            CompanySubscription.objects.filter(
-                company=company,
-                status__in=[SubscriptionStatus.ACTIVE, SubscriptionStatus.TRIALING],
-            )
-            .select_related("plan")
-            .order_by("-created_at")
-            .first()
-        )
-
-    def _resolve_features(self, subscription: Optional["CompanySubscription"]) -> Dict[str, bool]:
-        """
-        Derive the tenant feature map from the subscription plan.
-
-        Every ``allows_*`` boolean field on the plan becomes a feature
-        flag (e.g. ``plan.allows_custom_rag`` -> ``features["custom_rag"]``).
-        A missing subscription yields an empty feature map so feature
-        checks fail closed.
-        """
-        if subscription is None:
-            return {}
-
-        features: Dict[str, bool] = {}
-        for field in subscription.plan._meta.get_fields():
-            if not field.name.startswith(FEATURE_PREFIX):
-                continue
-            feature_name = field.name[len(FEATURE_PREFIX):]
-            features[feature_name] = bool(
-                getattr(subscription.plan, field.name, False)
-            )
-        return features
 
     # ------------------------------------------------------------------
     # Side effects

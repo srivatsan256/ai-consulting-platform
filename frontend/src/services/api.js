@@ -195,12 +195,6 @@ export const painAreaService = {
   audit: () => api.get("/ai-intervention-pain-areas/audit/"),
 };
 
-export const subscriptionService = {
-  features: () => api.get("/subscriptions/subscriptions/features/"),
-  usage: () => api.get("/subscriptions/subscriptions/usage/"),
-  quotas: () => api.get("/subscriptions/subscriptions/quotas/"),
-};
-
 export const contactService = {
   submit: (data) => api.post("/contact/", data),
 };

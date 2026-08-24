@@ -105,7 +105,6 @@ INSTALLED_APPS = [
     "audit_logs",
     "integrations",
     "settings_app",
-    "subscriptions",
     "file_management",
     "contact",
 ]

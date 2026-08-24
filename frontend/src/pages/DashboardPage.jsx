@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { projectService } from '../services/api';
-import { useAuth } from '../context/AuthContext';
 import "../styles/pages/DashboardPage.css";
 
 function formatDate(value) {
@@ -17,38 +16,8 @@ function getStatusTone(status) {
   return 'bg-blue-50 text-blue-700';
 }
 
-function featureLabel(code) {
-  const labels = {
-    custom_rag: 'Custom RAG',
-    advanced_reports: 'Advanced Reports',
-    custom_integrations: 'Custom Integrations',
-  };
-  return labels[code] || code.replace(/_/g, ' ');
-}
-
-function QuotaBar({ label, used, limit }) {
-  const pct = limit > 0 ? Math.min(100, Math.round(((used || 0) / limit) * 100)) : 0;
-  const nearLimit = pct >= 90;
-  return (
-    <div>
-      <div className="dash-quota-row">
-        <p className="dash-quota-label">{label}</p>
-        <p className="dash-quota-value">
-          {used ?? 0} / {limit}
-        </p>
-      </div>
-      <div className="dash-quota-track">
-        <div
-          className={`dash-quota-fill ${nearLimit ? "bg-red-500" : "bg-primary"}`}
-          style={{ width: `${pct}%` }}
-        />
-      </div>
-    </div>
-  );
-}
 
 export default function DashboardPage({ user, onOpenProject, onNewProject, onViewAllProjects, onOpenPainAreas }) {
-  const { plan } = useAuth();
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -149,78 +118,6 @@ export default function DashboardPage({ user, onOpenProject, onNewProject, onVie
             <p className="dash-stat-change">{stat.change}</p>
           </div>
         ))}
-      </div>
-
-      {/* Plan & Usage */}
-      <div className="dash-card soft-shadow">
-        <div className="dash-card-header gap-4">
-          <div>
-            <span className="dash-eyebrow">Subscription</span>
-            <h3 className="dash-card-title">
-              Plan & Usage
-            </h3>
-          </div>
-          {plan?.plan && (
-            <span className="dash-plan-badge">
-              {plan.plan}
-            </span>
-          )}
-        </div>
-        {plan ? (
-          <div className="dash-plan-body">
-            <div className="space-y-4">
-              <QuotaBar
-                label="Active Projects"
-                used={projects.length}
-                limit={(plan.quotas || []).find((q) => q.resource === "projects")?.limit}
-              />
-              <QuotaBar
-                label="AI Requests / Month"
-                used={(plan.usage || []).find((u) => u.feature === "ai_requests_per_month")?.quantity}
-                limit={(plan.quotas || []).find((q) => q.resource === "ai_requests_per_month")?.limit}
-              />
-              <QuotaBar
-                label="Team Members"
-                used={(plan.quotas || []).find((q) => q.resource === "users")?.usage}
-                limit={(plan.quotas || []).find((q) => q.resource === "users")?.limit}
-              />
-            </div>
-            <div>
-              <p className="dash-features-label">
-                Enabled Features
-              </p>
-              {Object.keys(plan.features || {}).length > 0 ? (
-                <div className="dash-feature-chips">
-                  {Object.entries(plan.features)
-                    .filter(([, enabled]) => enabled)
-                    .map(([code]) => (
-                      <span
-                        key={code}
-                        className="dash-feature-chip"
-                      >
-                        <span className="material-symbols-outlined text-[14px]">check_circle</span>
-                        {featureLabel(code)}
-                      </span>
-                    ))}
-                </div>
-              ) : (
-                <p className="dash-no-features">
-                  No features enabled yet. Check your subscription plan.
-                </p>
-              )}
-            </div>
-          </div>
-        ) : (
-          <div className="dash-no-plan">
-            <span className="material-symbols-outlined text-[20px] text-outline-variant">info</span>
-            <div>
-              <p className="dash-no-plan-title">No active plan found.</p>
-              <p className="dash-no-plan-sub">
-                Quotas and AI features are gated by your company's subscription plan.
-              </p>
-            </div>
-          </div>
-        )}
       </div>
 
       <div className="dash-grid">

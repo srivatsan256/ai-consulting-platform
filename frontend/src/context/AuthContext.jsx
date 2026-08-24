@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useCallback, useEffect } from "react";
 import { ROLES_DATA } from "../constants/roles";
-import { authService, TOKEN_KEY, companyService, subscriptionService } from "../services/api";
+import { authService, TOKEN_KEY, companyService } from "../services/api";
 import "../styles/context/AuthContext.css";
 
 const AuthContext = createContext(null);
@@ -39,31 +39,18 @@ export function AuthProvider({ children }) {
     return stored ? JSON.parse(stored) : null;
   });
   const [tenant, setTenant] = useState(null);
-  const [plan, setPlan] = useState(null);
   const [authReady, setAuthReady] = useState(false);
 
   const loadTenant = useCallback(async () => {
     try {
-      const [contextRes, featuresRes, usageRes, quotasRes] = await Promise.all([
-        companyService.context(),
-        subscriptionService.features(),
-        subscriptionService.usage(),
-        subscriptionService.quotas(),
-      ]);
+      const contextRes = await companyService.context();
       setTenant({
         company: contextRes.data?.data?.company || null,
         settings: contextRes.data?.data?.settings || null,
         onboarding: contextRes.data?.data?.onboarding || null,
       });
-      setPlan({
-        features: featuresRes.data || {},
-        usage: usageRes.data?.period || [],
-        quotas: quotasRes.data?.quotas || [],
-        plan: quotasRes.data?.plan || null,
-      });
     } catch {
       setTenant(null);
-      setPlan(null);
     }
   }, []);
 
@@ -136,7 +123,6 @@ export function AuthProvider({ children }) {
     authService.logout();
     setUser(null);
     setTenant(null);
-    setPlan(null);
   }, []);
 
   return (
@@ -144,7 +130,6 @@ export function AuthProvider({ children }) {
       value={{
         user,
         tenant,
-        plan,
         authReady,
         login,
         register,

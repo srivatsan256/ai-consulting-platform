@@ -1,12 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
 import { projectService, chatService, getApiError } from "../services/api";
-import { useAuth } from "../context/AuthContext";
 import TopHeader from "../components/TopHeader";
 import "../styles/pages/ClientChatPage.css";
 
 export default function ClientChatPage({ projectId }) {
-  const { plan } = useAuth();
-  const aiEnabled = !plan || Boolean(plan.features?.custom_rag);
   const [projects, setProjects] = useState([]);
   const [selectedId, setSelectedId] = useState(projectId || "");
   const [messages, setMessages] = useState([]);
@@ -63,19 +60,6 @@ export default function ClientChatPage({ projectId }) {
   return (
     <div className="space-y-6">
       <TopHeader title="AI Assistant" subtitle="Chat with your project knowledge" />
-
-      {!aiEnabled && (
-        <div className="clientchat-locked-card soft-shadow">
-          <span className="material-symbols-outlined clientchat-locked-icon">lock</span>
-          <h3 className="clientchat-locked-title">
-            Custom RAG not available on your plan
-          </h3>
-          <p className="clientchat-locked-desc">
-            This feature requires the custom_rag add-on. Ask your company admin to upgrade the
-            subscription to enable AI document chat.
-          </p>
-        </div>
-      )}
 
       {/* Project Selector */}
       <div className="clientchat-selector-card soft-shadow">
@@ -153,13 +137,13 @@ export default function ClientChatPage({ projectId }) {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleSend()}
-              placeholder={!aiEnabled ? "Custom RAG is disabled on this plan" : selectedId ? "Ask a question about the project documents..." : "Select a project first"}
-              disabled={!selectedId || !aiEnabled}
+              placeholder={selectedId ? "Ask a question about the project documents..." : "Select a project first"}
+              disabled={!selectedId}
               className="clientchat-input"
             />
             <button
               onClick={handleSend}
-              disabled={!input.trim() || !selectedId || loading || !aiEnabled}
+              disabled={!input.trim() || !selectedId || loading}
               className="clientchat-send-btn"
             >
               <span className="material-symbols-outlined clientchat-send-icon">send</span>

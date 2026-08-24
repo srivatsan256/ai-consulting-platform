@@ -134,9 +134,6 @@ urlpatterns = [
     # Settings
     path("api/settings/", include("settings_app.urls")),
 
-    # Subscriptions
-    path("api/subscriptions/", include("subscriptions.urls")),
-
     # File Management
     path("api/file-management/", include("file_management.urls")),
 

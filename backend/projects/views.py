@@ -320,21 +320,8 @@ class ProjectDocumentUploadView(APIView):
             )
 
         from core.enforcement import TenantEnforcement
-        from subscriptions.services.usage_service import QuotaService
 
         tenant = TenantEnforcement.require_tenant(request)
-        if QuotaService.get_active_subscription(tenant.company) is not None:
-            total_bytes = sum(
-                doc.file.size or 0
-                for doc in ProjectDocument.objects.filter(
-                    project__company=tenant.company,
-                )
-            ) + (file.size or 0)
-            TenantEnforcement.check_quota(
-                request,
-                "storage_gb",
-                total_bytes / (1024 ** 3),
-            )
 
         doc_type = (request.data.get("doc_type") or "OTHER").upper()
 

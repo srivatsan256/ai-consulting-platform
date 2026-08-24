@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
 import { projectService, chatService, painAreaService, getApiError } from "../services/api";
-import { useAuth } from "../context/AuthContext";
 import "../styles/pages/AIChatPage.css";
 
 const PORTFOLIO_SUGGESTIONS = [
@@ -13,8 +12,6 @@ const PORTFOLIO_SUGGESTIONS = [
 ];
 
 export default function AIChatPopup() {
-  const { plan } = useAuth();
-  const aiEnabled = !plan || Boolean(plan.features?.custom_rag);
 
   const [isOpen, setIsOpen] = useState(false);
   const [projects, setProjects] = useState([]);
@@ -165,22 +162,6 @@ export default function AIChatPopup() {
               </button>
             </div>
 
-            {/* Locked State */}
-            {!aiEnabled ? (
-              <div className="aichat-locked-card">
-                <span className="material-symbols-outlined aichat-locked-icon">
-                  lock
-                </span>
-                <h3 className="aichat-locked-title">
-                  Custom RAG not available on your plan
-                </h3>
-                <p className="aichat-locked-desc">
-                  This feature requires the custom_rag add-on. Ask your company admin
-                  to upgrade the subscription to enable AI document chat.
-                </p>
-              </div>
-            ) : (
-              <>
                 {/* Project Selector (documents mode only) */}
                 {assistantMode === "documents" && (
                   <div className="aichat-selector-card">
@@ -320,10 +301,7 @@ export default function AIChatPopup() {
                           ? "Ask a question about the project documents..."
                           : "Select a project first"
                       }
-                      disabled={
-                        !aiEnabled ||
-                        (assistantMode === "documents" && !selectedId)
-                      }
+                      disabled={assistantMode === "documents" && !selectedId}
                       className="aichat-input"
                     />
                     <button
@@ -331,7 +309,6 @@ export default function AIChatPopup() {
                       disabled={
                         loading ||
                         !input.trim() ||
-                        !aiEnabled ||
                         (assistantMode === "documents" && !selectedId)
                       }
                       className="aichat-send-btn"
@@ -342,8 +319,6 @@ export default function AIChatPopup() {
                     </button>
                   </div>
                 </div>
-              </>
-            )}
           </div>
         </div>
       )}

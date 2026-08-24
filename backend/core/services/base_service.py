@@ -132,53 +132,18 @@ class BaseService:
 
     def require_subscription(self):
         """
-        Raise PermissionDenied if no active subscription.
+        No-op: subscriptions were removed.
         """
-        tenant = getattr(self.request, "tenant", None) if self.request else None
-        if not tenant or not tenant.subscription:
-            raise PermissionDenied("Active subscription required.")
-        if not tenant.subscription.is_valid:
-            raise PermissionDenied("Subscription has expired.")
 
     def require_feature(self, feature_name: str):
         """
-        Raise PermissionDenied if feature is not enabled for the tenant.
-
-        Delegates to the feature flag service so global flags, per-company
-        overrides and plan grants are all respected.
+        No-op: all features are enabled.
         """
-        tenant = getattr(self.request, "tenant", None) if self.request else None
-        if not tenant or not tenant.company:
-            raise PermissionDenied("Tenant context required.")
-
-        from subscriptions.services.feature_flag_service import FeatureFlagService
-
-        if not FeatureFlagService.is_enabled(
-            tenant.company, feature_name, subscription=tenant.subscription
-        ):
-            raise PermissionDenied(
-                f"Feature '{feature_name}' is not available on your current plan."
-            )
 
     def check_quota(self):
         """
-        Raise ValidationError when creating would exceed the tenant's plan
-        quota for ``quota_resource``.
-
-        Subclasses opt in by setting ``quota_resource`` and may override
-        ``get_usage_count`` to count something other than all non-deleted
-        rows.
+        No-op: quotas were removed.
         """
-        if not self.quota_resource or not self.company:
-            return
-
-        from subscriptions.services.usage_service import QuotaService
-
-        QuotaService.check(
-            self.company,
-            self.quota_resource,
-            self.get_usage_count(),
-        )
 
     def get_usage_count(self) -> int:
         return self.model.objects.filter(

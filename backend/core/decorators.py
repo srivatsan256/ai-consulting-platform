@@ -25,11 +25,6 @@ def company_required(view_func):
 def subscription_required(view_func):
     @functools.wraps(view_func)
     def wrapper(request, *args, **kwargs):
-        tenant = getattr(request, "tenant", None)
-        if not tenant or not tenant.subscription:
-            raise PermissionDenied("Active subscription required.")
-        if not tenant.subscription.is_valid:
-            raise PermissionDenied("Subscription has expired.")
         return view_func(request, *args, **kwargs)
     return wrapper
 
@@ -38,15 +33,6 @@ def feature_required(feature_name):
     def decorator(view_func):
         @functools.wraps(view_func)
         def wrapper(request, *args, **kwargs):
-            tenant = getattr(request, "tenant", None)
-            if not tenant:
-                raise PermissionDenied("Tenant context required.")
-            from subscriptions.services.feature_flag_service import FeatureFlagService
-
-            if not FeatureFlagService.is_enabled(
-                tenant.company, feature_name, subscription=tenant.subscription
-            ):
-                raise PermissionDenied(f"Feature '{feature_name}' is not available.")
             return view_func(request, *args, **kwargs)
         return wrapper
     return decorator

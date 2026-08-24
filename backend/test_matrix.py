@@ -200,8 +200,6 @@ FK_FIELDS = {
     "checklist": "security/checklists",
     "vulnerability": "security/vulnerabilities",
     "deployment": "deployments",
-    "plan": "subscriptions/plans",
-    "subscription": "subscriptions/subscriptions",
     "integration": "integrations",
     "widget": "dashboard/widgets",
 }
@@ -810,14 +808,11 @@ class MatrixTester:
         self.crud("Notifications", "/notifications")
         self.test_get("Notifications", "/notifications/preferences")
 
-        # --- Audit Logs / Integrations / Settings / Subscriptions ---
+        # --- Audit Logs / Integrations / Settings ---
         self.test_get("Audit Logs", "/audit-logs")
         self.crud("Integrations", "/integrations")
         self.test_get("Settings", "/settings/system")
         self.test_get("Settings", "/settings/profile")
-        self.crud("Announcements", "/settings/announcements")
-        self.test_get("Subscriptions", "/subscriptions/plans")
-        self.test_get("Subscriptions", "/subscriptions/subscriptions")
 
         # --- Utility / Health ---
         r = requests.get("http://localhost:8000/api/health/")

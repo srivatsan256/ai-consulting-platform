@@ -37,19 +37,6 @@ class CompanyMemberViewSet(viewsets.ModelViewSet):
         target_user = serializer.validated_data.get("user")
         user = self.request.user
 
-        if company is not None:
-            from subscriptions.services.usage_service import QuotaService
-
-            if QuotaService.get_active_subscription(company) is not None:
-                QuotaService.check(
-                    company,
-                    "users",
-                    CompanyMember.objects.filter(
-                        company=company,
-                        is_active=True,
-                    ).count(),
-                )
-
         can_manage = bool(user.is_superuser)  # type: ignore
         existing = None
         if not can_manage and company is not None:
@@ -177,15 +164,6 @@ class CompanyMemberViewSet(viewsets.ModelViewSet):
         POST /api/memberships/invite/
         """
         company = self._require_manager()
-
-        from subscriptions.services.usage_service import QuotaService
-
-        if QuotaService.get_active_subscription(company) is not None:
-            QuotaService.check(
-                company,
-                "users",
-                QuotaService.count_active_users(company),
-            )
 
         serializer = InviteUserSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
