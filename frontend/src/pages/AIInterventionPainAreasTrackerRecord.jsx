@@ -21,14 +21,16 @@ import {
 } from "recharts";
 import TopHeader from "../components/TopHeader";
 import CsvUploadFlow from "../components/CsvUploadFlow/CsvUploadFlow";
+import ScoringConfigPanel from "../components/ScoringConfigPanel";
+import AuditPanel from "../components/AuditPanel";
 import { painAreaService, getApiError } from "../services/api";
 import RoadmapView from "./phases/RoadmapView";
 import "../styles/pages/AIInterventionPainAreasTrackerRecord.css";
 
 const PRIORITY_OPTIONS = ["High", "Medium", "Low"];
 const STATUS_OPTIONS = ["Open", "In Progress", "Completed", "On Hold", "Cancelled"];
-const QUADRANT_OPTIONS = ["Quick Win", "Strategic", "Fill In", "Revisit"];
-const SCORE_OPTIONS = [1, 2, 3];
+const QUADRANT_OPTIONS = ["Quick Win", "Major Project", "Fill In", "Reconsider", "Needs Input"];
+const SCORE_OPTIONS = [1, 2, 3, 4, 5];
 const PAGE_SIZE = 10;
 const PRESETS_KEY = "painAreaPresets";
 
@@ -130,6 +132,10 @@ export default function AIInterventionPainAreasTrackerRecord() {
   });
   const [presetName, setPresetName] = useState("");
   const [selectedPreset, setSelectedPreset] = useState("");
+
+  // Panel state
+  const [showScoringConfig, setShowScoringConfig] = useState(false);
+  const [showAuditPanel, setShowAuditPanel] = useState(false);
 
   // Detail panel
   const [selectedRecord, setSelectedRecord] = useState(null);
@@ -301,13 +307,18 @@ export default function AIInterventionPainAreasTrackerRecord() {
   }, [filteredRecords]);
 
   const quadrantCounts = useMemo(() => {
-    const counts = { "Quick Win": 0, Strategic: 0, "Fill In": 0, Revisit: 0 };
+    const counts = { "Quick Win": 0, "Major Project": 0, "Fill In": 0, "Reconsider": 0, "Needs Input": 0 };
     filteredRecords.forEach((r) => {
-      const q = r.quadrant || "Revisit";
+      const q = r.quadrant || "Needs Input";
       if (counts[q] !== undefined) counts[q] += 1;
+      else counts["Needs Input"] += 1;
     });
     return counts;
   }, [filteredRecords]);
+
+  // Computed: how many records genuinely need scoring input
+  const needsInputCount = useMemo(() => filteredRecords.filter((r) => r.needs_input === true).length, [filteredRecords]);
+  const needsInputPct = filteredRecords.length ? Math.round((needsInputCount / filteredRecords.length) * 100) : 0;
 
   const statusPieData = useMemo(() => {
     const counts = {};
@@ -409,19 +420,44 @@ export default function AIInterventionPainAreasTrackerRecord() {
 
   const getQuadrantClass = (quadrant) => {
     const map = {
-      "Quick Win": "bg-emerald-100 text-emerald-700",
-      Strategic: "bg-blue-100 text-blue-700",
-      "Fill In": "bg-amber-100 text-amber-700",
-      Revisit: "bg-slate-100 text-slate-600",
+      "Quick Win":     "bg-emerald-100 text-emerald-700 border border-emerald-200",
+      "Major Project": "bg-blue-100 text-blue-700 border border-blue-200",
+      "Fill In":       "bg-amber-100 text-amber-700 border border-amber-200",
+      "Reconsider":    "bg-red-100 text-red-700 border border-red-200",
+      "Needs Input":   "bg-slate-100 text-slate-500 border border-slate-200",
+      // Legacy aliases (pre-1.5 scale)
+      Strategic: "bg-blue-100 text-blue-700 border border-blue-200",
+      Revisit:   "bg-slate-100 text-slate-500 border border-slate-200",
     };
-    return map[quadrant] || "bg-slate-100 text-slate-600";
+    return map[quadrant] || "bg-slate-100 text-slate-500 border border-slate-200";
   };
 
   const getScoreClass = (score) => {
-    if (score == null) return "bg-slate-100 text-slate-600";
-    if (score >= 3) return "bg-emerald-100 text-emerald-700";
+    if (score == null) return "bg-slate-100 text-slate-400 border border-slate-200 italic";
+    if (score >= 4) return "bg-emerald-100 text-emerald-700";
+    if (score === 3) return "bg-teal-100 text-teal-700";
     if (score === 2) return "bg-amber-100 text-amber-700";
     return "bg-slate-100 text-slate-600";
+  };
+
+  const renderScoreBadge = (score, size = "") => {
+    if (score == null) {
+      return (
+        <span className={`pain-score-badge bg-slate-100 text-slate-400 border border-slate-200 italic text-[10px] ${size}`}
+              title="Needs Input — fill Time Spent / Month to score">
+          needs input
+        </span>
+      );
+    }
+    return (
+      <span className={`pain-score-badge ${getScoreClass(score)} ${size}`}>{score}</span>
+    );
+  };
+
+  const renderPriorityScore = (record) => {
+    const s = record.total_score;
+    if (s == null) return <span className="pain-score-badge bg-slate-100 text-slate-400 border border-slate-200 italic text-[10px]" title="Needs Input">needs input</span>;
+    return <span className="pain-total-score">{s}</span>;
   };
 
   const getStatusClass = (status) => {
@@ -664,77 +700,9 @@ export default function AIInterventionPainAreasTrackerRecord() {
     return null;
   };
 
-  return (
-    <div className="pain-page">
-      <TopHeader
-        title="AI Intervention Pain Areas Tracker"
-        subtitle="Modern dashboard · Process pain points & AI intervention opportunities"
-        actions={
-          <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
-            <button
-              onClick={() => setUploadFlowOpen(true)}
-              className="pain-secondary-btn"
-              style={{
-                display: "inline-flex",
-                flexDirection: "column",
-                alignItems: "flex-start",
-                gap: "2px",
-                padding: "8px 14px",
-                border: "1px solid #CBD5E1",
-                borderRadius: "6px",
-                background: "#FFFFFF",
-                color: "#334155",
-                fontWeight: 500,
-                cursor: "pointer",
-                lineHeight: 1.25,
-              }}
-            >
-              <span
-                style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: "6px",
-                }}
-              >
-                <span className="material-symbols-outlined text-[18px]">upload_file</span>
-                Upload Using CSV
-              </span>
-              {lastImport && (
-                <span className="pain-import-summary">
-                  {lastImport.inserted} imported
-                  {lastImport.skipped ? ` · ${lastImport.skipped} skipped` : ""}
-                  {lastImport.warnings?.length
-                    ? ` · ${lastImport.warnings.length} warning${lastImport.warnings.length === 1 ? "" : "s"}`
-                    : ""}
-                </span>
-              )}
-            </button>
-            <button
-              onClick={() => navigate("/ai-pain-areas/new")}
-              className="pain-primary-btn"
-            >
-              <span className="material-symbols-outlined text-[18px]">add</span>
-              Add New Record
-            </button>
-          </div>
-        }
-      />
-{/* Workspace section tabs (Phases 6-10) */}
-      <div className="pain-workspace-tabs soft-shadow">
-        {SECTIONS.map((section) => (
-          <button
-            key={section.id}
-            onClick={() => setActiveSection(section.id)}
-            className={`pain-workspace-tab ${activeSection === section.id ? "pain-workspace-tab-active" : ""}`}
-          >
-            <span className="material-symbols-outlined text-[18px]">{section.icon}</span>
-            {section.label}
-          </button>
-        ))}
-      </div>
-
-      {activeSection === "tracker" && (
-        <>
+  const renderTrackerSection = () => {
+    return (
+      <>
       <CsvUploadFlow
         isOpen={isUploadFlowOpen}
         onClose={() => setUploadFlowOpen(false)}
@@ -748,6 +716,87 @@ export default function AIInterventionPainAreasTrackerRecord() {
           });
         }}
       />
+
+      {/* Prioritization Summary — Scoring Matrix Framework Part 5 */}
+      {filteredRecords.length > 0 && (
+        <div className="pain-panel soft-shadow">
+          <div className="pain-table-header">
+            <div>
+              <h3 className="pain-h3">Prioritization Summary</h3>
+              <span className="pain-subtitle-sm">
+                AI Opportunities by Quadrant · {filteredRecords.length} total records
+              </span>
+            </div>
+            <button
+              onClick={() => setShowScoringConfig(true)}
+              className="pain-secondary-btn text-xs"
+              title="How are these calculated?"
+            >
+              <span className="material-symbols-outlined text-[16px]">info</span>
+              How scores work
+            </button>
+          </div>
+
+          {/* Needs Input >50% warning banner */}
+          {needsInputPct > 50 && (
+            <div className="flex items-start gap-3 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 mb-4">
+              <span className="material-symbols-outlined text-amber-600 text-[20px] mt-0.5 shrink-0">warning</span>
+              <div>
+                <p className="text-sm font-bold text-amber-800">Data gap detected — {needsInputPct}% of records need input</p>
+                <p className="text-xs text-amber-700 mt-0.5">
+                  {needsInputCount} of {filteredRecords.length} records are missing &lsquo;Time Spent / Month&rsquo;. 
+                  Fill this field to unlock full prioritisation scoring. Next step: close the data gap.
+                </p>
+                <button
+                  onClick={() => setShowAuditPanel(true)}
+                  className="mt-2 text-xs font-semibold text-amber-800 underline hover:no-underline"
+                >
+                  View full audit report →
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Count table */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+            {[
+              { label: "Quick Win",     color: "emerald", dot: "bg-emerald-500",  bg: "bg-emerald-50",  text: "text-emerald-700",  border: "border-emerald-200" },
+              { label: "Major Project", color: "blue",    dot: "bg-blue-500",     bg: "bg-blue-50",     text: "text-blue-700",     border: "border-blue-200" },
+              { label: "Fill In",       color: "amber",   dot: "bg-amber-500",    bg: "bg-amber-50",    text: "text-amber-700",    border: "border-amber-200" },
+              { label: "Reconsider",    color: "red",     dot: "bg-red-500",      bg: "bg-red-50",      text: "text-red-700",      border: "border-red-200" },
+              { label: "Needs Input",   color: "slate",   dot: "bg-slate-400",    bg: "bg-slate-50",    text: "text-slate-500",    border: "border-slate-200" },
+            ].map(({ label, dot, bg, text, border }) => (
+              <div
+                key={label}
+                className={`rounded-xl border ${border} ${bg} p-3 flex flex-col gap-1 cursor-pointer hover:opacity-80 transition-opacity`}
+                onClick={() => setFilterQuadrant(label === filterQuadrant ? "All" : label)}
+                title={`Filter by ${label}`}
+              >
+                <div className={`flex items-center gap-1.5 text-xs font-semibold ${text}`}>
+                  <span className={`w-2 h-2 rounded-full ${dot}`} />
+                  {label}
+                </div>
+                <div className={`text-2xl font-bold ${text}`}>
+                  {quadrantCounts[label] ?? 0}
+                </div>
+                <div className={`text-[10px] ${text} opacity-70`}>items</div>
+              </div>
+            ))}
+          </div>
+
+          {/* Total row */}
+          <div className="flex justify-end mt-3">
+            <span className="text-xs text-on-surface-variant">
+              Total: <strong className="text-on-surface">{filteredRecords.length}</strong> items
+              {needsInputCount > 0 && (
+                <span className="ml-2 text-amber-600">
+                  · <strong>{needsInputCount}</strong> need data
+                </span>
+              )}
+            </span>
+          </div>
+        </div>
+      )}
 
       {/* Filters */}
       <div className="pain-filters soft-shadow">
@@ -1550,19 +1599,13 @@ export default function AIInterventionPainAreasTrackerRecord() {
                         {record.time_spent_hrs != null ? `${record.time_spent_hrs} hrs` : "—"}
                       </td>
                       <td className="pain-td text-center">
-                        <span className={`pain-score-badge ${getScoreClass(record.impact_score)}`}>
-                          {record.impact_score ?? "—"}
-                        </span>
+                        {renderScoreBadge(record.impact_score)}
                       </td>
                       <td className="pain-td text-center">
-                        <span className={`pain-score-badge ${getScoreClass(record.feasibility_score)}`}>
-                          {record.feasibility_score ?? "—"}
-                        </span>
+                        {renderScoreBadge(record.feasibility_score)}
                       </td>
                       <td className="pain-td text-center">
-                        <span className="pain-total-score">
-                          {getTotalScore(record)}
-                        </span>
+                        {renderPriorityScore(record)}
                       </td>
                       <td className="pain-td">
                         <span className={`pain-pill ${getQuadrantClass(record.quadrant)}`}>
@@ -1789,7 +1832,6 @@ export default function AIInterventionPainAreasTrackerRecord() {
                 <p>{selectedRecord.remarks || "—"}</p>
               </div>
             </div>
-
             <div className="pain-detail-footer">
               <button
                 className="pain-secondary-btn"
@@ -1805,38 +1847,138 @@ export default function AIInterventionPainAreasTrackerRecord() {
           </div>
         </div>
       )}
-        </>
-      )}
+    </>
+  );
+};
 
-      {activeSection === "roadmap" && <RoadmapView records={records} />}
+  const renderActiveSection = () => {
+    switch (activeSection) {
+      case "roadmap":
+        return <RoadmapView records={records} />;
+      case "assistant":
+        return (
+          <div className="pain-panel soft-shadow">
+            <h3 className="pain-h3">AI Assistant</h3>
+            <span className="pain-subtitle-sm">Phase 7</span>
+          </div>
+        );
+      case "departments":
+        return (
+          <div className="pain-panel soft-shadow">
+            <h3 className="pain-h3">Departments</h3>
+            <span className="pain-subtitle-sm">Phase 8</span>
+          </div>
+        );
+      case "executive":
+        return (
+          <div className="pain-panel soft-shadow">
+            <h3 className="pain-h3">Executive Dashboard</h3>
+            <span className="pain-subtitle-sm">Phase 9</span>
+          </div>
+        );
+      case "workspace":
+        return (
+          <div className="pain-panel soft-shadow">
+            <h3 className="pain-h3">Consulting Workspace</h3>
+            <span className="pain-subtitle-sm">Phase 10</span>
+          </div>
+        );
+      default:
+        return renderTrackerSection();
+    }
+  };
 
-      {activeSection === "assistant" && (
-        <div className="pain-panel soft-shadow">
-          <h3 className="pain-h3">AI Assistant</h3>
-          <span className="pain-subtitle-sm">Phase 7</span>
-        </div>
-      )}
+  return (
+    <div className="pain-page">
+      <TopHeader
+        title="AI Intervention Pain Areas Tracker"
+        subtitle="Modern dashboard · Process pain points & AI intervention opportunities"
+        actions={
+          <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+            <button
+              onClick={() => setUploadFlowOpen(true)}
+              className="pain-secondary-btn"
+              style={{
+                display: "inline-flex",
+                flexDirection: "column",
+                alignItems: "flex-start",
+                gap: "2px",
+                padding: "8px 14px",
+                border: "1px solid #CBD5E1",
+                borderRadius: "6px",
+                background: "#FFFFFF",
+                color: "#334155",
+                fontWeight: 500,
+                cursor: "pointer",
+                lineHeight: 1.25,
+              }}
+            >
+              <span
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "6px",
+                }}
+              >
+                <span className="material-symbols-outlined text-[18px]">upload_file</span>
+                Upload Using CSV
+              </span>
+              {lastImport && (
+                <span className="pain-import-summary">
+                  {lastImport.inserted} imported
+                  {lastImport.skipped ? ` · ${lastImport.skipped} skipped` : ""}
+                  {lastImport.warnings?.length
+                    ? ` · ${lastImport.warnings.length} warning${lastImport.warnings.length === 1 ? "" : "s"}`
+                    : ""}
+                </span>
+              )}
+            </button>
+            <button
+              onClick={() => navigate("/ai-pain-areas/new")}
+              className="pain-primary-btn"
+            >
+              <span className="material-symbols-outlined text-[18px]">add</span>
+              Add New Record
+            </button>
+            <button
+              onClick={() => setShowScoringConfig(true)}
+              className="pain-secondary-btn"
+              title="View scoring rules"
+            >
+              <span className="material-symbols-outlined text-[18px]">tune</span>
+              Scoring Config
+            </button>
+            <button
+              onClick={() => setShowAuditPanel(true)}
+              className="pain-secondary-btn"
+              title="Run data quality audit"
+            >
+              <span className="material-symbols-outlined text-[18px]">search_check</span>
+              Audit Data
+            </button>
+          </div>
+        }
+      />
 
-      {activeSection === "departments" && (
-        <div className="pain-panel soft-shadow">
-          <h3 className="pain-h3">Departments</h3>
-          <span className="pain-subtitle-sm">Phase 8</span>
-        </div>
-      )}
+      {/* Scoring Config & Audit Panels */}
+      {showScoringConfig && <ScoringConfigPanel onClose={() => setShowScoringConfig(false)} />}
+      {showAuditPanel && <AuditPanel onClose={() => setShowAuditPanel(false)} />}
 
-      {activeSection === "executive" && (
-        <div className="pain-panel soft-shadow">
-          <h3 className="pain-h3">Executive Dashboard</h3>
-          <span className="pain-subtitle-sm">Phase 9</span>
-        </div>
-      )}
+      {/* Workspace section tabs (Phases 6-10) */}
+      <div className="pain-workspace-tabs soft-shadow">
+        {SECTIONS.map((section) => (
+          <button
+            key={section.id}
+            onClick={() => setActiveSection(section.id)}
+            className={`pain-workspace-tab ${activeSection === section.id ? "pain-workspace-tab-active" : ""}`}
+          >
+            <span className="material-symbols-outlined text-[18px]">{section.icon}</span>
+            {section.label}
+          </button>
+        ))}
+      </div>
 
-      {activeSection === "workspace" && (
-        <div className="pain-panel soft-shadow">
-          <h3 className="pain-h3">Consulting Workspace</h3>
-          <span className="pain-subtitle-sm">Phase 10</span>
-        </div>
-      )}
+      {renderActiveSection()}
     </div>
   );
 }

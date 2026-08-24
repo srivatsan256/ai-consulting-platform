@@ -2,7 +2,9 @@ from rest_framework import serializers
 from .models import AIInterventionPainArea
 from .scoring import (
     score_from_priority,
+    score_from_feasibility,
     score_from_time_spent,
+    needs_input,
     quadrant_from_scores,
 )
 from .recommendations import recommend
@@ -22,6 +24,7 @@ class AIInterventionPainAreaSerializer(serializers.ModelSerializer):
     priority_score = serializers.SerializerMethodField()
     total_score = serializers.SerializerMethodField()
     quadrant = serializers.SerializerMethodField()
+    needs_input = serializers.SerializerMethodField()
     ai_recommendation = serializers.SerializerMethodField()
     ai_recommendation_key = serializers.SerializerMethodField()
     ai_recommendation_icon = serializers.SerializerMethodField()
@@ -53,6 +56,7 @@ class AIInterventionPainAreaSerializer(serializers.ModelSerializer):
             "priority_score",
             "total_score",
             "quadrant",
+            "needs_input",
             "ai_recommendation",
             "ai_recommendation_key",
             "ai_recommendation_icon",
@@ -64,26 +68,34 @@ class AIInterventionPainAreaSerializer(serializers.ModelSerializer):
         read_only_fields = ["id", "created_at", "updated_at"]
 
     def get_impact_score(self, obj):
+        """Return 1–5 impact score from time_spent_hrs, or None if missing."""
         return score_from_time_spent(obj.time_spent_hrs)
 
     def get_feasibility_score(self, obj):
-        return score_from_priority(obj.feasibility)
+        """Return 1–5 feasibility score from the feasibility field."""
+        return score_from_feasibility(obj.feasibility)
 
     def get_priority_score(self, obj):
+        """Return 1–5 priority score from the priority field."""
         return score_from_priority(obj.priority)
 
     def get_total_score(self, obj):
-        return (
-            self.get_impact_score(obj)
-            + self.get_feasibility_score(obj)
-            + self.get_priority_score(obj)
-        )
+        """Return Impact × Feasibility (1–25), or None when either score is missing."""
+        impact = self.get_impact_score(obj)
+        feasibility = self.get_feasibility_score(obj)
+        if impact is None or feasibility is None:
+            return None
+        return impact * feasibility
 
     def get_quadrant(self, obj):
         return quadrant_from_scores(
             self.get_impact_score(obj),
             self.get_feasibility_score(obj),
         )
+
+    def get_needs_input(self, obj):
+        """Return True when the record lacks data needed to compute all scores."""
+        return needs_input(obj)
 
     def _recommendation(self, obj):
         if not hasattr(self, "_recommendation_cache"):

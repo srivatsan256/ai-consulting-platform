@@ -192,6 +192,7 @@ export const painAreaService = {
   roadmap: () => api.get("/ai-intervention-pain-areas/roadmap/"),
   assistant: (question) =>
     api.post("/ai-intervention-pain-areas/ai-assistant/", { question }),
+  audit: () => api.get("/ai-intervention-pain-areas/audit/"),
 };
 
 export const subscriptionService = {

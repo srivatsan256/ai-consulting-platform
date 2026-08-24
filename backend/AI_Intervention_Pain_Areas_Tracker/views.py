@@ -5,6 +5,7 @@ import re
 import uuid
 
 from django.db import connection, transaction
+from django.db.models import Count, Sum
 from django.db.utils import OperationalError, ProgrammingError
 from django.http import HttpResponse
 from rest_framework import viewsets, filters, status
@@ -16,6 +17,7 @@ from django_filters.rest_framework import DjangoFilterBackend # type: ignore
 from .models import AIInterventionPainArea
 from .serializers import AIInterventionPainAreaSerializer
 from .report_generation import REPORT_TYPES, build_report_data, export_report
+from .scoring import score_from_time_spent, score_from_feasibility, needs_input as _needs_input
 
 STAGING_TABLE = "ai_pain_area_csv_staging"
 STAGING_FUNCTION = "process_pain_area_csv_import"
@@ -374,6 +376,119 @@ class AIInterventionPainAreaViewSet(viewsets.ModelViewSet):
 
         return inserted, skipped, list(fn_warnings or [])
 
+    @action(detail=False, methods=["get"], url_path="audit", url_name="audit")
+    def audit(self, request):
+        """Return a structured data-quality audit of the pain areas tracker.
+
+        Response shape
+        --------------
+        {
+          "column_inventory": [{"field": str, "type": str, "filled": int, "missing": int}],
+          "total_records": int,
+          "needs_input_count": int,
+          "needs_input_pct": float,
+          "flagged_rows": [{"id": int, "process_activity": str, "missing_fields": [str]}],
+          "quadrant_distribution": {"Quick Win": int, "Major Project": int,
+                                    "Fill In": int, "Reconsider": int, "Needs Input": int},
+          "executive_summary": str,
+          "primary_blocker": str | null,
+        }
+        """
+        records = list(self.get_queryset())
+        total = len(records)
+
+        # ── Column inventory ──────────────────────────────────────────────────
+        AUDITED_FIELDS = [
+            ("time_spent_hrs", "float"),
+            ("priority", "choice"),
+            ("feasibility", "choice"),
+            ("department", "text"),
+            ("process_activity", "text"),
+            ("owner", "text"),
+            ("target_date", "date"),
+            ("status", "choice"),
+        ]
+        column_inventory = []
+        for field, ftype in AUDITED_FIELDS:
+            filled = sum(1 for r in records if getattr(r, field, None) not in (None, ""))
+            column_inventory.append({
+                "field": field, "type": ftype,
+                "filled": filled, "missing": total - filled,
+            })
+
+        # ── Row-level gap analysis ─────────────────────────────────────────────
+        CRITICAL_FIELDS = ["time_spent_hrs", "priority", "feasibility"]
+        flagged_rows = []
+        needs_input_count = 0
+        for r in records:
+            missing = [f for f in CRITICAL_FIELDS if getattr(r, f, None) in (None, "")]
+            if missing:
+                flagged_rows.append({
+                    "id": r.id,
+                    "process_activity": r.process_activity or "(unnamed)",
+                    "missing_fields": missing,
+                })
+            if _needs_input(r):
+                needs_input_count += 1
+
+        needs_input_pct = round(needs_input_count / total * 100, 1) if total else 0.0
+
+        # ── Quadrant distribution ─────────────────────────────────────────────
+        from .scoring import quadrant_from_scores
+        quadrant_counts = {
+            "Quick Win": 0, "Major Project": 0,
+            "Fill In": 0, "Reconsider": 0, "Needs Input": 0,
+        }
+        for r in records:
+            impact = score_from_time_spent(r.time_spent_hrs)
+            feasibility = score_from_feasibility(r.feasibility)
+            q = quadrant_from_scores(impact, feasibility)
+            if q in quadrant_counts:
+                quadrant_counts[q] += 1
+
+        scoreable = total - needs_input_count
+        qw = quadrant_counts["Quick Win"]
+        mp = quadrant_counts["Major Project"]
+        fi = quadrant_counts["Fill In"]
+        rc = quadrant_counts["Reconsider"]
+
+        # ── Executive summary ─────────────────────────────────────────────────
+        if total == 0:
+            exec_summary = "No records found in the tracker."
+            blocker = None
+        elif needs_input_pct > 50:
+            exec_summary = (
+                f"Of {total} initiatives, {scoreable} can be scored today "
+                f"({qw} Quick Win, {mp} Major Project, {fi} Fill In, {rc} Reconsider); "
+                f"{needs_input_count} show \u2018Needs Input\u2019 because Time Spent / Month "
+                f"was never filled in. Next step: close the data gap."
+            )
+            blocker = (
+                f"{needs_input_count} of {total} items ({needs_input_pct}%) are missing "
+                "\u2018Time Spent / Month\u2019. Fill this field to unlock full prioritisation."
+            )
+        else:
+            exec_summary = (
+                f"Of {total} initiatives, {qw} are Quick Wins, {mp} are Major Projects, "
+                f"{fi} are Fill Ins, and {rc} should be Reconsidered. "
+                f"{needs_input_count} still need data to be scored."
+            )
+            blocker = (
+                f"{needs_input_count} records are missing \u2018Time Spent / Month\u2019."
+                if needs_input_count else None
+            )
+
+        return Response({
+            "column_inventory": column_inventory,
+            "total_records": total,
+            "needs_input_count": needs_input_count,
+            "needs_input_pct": needs_input_pct,
+            "flagged_rows": flagged_rows,
+            "quadrant_distribution": quadrant_counts,
+            "executive_summary": exec_summary,
+            "primary_blocker": blocker,
+        })
+
 
 def classify_phase(quadrant, total_score):
     """
@@ -490,3 +605,110 @@ class AssistantView(viewsets.ViewSet):
         question = request.data.get("question", "")
         result = assistant_answer(question)
         return Response(result, status=status.HTTP_200_OK)
+
+
+class DepartmentStatsViewSet(viewsets.ViewSet):
+    """
+    Department-level aggregates for the AI pain area portfolio.
+
+    Uses ORM aggregations for directly-stored fields (count, hours, status and
+    priority distributions). Derived scoring fields (impact_score, total_score,
+    quadrant) are computed per record via the shared scoring helpers, then
+    grouped by department.
+    """
+    permission_classes = [IsAuthenticated]
+
+    def list(self, request):
+        from .models import AIInterventionPainArea
+        from .scoring import (
+            score_from_priority,
+            score_from_feasibility,
+            score_from_time_spent,
+            quadrant_from_scores,
+        )
+
+        rows = (
+            AIInterventionPainArea.objects.values("department")
+            .annotate(count=Count("id"), total_hours=Sum("time_spent_hrs"))
+            .order_by("-total_hours")
+        )
+
+        stats = {}
+        for r in AIInterventionPainArea.objects.all():
+            dept = r.department or "Unknown"
+            impact = score_from_time_spent(r.time_spent_hrs)
+            feasibility = score_from_feasibility(r.feasibility)
+            priority = score_from_priority(r.priority)
+            total = (impact or 0) + (feasibility or 0) + (priority or 0)
+            q = quadrant_from_scores(impact, feasibility)
+            d = stats.setdefault(
+                dept,
+                {
+                    "impact_sum": 0,
+                    "total_sum": 0,
+                    "quadrants": {"Quick Win": 0, "Major Project": 0, "Fill In": 0, "Reconsider": 0, "Needs Input": 0},
+                    "status": {"Open": 0, "In Progress": 0, "Completed": 0, "On Hold": 0, "Cancelled": 0},
+                    "priority": {"High": 0, "Medium": 0, "Low": 0},
+                    "processes": [],
+                },
+            )
+            d["impact_sum"] += impact or 0
+            d["total_sum"] += total
+            if q in d["quadrants"]:
+                d["quadrants"][q] += 1
+            if r.status in d["status"]:
+                d["status"][r.status] += 1
+            if r.priority in d["priority"]:
+                d["priority"][r.priority] += 1
+            d["processes"].append(
+                {
+                    "process": r.process_activity,
+                    "hours": r.time_spent_hrs,
+                    "score": total,
+                    "recommendation": r.ai_intervention,
+                }
+            )
+
+        result = []
+        for row in rows:
+            dept = row["department"] or "Unknown"
+            d = stats.get(dept, {})
+            count = row["count"] or 0
+            procs = sorted(
+                d.get("processes", []),
+                key=lambda p: (p["score"] or 0),
+                reverse=True,
+            )[:5]
+            avg_impact = round(d["impact_sum"] / count, 2) if count else 0
+            avg_total = round(d["total_sum"] / count, 2) if count else 0
+            result.append(
+                {
+                    "name": dept,
+                    "id": dept,
+                    "opportunities": count,
+                    "total_hours": round(row["total_hours"] or 0, 2),
+                    "avg_impact": avg_impact,
+                    "avg_total_score": avg_total,
+                    "quick_wins": d.get("quadrants", {}).get("Quick Win", 0),
+                    "major_projects": d.get("quadrants", {}).get("Major Project", 0),
+                    "quadrants": d.get("quadrants", {}),
+                    "status": d.get("status", {}),
+                    "priority": d.get("priority", {}),
+                    "top_processes": procs,
+                }
+            )
+        return Response({"departments": result})
+
+    def retrieve(self, request, pk=None):
+        from .models import AIInterventionPainArea
+        from .scoring import (
+            score_from_priority,
+            score_from_time_spent,
+            quadrant_from_scores,
+        )
+
+        all_rows = self.list(request).data["departments"]
+        dept = next((d for d in all_rows if d["id"] == pk), None)
+        if dept is None:
+            return Response({"detail": "Department not found."}, status=404)
+        return Response({"department": dept})
