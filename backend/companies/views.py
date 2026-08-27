@@ -36,17 +36,22 @@ class CompanyViewSet(ModelViewSet):
         user = self.request.user
         if user.is_superuser or user.is_staff:
             return Company.objects.all()
-        qs = Company.objects.filter(members__user=user, members__is_active=True)
-        tenant = getattr(self.request, "tenant", None)
-        company = getattr(tenant, "company", None)
-        if company is not None:
-            from company_members.models import CompanyMember
-            membership = CompanyMember.objects.filter(
-                user=user, company=company, is_active=True
-            ).select_related("role").first()
-            if membership and membership.role and membership.role.role_key in ("super_admin", "company_admin", "client_admin"):
-                return Company.objects.all()
-        return qs
+        return Company.objects.filter(members__user=user, members__is_active=True)
+
+    def perform_create(self, serializer):
+        company = serializer.save()
+        from company_members.models import CompanyMember
+        from roles.models import Role
+        role, _ = Role.objects.get_or_create(
+            role_key="company_admin",
+            defaults={"display_name": "Company Admin"},
+        )
+        CompanyMember.objects.get_or_create(
+            user=self.request.user,
+            company=company,
+            defaults={"role": role, "is_primary": True},
+        )
+        return company
 
     @action(detail=True, methods=["post"], permission_classes=[IsAdminUser])
     def suspend(self, request, pk=None):

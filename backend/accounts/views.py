@@ -49,16 +49,27 @@ class UserViewSet(viewsets.ModelViewSet):
         company = getattr(tenant, "company", None)
         if company is None:
             return queryset.none()
-        from company_members.models import CompanyMember
-        membership = CompanyMember.objects.filter(
-            user=user, company=company, is_active=True
-        ).select_related("role").first()
-        if membership and membership.role and membership.role.role_key in ("super_admin", "company_admin", "client_admin"):
-            return queryset
         queryset = queryset.filter(company_memberships__company=company)
         if self.action == "list":
             queryset = queryset.filter(company_memberships__is_active=True)
         return queryset.distinct()
+
+    def perform_create(self, serializer):
+        user = serializer.save()
+        tenant = getattr(self.request, "tenant", None)
+        company = getattr(tenant, "company", None)
+        if company is not None:
+            from roles.models import Role
+            role, _ = Role.objects.get_or_create(
+                role_key="consultant",
+                defaults={"display_name": "Consultant"},
+            )
+            CompanyMember.objects.get_or_create(
+                user=user,
+                company=company,
+                defaults={"role": role},
+            )
+        return user
 
     # ------------------------------------------------------------------
     # Authorization helpers

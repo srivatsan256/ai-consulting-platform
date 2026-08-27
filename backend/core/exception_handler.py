@@ -1,4 +1,3 @@
-import traceback
 from rest_framework.views import exception_handler
 from rest_framework.exceptions import (
     APIException,
@@ -21,9 +20,6 @@ def custom_exception_handler(exc, context):
             "errors": get_errors(response.data),
         }
         return Response(data, status=response.status_code)
-
-    # Log traceback for non-DRF exceptions
-    traceback.print_exc()
 
     return Response({
         "success": False,

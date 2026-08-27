@@ -14,7 +14,7 @@ without a feature the view only requires an authenticated company membership.
 from rest_framework.permissions import BasePermission
 
 #: Roles that bypass feature checks and manage company-level authorization.
-MANAGER_ROLE_KEYS = ("super_admin", "company_admin")
+MANAGER_ROLE_KEYS = ("super_admin", "company_admin", "client_admin")
 
 #: HTTP method -> feature permission flag.
 ACTION_BY_METHOD = {

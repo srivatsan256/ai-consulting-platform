@@ -19,7 +19,7 @@ def _total_score(obj):
     impact = score_from_time_spent(obj.time_spent_hrs)
     feasibility = score_from_priority(obj.feasibility)
     priority = score_from_priority(obj.priority)
-    return impact + feasibility + priority
+    return (impact or 0) + (feasibility or 0) + (priority or 0)
 
 
 def _quadrant(obj):

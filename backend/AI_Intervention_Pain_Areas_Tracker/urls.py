@@ -11,7 +11,6 @@ router = DefaultRouter()
 router.register("", AIInterventionPainAreaViewSet, basename="pain-area")
 
 urlpatterns = [
-    path("", include(router.urls)),
     path("roadmap/", RoadmapViewSet.as_view({"get": "list"}), name="roadmap"),
     path("ai-assistant/", AssistantView.as_view({"post": "create"}), name="ai-assistant"),
     path(
@@ -24,4 +23,5 @@ urlpatterns = [
         DepartmentStatsViewSet.as_view({"get": "retrieve"}),
         name="department-stats-detail",
     ),
+    path("", include(router.urls)),
 ]
