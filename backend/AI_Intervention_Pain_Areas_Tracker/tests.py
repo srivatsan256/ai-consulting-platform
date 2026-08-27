@@ -10,7 +10,7 @@ from .models import AIInterventionPainArea
 
 TEST_TABLE_SQL = """
 CREATE TABLE ai_intervention_pain_areas_tracker (
-    id               INTEGER PRIMARY KEY AUTOINCREMENT,
+    id               SERIAL PRIMARY KEY,
     date             DATE NOT NULL,
     department       VARCHAR(255) NOT NULL DEFAULT '',
     process_activity VARCHAR(255) NOT NULL DEFAULT '',
@@ -40,13 +40,14 @@ CREATE TABLE ai_intervention_pain_areas_tracker (
         CASE priority WHEN 'High' THEN 3 WHEN 'Medium' THEN 2 ELSE 1 END
     ) STORED,
     quadrant          VARCHAR(30) GENERATED ALWAYS AS (
-        CASE WHEN impact_score >= 2 AND feasibility_score >= 2 THEN 'Quick Win'
-             WHEN impact_score >= 2 THEN 'Strategic'
-             WHEN feasibility_score >= 2 THEN 'Fill In'
+        CASE WHEN (CASE WHEN time_spent_hrs IS NULL THEN 1 WHEN time_spent_hrs >= 40 THEN 3 WHEN time_spent_hrs >= 10 THEN 2 ELSE 1 END) >= 2
+                  AND (CASE feasibility WHEN 'High' THEN 3 WHEN 'Medium' THEN 2 ELSE 1 END) >= 2 THEN 'Quick Win'
+             WHEN (CASE WHEN time_spent_hrs IS NULL THEN 1 WHEN time_spent_hrs >= 40 THEN 3 WHEN time_spent_hrs >= 10 THEN 2 ELSE 1 END) >= 2 THEN 'Strategic'
+             WHEN (CASE feasibility WHEN 'High' THEN 3 WHEN 'Medium' THEN 2 ELSE 1 END) >= 2 THEN 'Fill In'
              ELSE 'Revisit' END
     ) STORED,
-    created_at       DATETIME NOT NULL,
-    updated_at       DATETIME NOT NULL
+    created_at       TIMESTAMP NOT NULL,
+    updated_at       TIMESTAMP NOT NULL
 )
 """
 
