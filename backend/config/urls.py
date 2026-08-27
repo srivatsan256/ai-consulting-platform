@@ -61,9 +61,9 @@ urlpatterns = [
     path("api/project-members/", include("project_members.urls")),
 
     # Password reset
-    path("password-reset/request/", PasswordResetRequestAPIView.as_view(), name="password-reset-request"),
-    path("password-reset/verify-otp/", PasswordResetVerifyOTPAPIView.as_view(), name="password-reset-verify-otp"),
-    path("password-reset/confirm/", PasswordResetConfirmAPIView.as_view(), name="password-reset-confirm"),
+    path("api/password-reset/request/", PasswordResetRequestAPIView.as_view(), name="password-reset-request"),
+    path("api/password-reset/verify-otp/", PasswordResetVerifyOTPAPIView.as_view(), name="password-reset-verify-otp"),
+    path("api/password-reset/confirm/", PasswordResetConfirmAPIView.as_view(), name="password-reset-confirm"),
 
     # Discovery
     path("api/discovery/", include("discovery.urls")),

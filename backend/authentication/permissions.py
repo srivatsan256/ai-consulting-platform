@@ -1,5 +1,7 @@
 from rest_framework.permissions import BasePermission
 
+from core.rbac.permissions import has_feature_permission
+
 
 class CanViewLoginHistory(BasePermission):
     """
@@ -21,5 +23,7 @@ class CanViewLoginHistory(BasePermission):
         if user.is_superuser:
             return True
 
-        # Use Django permissions / custom RBAC.
-        return user.has_perm("authentication.view_loginhistory")
+        # Use RBAC system to check login_history feature permission.
+        tenant = getattr(request, "tenant", None)
+        role = getattr(tenant, "role", None)
+        return has_feature_permission(role, "login_history", "view")

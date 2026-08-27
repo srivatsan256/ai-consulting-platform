@@ -18,6 +18,7 @@ class Permission(models.Model):
         ("reports", "Reports"),
         ("audit_logs", "Audit Logs"),
         ("settings", "Settings"),
+        ("login_history", "Login History"),
     ]
 
     role = models.ForeignKey(
