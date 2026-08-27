@@ -322,9 +322,14 @@ class AIInterventionPainAreaViewSet(viewsets.ModelViewSet):
                 skipped += fn_skipped
                 warnings.extend(fn_warnings)
             except (ProgrammingError, OperationalError):
-                for _, validated in rows:
-                    AIInterventionPainArea.objects.create(**validated)
-                    inserted += 1
+                with transaction.atomic():
+                    for idx, validated in rows:
+                        try:
+                            AIInterventionPainArea.objects.create(**validated)
+                            inserted += 1
+                        except Exception as exc:
+                            skipped += 1
+                            warnings.append({"row": idx, "error": str(exc)})
 
         return Response(
             {"inserted": inserted, "skipped": skipped, "warnings": warnings},
@@ -388,8 +393,8 @@ class AIInterventionPainAreaViewSet(viewsets.ModelViewSet):
           "needs_input_count": int,
           "needs_input_pct": float,
           "flagged_rows": [{"id": int, "process_activity": str, "missing_fields": [str]}],
-          "quadrant_distribution": {"Quick Win": int, "Major Project": int,
-                                    "Fill In": int, "Reconsider": int, "Needs Input": int},
+          "quadrant_distribution": {"Quick Win": int, "Strategic": int,
+                                     "Fill In": int, "Revisit": int, "Needs Input": int},
           "executive_summary": str,
           "primary_blocker": str | null,
         }
@@ -436,8 +441,8 @@ class AIInterventionPainAreaViewSet(viewsets.ModelViewSet):
         # ── Quadrant distribution ─────────────────────────────────────────────
         from .scoring import quadrant_from_scores
         quadrant_counts = {
-            "Quick Win": 0, "Major Project": 0,
-            "Fill In": 0, "Reconsider": 0, "Needs Input": 0,
+            "Quick Win": 0, "Strategic": 0,
+            "Fill In": 0, "Revisit": 0, "Needs Input": 0,
         }
         for r in records:
             impact = score_from_time_spent(r.time_spent_hrs)
@@ -448,9 +453,9 @@ class AIInterventionPainAreaViewSet(viewsets.ModelViewSet):
 
         scoreable = total - needs_input_count
         qw = quadrant_counts["Quick Win"]
-        mp = quadrant_counts["Major Project"]
+        mp = quadrant_counts["Strategic"]
         fi = quadrant_counts["Fill In"]
-        rc = quadrant_counts["Reconsider"]
+        rc = quadrant_counts["Revisit"]
 
         # ── Executive summary ─────────────────────────────────────────────────
         if total == 0:
@@ -459,7 +464,7 @@ class AIInterventionPainAreaViewSet(viewsets.ModelViewSet):
         elif needs_input_pct > 50:
             exec_summary = (
                 f"Of {total} initiatives, {scoreable} can be scored today "
-                f"({qw} Quick Win, {mp} Major Project, {fi} Fill In, {rc} Reconsider); "
+                f"({qw} Quick Win, {mp} Strategic, {fi} Fill In, {rc} Revisit); "
                 f"{needs_input_count} show \u2018Needs Input\u2019 because Time Spent / Month "
                 f"was never filled in. Next step: close the data gap."
             )
@@ -469,8 +474,8 @@ class AIInterventionPainAreaViewSet(viewsets.ModelViewSet):
             )
         else:
             exec_summary = (
-                f"Of {total} initiatives, {qw} are Quick Wins, {mp} are Major Projects, "
-                f"{fi} are Fill Ins, and {rc} should be Reconsidered. "
+                f"Of {total} initiatives, {qw} are Quick Wins, {mp} are Strategic, "
+                f"{fi} are Fill Ins, and {rc} should be Revisited. "
                 f"{needs_input_count} still need data to be scored."
             )
             blocker = (
@@ -495,24 +500,23 @@ def classify_phase(quadrant, total_score):
     Classify an opportunity into a roadmap phase based on Quadrant and Total Score.
 
     Total Score (impact + feasibility + priority) ranges from 3 to 9.
-    Classification rules (normalized to the existing 3-9 scale):
-    - Phase 1 "Quick Wins": Quadrant = Quick Win AND Total Score >= 7
-    - Phase 2 "Major Projects": Quadrant = Major Project
-    - Phase 3 "Strategic Initiatives": Total Score between 4 and 6
-    - Phase 4 "Future Consideration": Quadrant = Reconsider (maps to Revisit)
+    Classification rules:
+    - Phase 1 "Quick Wins": Quadrant = Quick Win AND Total Score >= 5
+    - Phase 2 "Strategic Initiatives": Quadrant = Strategic
+    - Phase 3 "Fill In Projects": Quadrant = Fill In
+    - Phase 4 "Future Consideration": Quadrant = Revisit
     """
     # Phase 1: Quick Wins - Quick Win quadrant AND high total score
-    if quadrant == "Quick Win" and total_score >= 7:
+    if quadrant == "Quick Win" and total_score >= 5:
         return 1
-    # Phase 2: Major Projects - Quadrant = Major Project
-    # Note: "Major Project" quadrant may need to be set on records via API/admin
-    if quadrant == "Major Project":
+    # Phase 2: Strategic Initiatives - Quadrant = Strategic
+    if quadrant == "Strategic":
         return 2
-    # Phase 3: Strategic Initiatives - Total Score between 4 and 6
-    if 4 <= total_score <= 6:
+    # Phase 3: Fill In Projects - Quadrant = Fill In
+    if quadrant == "Fill In":
         return 3
-    # Phase 4: Future Consideration - Reconsider quadrant maps to Revisit
-    if quadrant in ("Revisit", "Reconsider"):
+    # Phase 4: Future Consideration - Revisit quadrant
+    if quadrant == "Revisit":
         return 4
     return None
 
@@ -563,25 +567,25 @@ class RoadmapViewSet(viewsets.ViewSet):
             "phases": {
                 1: {
                     "name": "Quick Wins",
-                    "description": "Quadrant = Quick Win AND Total Score >= 7",
+                    "description": "Quadrant = Quick Win AND Total Score >= 5",
                     "projects": phases[1],
                     "count": phase_counts[1],
                 },
                 2: {
-                    "name": "Major Projects",
-                    "description": "Quadrant = Major Project",
+                    "name": "Strategic Initiatives",
+                    "description": "Quadrant = Strategic",
                     "projects": phases[2],
                     "count": phase_counts[2],
                 },
                 3: {
-                    "name": "Strategic Initiatives",
-                    "description": "Total Score between 4 and 6",
+                    "name": "Fill In Projects",
+                    "description": "Quadrant = Fill In",
                     "projects": phases[3],
                     "count": phase_counts[3],
                 },
                 4: {
                     "name": "Future Consideration",
-                    "description": "Quadrant = Reconsider (maps to Revisit)",
+                    "description": "Quadrant = Revisit",
                     "projects": phases[4],
                     "count": phase_counts[4],
                 },
@@ -646,7 +650,7 @@ class DepartmentStatsViewSet(viewsets.ViewSet):
                 {
                     "impact_sum": 0,
                     "total_sum": 0,
-                    "quadrants": {"Quick Win": 0, "Major Project": 0, "Fill In": 0, "Reconsider": 0, "Needs Input": 0},
+                    "quadrants": {"Quick Win": 0, "Strategic": 0, "Fill In": 0, "Revisit": 0, "Needs Input": 0},
                     "status": {"Open": 0, "In Progress": 0, "Completed": 0, "On Hold": 0, "Cancelled": 0},
                     "priority": {"High": 0, "Medium": 0, "Low": 0},
                     "processes": [],
@@ -690,7 +694,7 @@ class DepartmentStatsViewSet(viewsets.ViewSet):
                     "avg_impact": avg_impact,
                     "avg_total_score": avg_total,
                     "quick_wins": d.get("quadrants", {}).get("Quick Win", 0),
-                    "major_projects": d.get("quadrants", {}).get("Major Project", 0),
+                    "strategic": d.get("quadrants", {}).get("Strategic", 0),
                     "quadrants": d.get("quadrants", {}),
                     "status": d.get("status", {}),
                     "priority": d.get("priority", {}),

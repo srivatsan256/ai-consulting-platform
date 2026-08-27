@@ -1,1 +1,6 @@
-Sl. No.,Date,Department,Process / Activity,Pain Area / Problem Statement,Current Method,Frequency,Time Spent / Month (Hrs),Impact Area,AI Intervention Required,Expected Benefit,Priority,Feasibility,Owner,Target Date,Status,Remarks,impact_score,feasibility_score,priority_score,quadrant
+Sl. No.,Date,Department,Process / Activity,Pain Area / Problem Statement,Current Method,Frequency,Time Spent / Month (Hrs),Impact Area,AI Intervention Required,Expected Benefit,Priority,Feasibility,Owner,Target Date,Status,Remarks
+1,2025-01-15,Finance,Invoice Processing,Manual data entry from PDF invoices,Manual entry,Daily,35,Finance,Document Intelligence,Reduce entry time by 80%,High,Medium,John Smith,2025-06-30,Open,Pilot with AP team
+2,2025-01-15,HR,Resume Screening,Reviewing resumes manually,Manual review,Weekly,20,HR,AI Decision Support,Screen 3x more candidates,High,High,Jane Doe,2025-04-15,In Progress,Integrating with ATS
+3,2025-01-15,Operations,Inventory Tracking,Spreadsheet-based tracking,Excel sheets,Daily,15,Operations,Predictive Analytics,Real-time stock alerts,Medium,Low,Bob Lee,2025-09-01,Open,Need API access
+4,2025-01-15,Sales,Lead Scoring,Manual lead qualification,Email review,Daily,8,Sales,AI Decision Support,Auto-score inbound leads,Medium,Medium,Alice Wang,2025-07-15,Open,Phase 1 scope
+5,2025-01-15,Legal,Contract Review,Reading contracts word-by-word,Manual reading,Weekly,40,Legal,Document Intelligence,Flag key clauses in seconds,High,Medium,Sam Patel,2025-05-30,Open,POC with legal ops

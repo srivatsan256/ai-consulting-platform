@@ -1,21 +1,21 @@
 import React, { useState, useMemo } from "react";
 
 const PHASES = [
-  { id: 1, name: "Quick Wins", short: "Phase 1", color: "#16A34A", desc: "Quadrant = Quick Win AND Total Score >= 7" },
-  { id: 2, name: "Major Projects", short: "Phase 2", color: "#F59E0B", desc: "Quadrant = Major Project" },
-  { id: 3, name: "Strategic Initiatives", short: "Phase 3", color: "#2563EB", desc: "Total Score between 4 and 6" },
-  { id: 4, name: "Future Consideration", short: "Phase 4", color: "#94A3B8", desc: "Quadrant = Reconsider (maps to Revisit)" },
+  { id: 1, name: "Quick Wins", short: "Phase 1", color: "#16A34A", desc: "Quadrant = Quick Win AND Total Score >= 5" },
+  { id: 2, name: "Strategic Initiatives", short: "Phase 2", color: "#2563EB", desc: "Quadrant = Strategic" },
+  { id: 3, name: "Fill In Projects", short: "Phase 3", color: "#F59E0B", desc: "Quadrant = Fill In" },
+  { id: 4, name: "Future Consideration", short: "Phase 4", color: "#94A3B8", desc: "Quadrant = Revisit" },
 ];
 
 const STATUS_OPTIONS = ["Open", "In Progress", "Completed", "On Hold", "Cancelled"];
 const PRIORITY_OPTIONS = ["High", "Medium", "Low"];
-const QUADRANT_OPTIONS = ["Quick Win", "Strategic", "Fill In", "Revisit", "Major Project", "Reconsider"];
+const QUADRANT_OPTIONS = ["Quick Win", "Strategic", "Fill In", "Revisit", "Needs Input"];
 
 function classifyPhase(q, totalScore) {
-  if (q === "Quick Win" && totalScore >= 7) return 1;
-  if (q === "Major Project") return 2;
-  if (totalScore >= 4 && totalScore <= 6) return 3;
-  if (q === "Revisit" || q === "Reconsider") return 4;
+  if (q === "Quick Win" && totalScore >= 5) return 1;
+  if (q === "Strategic") return 2;
+  if (q === "Fill In") return 3;
+  if (q === "Revisit") return 4;
   return null;
 }
 

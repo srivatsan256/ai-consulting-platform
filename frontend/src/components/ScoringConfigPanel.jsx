@@ -8,9 +8,9 @@ import React from "react";
 
 const QUADRANT_STYLE = {
   "Quick Win":     { bg: "bg-emerald-50", border: "border-emerald-200", text: "text-emerald-700", dot: "bg-emerald-500" },
-  "Major Project": { bg: "bg-blue-50",    border: "border-blue-200",    text: "text-blue-700",    dot: "bg-blue-500" },
+  "Strategic":     { bg: "bg-blue-50",    border: "border-blue-200",    text: "text-blue-700",    dot: "bg-blue-500" },
   "Fill In":       { bg: "bg-amber-50",   border: "border-amber-200",   text: "text-amber-700",   dot: "bg-amber-500" },
-  "Reconsider":    { bg: "bg-red-50",     border: "border-red-200",     text: "text-red-700",     dot: "bg-red-500" },
+  "Revisit":       { bg: "bg-red-50",     border: "border-red-200",     text: "text-red-700",     dot: "bg-red-500" },
   "Needs Input":   { bg: "bg-slate-50",   border: "border-slate-200",   text: "text-slate-500",   dot: "bg-slate-400" },
 };
 
@@ -158,15 +158,15 @@ export default function ScoringConfigPanel({ onClose }) {
           <section>
             <SectionTitle icon="grid_view">Quadrant Assignment</SectionTitle>
             <p className="text-xs text-on-surface-variant mb-3">
-              Quadrants are determined by the <strong>4 / 3 threshold</strong>: Impact ≥ 4 or Feasibility ≥ 4 = "high".
+              Quadrants are determined by the <strong>2 / 2 threshold</strong>: Impact ≥ 2 or Feasibility ≥ 2 = "high".
             </p>
             <ScoreTable
               headers={["Quadrant", "Impact", "Feasibility", "Action"]}
               rows={[
-                [<QuadrantChip label="Quick Win" />,     "4 – 5", "4 – 5", "Do first"],
-                [<QuadrantChip label="Major Project" />, "4 – 5", "1 – 3", "Plan & resource"],
-                [<QuadrantChip label="Fill In" />,       "1 – 3", "4 – 5", "Nice to have"],
-                [<QuadrantChip label="Reconsider" />,    "1 – 3", "1 – 3", "Deprioritise"],
+                [<QuadrantChip label="Quick Win" />,     "2 – 3", "2 – 3", "Do first"],
+                [<QuadrantChip label="Strategic" />,     "2 – 3", "1",     "Plan & resource"],
+                [<QuadrantChip label="Fill In" />,       "1",     "2 – 3", "Nice to have"],
+                [<QuadrantChip label="Revisit" />,       "1",     "1",     "Deprioritise"],
                 [<QuadrantChip label="Needs Input" />,   "—",     "—",     "Fill time_spent_hrs"],
               ]}
             />
@@ -179,11 +179,11 @@ export default function ScoringConfigPanel({ onClose }) {
             <SectionTitle icon="table_rows">Example Records</SectionTitle>
             <div className="space-y-2">
               {[
-                { name: "Manual invoice matching", hours: 60, feasibility: "High",   impact: 5, fScore: 5, priority: 25, q: "Quick Win" },
-                { name: "Monthly board report",   hours: 15, feasibility: "Low",    impact: 4, fScore: 1, priority: 4,  q: "Major Project" },
-                { name: "Ad-hoc data queries",    hours: 3,  feasibility: "High",   impact: 2, fScore: 5, priority: 10, q: "Fill In" },
-                { name: "Coffee machine logs",    hours: 1,  feasibility: "Medium", impact: 2, fScore: 3, priority: 6,  q: "Reconsider" },
-                { name: "Unknown process",        hours: null,feasibility: "High",  impact: null, fScore: 5, priority: null, q: "Needs Input" },
+                { name: "Manual invoice matching", hours: 60, feasibility: "High",   impact: 3, fScore: 3, priority: 9, q: "Quick Win" },
+                { name: "Monthly board report",   hours: 15, feasibility: "Low",    impact: 2, fScore: 1, priority: 2,  q: "Strategic" },
+                { name: "Ad-hoc data queries",    hours: 3,  feasibility: "High",   impact: 1, fScore: 3, priority: 3, q: "Fill In" },
+                { name: "Coffee machine logs",    hours: 1,  feasibility: "Medium", impact: 1, fScore: 2, priority: 2,  q: "Revisit" },
+                { name: "Unknown process",        hours: null,feasibility: "High",  impact: null, fScore: 3, priority: null, q: "Needs Input" },
               ].map((ex, i) => (
                 <div key={i} className="rounded-lg border border-outline-variant/20 p-3 flex items-center gap-3 bg-surface-container-lowest/50">
                   <div className="flex-1 min-w-0">

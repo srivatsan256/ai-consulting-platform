@@ -29,7 +29,7 @@ import "../styles/pages/AIInterventionPainAreasTrackerRecord.css";
 
 const PRIORITY_OPTIONS = ["High", "Medium", "Low"];
 const STATUS_OPTIONS = ["Open", "In Progress", "Completed", "On Hold", "Cancelled"];
-const QUADRANT_OPTIONS = ["Quick Win", "Major Project", "Fill In", "Reconsider", "Needs Input"];
+const QUADRANT_OPTIONS = ["Quick Win", "Strategic", "Fill In", "Revisit", "Needs Input"];
 const SCORE_OPTIONS = [1, 2, 3, 4, 5];
 const PAGE_SIZE = 10;
 const PRESETS_KEY = "painAreaPresets";
@@ -303,7 +303,7 @@ export default function AIInterventionPainAreasTrackerRecord() {
   }, [filteredRecords]);
 
   const quadrantCounts = useMemo(() => {
-    const counts = { "Quick Win": 0, "Major Project": 0, "Fill In": 0, "Reconsider": 0, "Needs Input": 0 };
+    const counts = { "Quick Win": 0, "Strategic": 0, "Fill In": 0, "Revisit": 0, "Needs Input": 0 };
     filteredRecords.forEach((r) => {
       const q = r.quadrant || "Needs Input";
       if (counts[q] !== undefined) counts[q] += 1;
@@ -417,13 +417,10 @@ export default function AIInterventionPainAreasTrackerRecord() {
   const getQuadrantClass = (quadrant) => {
     const map = {
       "Quick Win":     "bg-emerald-100 text-emerald-700 border border-emerald-200",
-      "Major Project": "bg-blue-100 text-blue-700 border border-blue-200",
+      "Strategic":     "bg-blue-100 text-blue-700 border border-blue-200",
       "Fill In":       "bg-amber-100 text-amber-700 border border-amber-200",
-      "Reconsider":    "bg-red-100 text-red-700 border border-red-200",
+      "Revisit":       "bg-red-100 text-red-700 border border-red-200",
       "Needs Input":   "bg-slate-100 text-slate-500 border border-slate-200",
-      // Legacy aliases (pre-1.5 scale)
-      Strategic: "bg-blue-100 text-blue-700 border border-blue-200",
-      Revisit:   "bg-slate-100 text-slate-500 border border-slate-200",
     };
     return map[quadrant] || "bg-slate-100 text-slate-500 border border-slate-200";
   };
@@ -757,9 +754,9 @@ export default function AIInterventionPainAreasTrackerRecord() {
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
             {[
               { label: "Quick Win",     color: "emerald", dot: "bg-emerald-500",  bg: "bg-emerald-50",  text: "text-emerald-700",  border: "border-emerald-200" },
-              { label: "Major Project", color: "blue",    dot: "bg-blue-500",     bg: "bg-blue-50",     text: "text-blue-700",     border: "border-blue-200" },
+              { label: "Strategic",     color: "blue",    dot: "bg-blue-500",     bg: "bg-blue-50",     text: "text-blue-700",     border: "border-blue-200" },
               { label: "Fill In",       color: "amber",   dot: "bg-amber-500",    bg: "bg-amber-50",    text: "text-amber-700",    border: "border-amber-200" },
-              { label: "Reconsider",    color: "red",     dot: "bg-red-500",      bg: "bg-red-50",      text: "text-red-700",      border: "border-red-200" },
+              { label: "Revisit",    color: "red",     dot: "bg-red-500",      bg: "bg-red-50",      text: "text-red-700",      border: "border-red-200" },
               { label: "Needs Input",   color: "slate",   dot: "bg-slate-400",    bg: "bg-slate-50",    text: "text-slate-500",    border: "border-slate-200" },
             ].map(({ label, dot, bg, text, border }) => (
               <div
