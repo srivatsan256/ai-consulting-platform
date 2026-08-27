@@ -30,6 +30,15 @@ class CompanyMemberViewSet(viewsets.ModelViewSet):
         user = self.request.user
         if user.is_superuser: # type: ignore
             return CompanyMember.objects.all()
+        tenant = getattr(self.request, "tenant", None)
+        company = getattr(tenant, "company", None)
+        if company is not None:
+            from core.rbac.permissions import is_manager_role
+            membership = CompanyMember.objects.filter(
+                user=user, company=company, is_active=True
+            ).select_related("role").first()
+            if membership and is_manager_role(membership.role):
+                return CompanyMember.objects.all()
         return CompanyMember.objects.for_user(user) # type: ignore
 
     def perform_create(self, serializer):
@@ -52,6 +61,7 @@ class CompanyMemberViewSet(viewsets.ModelViewSet):
             can_manage = existing is not None and existing.role is not None and existing.role.role_key in (
                 "super_admin",
                 "company_admin",
+                "client_admin",
             )
 
         if target_user is None or not can_manage:

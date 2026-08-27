@@ -458,7 +458,8 @@ class SessionManagementTests(APITestCase):
         self.assertTrue(foreign.is_active)
 
     def test_revoke_all_requires_current_refresh_header(self):
-        self._login()
+        tokens = self._login()
+        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {tokens['access']}")
         response = self.client.post(
             reverse("authentication:session-revoke-all"),
             {},

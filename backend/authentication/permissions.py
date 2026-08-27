@@ -8,7 +8,7 @@ class CanViewLoginHistory(BasePermission):
     Permission to view login history.
 
     Users must have the appropriate permission assigned through
-    the project's RBAC system.
+    the project's RBAC system or via Django permissions.
     """
 
     message = "You do not have permission to view login history."
@@ -23,7 +23,11 @@ class CanViewLoginHistory(BasePermission):
         if user.is_superuser:
             return True
 
-        # Use RBAC system to check login_history feature permission.
+        # Check RBAC system via tenant role.
         tenant = getattr(request, "tenant", None)
         role = getattr(tenant, "role", None)
-        return has_feature_permission(role, "login_history", "view")
+        if role is not None and has_feature_permission(role, "login_history", "view"):
+            return True
+
+        # Fallback: check Django permissions.
+        return user.has_perm("authentication.view_loginhistory")

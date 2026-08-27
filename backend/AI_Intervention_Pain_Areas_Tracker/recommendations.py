@@ -13,6 +13,7 @@ import re
 
 from .scoring import (
     score_from_priority,
+    score_from_feasibility,
     score_from_time_spent,
     quadrant_from_scores,
 )
@@ -404,7 +405,7 @@ def recommend(record):
     priority = record.get("priority") or "Medium"
     feasibility = record.get("feasibility") or "Medium"
     priority_score = score_from_priority(priority)
-    feasibility_score = score_from_priority(feasibility)
+    feasibility_score = score_from_feasibility(feasibility)
 
     ranked = [
         (_score_solution(record, sol), sol)
@@ -431,9 +432,9 @@ def recommend(record):
     if top_score > 0 and second_score > 0:
         confidence += 3  # strong signal over the runner-up
 
-    if time_score >= 3:
+    if time_score is not None and time_score >= 3:
         confidence += 10
-    elif time_score == 2:
+    elif time_score is not None and time_score == 2:
         confidence += 5
     if priority_score >= 3:
         confidence += 5

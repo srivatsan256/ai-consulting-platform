@@ -42,12 +42,19 @@ class UserViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        if getattr(self.request.user, "is_superuser", False):
+        user = self.request.user
+        if getattr(user, "is_superuser", False):
             return queryset
         tenant = getattr(self.request, "tenant", None)
         company = getattr(tenant, "company", None)
         if company is None:
             return queryset.none()
+        from company_members.models import CompanyMember
+        membership = CompanyMember.objects.filter(
+            user=user, company=company, is_active=True
+        ).select_related("role").first()
+        if membership and membership.role and membership.role.role_key in ("super_admin", "company_admin", "client_admin"):
+            return queryset
         queryset = queryset.filter(company_memberships__company=company)
         if self.action == "list":
             queryset = queryset.filter(company_memberships__is_active=True)

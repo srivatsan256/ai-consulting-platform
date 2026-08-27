@@ -737,7 +737,10 @@ class MatrixTester:
         self.test_user_activate_deactivate()
         self.crud("Companies", "/companies/companies")
         self.test_membership_crud()
-        feature_name = f"feature_{random.randint(10000, 99999)}"
+        feature_name = f"feature_{random.randint(10000, 99999)}_matrix"
+        # Use a valid FEATURE_CHOICES key with a random suffix for uniqueness
+        valid_features = ["dashboard", "reports", "settings", "login_history"]
+        feature_name = valid_features[random.randint(0, len(valid_features)-1)]
         self.crud("Permissions", "/permissions", post_payload={"role": 1, "feature": feature_name, "can_view": True})
 
         # --- Departments / Teams / Projects ---
