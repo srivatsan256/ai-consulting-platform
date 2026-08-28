@@ -199,8 +199,7 @@ export default function AIInterventionPainAreasTrackerRecord() {
   const getTotalScore = (record) => {
     const impact = Number(record.impact_score) || 0;
     const feasibility = Number(record.feasibility_score) || 0;
-    const priority = Number(record.priority_score) || 0;
-    return impact + feasibility + priority;
+    return impact * feasibility;
   };
 
   const filteredRecords = useMemo(() => {

@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from "react";
 
 const PHASES = [
-  { id: 1, name: "Quick Wins", short: "Phase 1", color: "#16A34A", desc: "Quadrant = Quick Win AND Total Score >= 5" },
+  { id: 1, name: "Quick Wins", short: "Phase 1", color: "#16A34A", desc: "Quadrant = Quick Win AND Total Score >= 4" },
   { id: 2, name: "Strategic Initiatives", short: "Phase 2", color: "#2563EB", desc: "Quadrant = Strategic" },
   { id: 3, name: "Fill In Projects", short: "Phase 3", color: "#F59E0B", desc: "Quadrant = Fill In" },
   { id: 4, name: "Future Consideration", short: "Phase 4", color: "#94A3B8", desc: "Quadrant = Revisit" },
@@ -12,7 +12,7 @@ const PRIORITY_OPTIONS = ["High", "Medium", "Low"];
 const QUADRANT_OPTIONS = ["Quick Win", "Strategic", "Fill In", "Revisit", "Needs Input"];
 
 function classifyPhase(q, totalScore) {
-  if (q === "Quick Win" && totalScore >= 5) return 1;
+  if (q === "Quick Win" && totalScore >= 4) return 1;
   if (q === "Strategic") return 2;
   if (q === "Fill In") return 3;
   if (q === "Revisit") return 4;
