@@ -66,6 +66,10 @@ def _num(value, default=0):
         return default
 
 
+def _safe_sum(*values):
+    return sum(_num(v) for v in values)
+
+
 def _fmt_hours(value):
     return f"{_num(value):g}"
 
@@ -94,7 +98,7 @@ def _register_row(record, rec):
         "impact_score": time_score,
         "feasibility_score": feas_score,
         "priority_score": prio_score,
-        "total_score": time_score + feas_score + prio_score, # type: ignore
+        "total_score": _safe_sum(time_score, feas_score, prio_score),
         "quadrant": quadrant_from_scores(time_score, feas_score),
         "priority": record.priority or "",
         "feasibility": record.feasibility or "",
