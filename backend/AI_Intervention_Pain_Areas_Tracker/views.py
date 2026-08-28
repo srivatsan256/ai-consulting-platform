@@ -239,12 +239,21 @@ class AIInterventionPainAreaViewSet(viewsets.ModelViewSet):
                 {"detail": "file_format must be 'pdf', 'xlsx', or 'csv'."},
                 status=status.HTTP_400_BAD_REQUEST,
             )
-        records = list(self.get_queryset())
-        mimetype, extension, payload = export_report(report_type, fmt, records)
-        filename = f"{report_type}-{datetime.date.today().isoformat()}.{extension}"
-        response = HttpResponse(payload, content_type=mimetype)
-        response["Content-Disposition"] = f'attachment; filename="{filename}"'
-        return response
+        try:
+            records = list(self.get_queryset())
+            mimetype, extension, payload = export_report(report_type, fmt, records)
+            timestamp = datetime.datetime.now().strftime("%H%M%S")
+            filename = f"{report_type}-{datetime.date.today().isoformat()}-{timestamp}.{extension}"
+            response = HttpResponse(payload, content_type=mimetype)
+            response["Content-Disposition"] = f'attachment; filename="{filename}"'
+            return response
+        except Exception as exc:
+            import logging
+            logging.getLogger(__name__).exception("Report export failed")
+            return Response(
+                {"detail": f"Failed to generate report: {str(exc)}"},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
 
     @action(detail=False, methods=["post"], url_path="upload-csv", url_name="upload-csv")
     def upload_csv(self, request):

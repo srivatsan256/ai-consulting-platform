@@ -494,10 +494,10 @@ def _register_sheets(wb, data):
             "Process / Activity",
             "Pain Area",
             "Hours",
-            "Impact",
-            "Feasibility",
-            "Priority",
-            "Score",
+            "Impact Score",
+            "Feasibility Score",
+            "Priority Score",
+            "Total Score",
             "Quadrant",
             "Priority",
             "Status",
@@ -707,10 +707,22 @@ def _csv_row(value):
     return str(value)
 
 
+def _sanitize_csv_value(value):
+    """Sanitize a value to prevent CSV injection in spreadsheet apps.
+
+    Cells starting with =, +, -, @, \\t, or \\r are prefixed with a single
+    quote to neutralise formula interpretation.
+    """
+    s = str(value) if value is not None else ""
+    if s and s[0] in ("=", "+", "-", "@", "\t", "\r"):
+        return "'" + s
+    return s
+
+
 def _render_csv(report_type, records, data):
-    """Render a report as CSV and return bytes."""
+    """Render a report as CSV and return bytes (with BOM for Excel compat)."""
     stream = io.StringIO()
-    writer = csv.writer(stream)
+    writer = csv.writer(stream, quoting=csv.QUOTE_MINIMAL)
 
     if report_type == "opportunity-assessment":
         _csv_assessment(writer, data)
@@ -723,7 +735,7 @@ def _render_csv(report_type, records, data):
     else:  # opportunity-register
         _csv_register(writer, data)
 
-    return stream.getvalue().encode("utf-8")
+    return ("\ufeff" + stream.getvalue()).encode("utf-8")
 
 
 def _csv_assessment(writer, data):
@@ -747,16 +759,19 @@ def _csv_assessment(writer, data):
         writer.writerow([item["name"], item["count"]])
     writer.writerow([])
     writer.writerow(["Rank", "Department", "Process / Activity", "Total Score", "Quadrant", "AI Recommendation", "Confidence", "Reasoning"])
+    if not data["leaderboard"]:
+        writer.writerow(["No data available"])
+        return
     for i, r in enumerate(data["leaderboard"]):
         writer.writerow([
             i + 1,
-            r["department"],
-            r["process_activity"],
+            _sanitize_csv_value(r["department"]),
+            _sanitize_csv_value(r["process_activity"]),
             r["total_score"],
             r["quadrant"],
-            r["ai_recommendation"],
+            _sanitize_csv_value(r["ai_recommendation"]),
             f"{r['ai_confidence']}%",
-            r.get("reasoning", ""),
+            _sanitize_csv_value(r.get("reasoning", "")),
         ])
 
 
@@ -765,15 +780,18 @@ def _csv_department(writer, data):
     writer.writerow([f"Generated: {data['generated_at']}"])
     writer.writerow([])
     writer.writerow(["Department", "Opportunities", "Hours / Month", "Avg Score", "Quick Wins", "Top AI Solution"])
-    for d in data["department_summary"]:
-        writer.writerow([
-            d["department"],
-            d["opportunities"],
-            d["hours"],
-            d["avg_score"],
-            d["quick_wins"],
-            d["top_solution"],
-        ])
+    if not data["department_summary"]:
+        writer.writerow(["No data available"])
+    else:
+        for d in data["department_summary"]:
+            writer.writerow([
+                _sanitize_csv_value(d["department"]),
+                d["opportunities"],
+                d["hours"],
+                d["avg_score"],
+                d["quick_wins"],
+                _sanitize_csv_value(d["top_solution"]),
+            ])
     writer.writerow([])
     writer.writerow(["AI Solution", "Opportunities"])
     for item in data["solution_distribution"]:
@@ -797,14 +815,17 @@ def _csv_executive(writer, data):
         writer.writerow([item["name"], item["count"]])
     writer.writerow([])
     writer.writerow(["Rank", "Department", "Process / Activity", "Score", "Quadrant", "AI Recommendation", "Confidence"])
+    if not data["leaderboard"]:
+        writer.writerow(["No data available"])
+        return
     for i, r in enumerate(data["leaderboard"][:5]):
         writer.writerow([
             i + 1,
-            r["department"],
-            r["process_activity"],
+            _sanitize_csv_value(r["department"]),
+            _sanitize_csv_value(r["process_activity"]),
             r["total_score"],
             r["quadrant"],
-            r["ai_recommendation"],
+            _sanitize_csv_value(r["ai_recommendation"]),
             f"{r['ai_confidence']}%",
         ])
 
@@ -817,15 +838,18 @@ def _csv_roadmap(writer, data):
         writer.writerow([f"{phase['title']} ({phase['timeframe']})"])
         writer.writerow([phase["focus"]])
         writer.writerow(["Process / Activity", "Department", "Score", "Quadrant", "AI Recommendation", "Confidence"])
-        for r in phase["items"]:
-            writer.writerow([
-                r["process_activity"],
-                r["department"],
-                r["total_score"],
-                r["quadrant"],
-                r["ai_recommendation"],
-                f"{r['ai_confidence']}%",
-            ])
+        if not phase["items"]:
+            writer.writerow(["No opportunities in this phase"])
+        else:
+            for r in phase["items"]:
+                writer.writerow([
+                    _sanitize_csv_value(r["process_activity"]),
+                    _sanitize_csv_value(r["department"]),
+                    r["total_score"],
+                    r["quadrant"],
+                    _sanitize_csv_value(r["ai_recommendation"]),
+                    f"{r['ai_confidence']}%",
+                ])
         writer.writerow([])
 
 
@@ -835,16 +859,19 @@ def _csv_register(writer, data):
     writer.writerow([])
     writer.writerow([
         "Date", "Department", "Process / Activity", "Pain Area", "Hours",
-        "Impact", "Feasibility", "Priority", "Score", "Quadrant",
-        "Priority Level", "Status", "Owner", "Target Date", "AI Intervention",
+        "Impact Score", "Feasibility Score", "Priority Score", "Total Score", "Quadrant",
+        "Priority", "Status", "Owner", "Target Date", "AI Intervention",
         "AI Recommendation", "Confidence",
     ])
+    if not data["register"]:
+        writer.writerow(["No data available"])
+        return
     for r in data["register"]:
         writer.writerow([
             r["date"],
-            r["department"],
-            r["process_activity"],
-            r["pain_area"],
+            _sanitize_csv_value(r["department"]),
+            _sanitize_csv_value(r["process_activity"]),
+            _sanitize_csv_value(r["pain_area"]),
             _fmt_hours(r["time_spent_hrs"]),
             r["impact_score"],
             r["feasibility_score"],
@@ -853,10 +880,10 @@ def _csv_register(writer, data):
             r["quadrant"],
             r["priority"],
             r["status"],
-            r["owner"],
+            _sanitize_csv_value(r["owner"]),
             r["target_date"],
-            r["ai_intervention"],
-            r["ai_recommendation"],
+            _sanitize_csv_value(r["ai_intervention"]),
+            _sanitize_csv_value(r["ai_recommendation"]),
             f"{r['ai_confidence']}%",
         ])
 

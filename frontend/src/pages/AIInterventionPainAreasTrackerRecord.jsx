@@ -146,6 +146,8 @@ export default function AIInterventionPainAreasTrackerRecord() {
   // Executive reports (Phase 5)
   const [reportData, setReportData] = useState(null);
   const [exportingReport, setExportingReport] = useState(null);
+  const [reportDataLoading, setReportDataLoading] = useState(false);
+  const [toast, setToast] = useState(null);
 
   // Workspace sections (Phases 6-10)
   const SECTIONS = [
@@ -174,10 +176,12 @@ export default function AIInterventionPainAreasTrackerRecord() {
 
   useEffect(() => {
     if (!records.length) return;
+    setReportDataLoading(true);
     painAreaService
       .reports()
       .then((res) => setReportData(res.data?.data ?? res.data ?? null))
-      .catch(() => setReportData(null));
+      .catch(() => setReportData(null))
+      .finally(() => setReportDataLoading(false));
   }, [records]);
 
   const handleDelete = async (id) => {
