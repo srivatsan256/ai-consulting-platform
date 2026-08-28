@@ -617,11 +617,12 @@ export default function AIInterventionPainAreasTrackerRecord() {
     setExportingReport(key);
     try {
       const res = await painAreaService.exportReport(reportType, fileFormat);
-      const contentType =
-        res.data.type ||
-        (fileFormat === "pdf"
-          ? "application/pdf"
-          : "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+      const contentTypeMap = {
+        pdf: "application/pdf",
+        xlsx: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        csv: "text/csv",
+      };
+      const contentType = res.data.type || contentTypeMap[fileFormat] || "application/octet-stream";
       downloadBlob(
         new Blob([res.data], { type: contentType }),
         `${reportType}-${new Date().toISOString().slice(0, 10)}.${fileFormat}`
@@ -1474,7 +1475,7 @@ export default function AIInterventionPainAreasTrackerRecord() {
           <div>
             <h3 className="pain-h3">Executive Reports</h3>
             <span className="pain-subtitle-sm">
-              Phase 5 · Generate & export executive reports as PDF or Excel
+              Phase 5 · Generate & export executive reports as PDF, Excel, or CSV
             </span>
           </div>
           {reportData && (
@@ -1509,6 +1510,14 @@ export default function AIInterventionPainAreasTrackerRecord() {
                 >
                   <span className="material-symbols-outlined text-[16px]">grid_on</span>
                   {exportingReport === `${report.key}-xlsx` ? "Generating…" : "Excel"}
+                </button>
+                <button
+                  className="pain-report-btn csv"
+                  disabled={!records.length || exportingReport === `${report.key}-csv`}
+                  onClick={() => handleExportReport(report.key, "csv")}
+                >
+                  <span className="material-symbols-outlined text-[16px]">download</span>
+                  {exportingReport === `${report.key}-csv` ? "Generating…" : "CSV"}
                 </button>
               </div>
             </div>

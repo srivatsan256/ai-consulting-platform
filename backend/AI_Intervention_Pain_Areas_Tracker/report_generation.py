@@ -94,7 +94,7 @@ def _register_row(record, rec):
         "impact_score": time_score,
         "feasibility_score": feas_score,
         "priority_score": prio_score,
-        "total_score": time_score + feas_score + prio_score,
+        "total_score": time_score + feas_score + prio_score, # type: ignore
         "quadrant": quadrant_from_scores(time_score, feas_score),
         "priority": record.priority or "",
         "feasibility": record.feasibility or "",
@@ -115,7 +115,7 @@ def build_report_data(records):
     total_hours = sum(_num(r.time_spent_hrs) for r in records)
     scored = [r for r in records if r.time_spent_hrs is not None]
     avg_impact = (
-        sum(score_from_time_spent(r.time_spent_hrs) for r in scored) / len(scored)
+        sum(score_from_time_spent(r.time_spent_hrs) for r in scored) / len(scored) # type: ignore
         if scored
         else 0
     )
@@ -281,7 +281,7 @@ def _write_table(ws, headers, rows, widths=None, start_row=None):
 def _render_xlsx(report_type, records, data):
     wb = Workbook()
     default_sheet = wb.active
-    default_sheet.title = report_type
+    default_sheet.title = report_type # type: ignore
 
     _sheet_title(
         default_sheet,
@@ -533,12 +533,12 @@ def _register_sheets(wb, data):
 # PDF export
 # ---------------------------------------------------------------------------
 
-from reportlab.lib import colors  # noqa: E402
-from reportlab.lib.enums import TA_CENTER, TA_LEFT  # noqa: E402
-from reportlab.lib.pagesizes import A4  # noqa: E402
-from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet  # noqa: E402
-from reportlab.lib.units import inch, mm  # noqa: E402
-from reportlab.platypus import (  # noqa: E402
+from reportlab.lib import colors  # type: ignore # noqa: E402
+from reportlab.lib.enums import TA_CENTER, TA_LEFT  # type: ignore # noqa: E402
+from reportlab.lib.pagesizes import A4  # type: ignore # noqa: E402
+from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet  # type: ignore # noqa: E402
+from reportlab.lib.units import inch, mm  # type: ignore # noqa: E402
+from reportlab.platypus import (  # noqa: E402 # type: ignore
     PageBreak,
     Paragraph,
     SimpleDocTemplate,
@@ -685,8 +685,176 @@ def _render_pdf(report_type, records, data):
     else:  # opportunity-register
         story += _pdf_register(data, styles, full_width)
 
-    doc.build(story)
+    doc.build(story) # type: ignore
     return stream.getvalue()
+
+
+# ---------------------------------------------------------------------------
+# CSV export
+# ---------------------------------------------------------------------------
+
+import csv  # noqa: E402
+
+
+def _csv_row(value):
+    """Format a single value for CSV output."""
+    if value is None:
+        return ""
+    return str(value)
+
+
+def _render_csv(report_type, records, data):
+    """Render a report as CSV and return bytes."""
+    stream = io.StringIO()
+    writer = csv.writer(stream)
+
+    if report_type == "opportunity-assessment":
+        _csv_assessment(writer, data)
+    elif report_type == "department-summary":
+        _csv_department(writer, data)
+    elif report_type == "executive-summary":
+        _csv_executive(writer, data)
+    elif report_type == "adoption-roadmap":
+        _csv_roadmap(writer, data)
+    else:  # opportunity-register
+        _csv_register(writer, data)
+
+    return stream.getvalue().encode("utf-8")
+
+
+def _csv_assessment(writer, data):
+    writer.writerow(["AI Opportunity Assessment Report"])
+    writer.writerow([f"Generated: {data['generated_at']}"])
+    writer.writerow([])
+    writer.writerow(["Metric", "Value"])
+    writer.writerow(["Total opportunities", data["report_count"]])
+    writer.writerow(["Total hours / month", data["total_hours"]])
+    writer.writerow(["Departments covered", data["departments"]])
+    writer.writerow(["Open opportunities", data["open_count"]])
+    writer.writerow(["Avg impact score (of 3)", data["avg_impact"]])
+    writer.writerow(["Avg priority score (of 3)", data["avg_priority"]])
+    writer.writerow(["Quick wins", data["quadrant_counts"]["Quick Win"]])
+    writer.writerow(["Strategic", data["quadrant_counts"]["Strategic"]])
+    writer.writerow(["Fill In", data["quadrant_counts"]["Fill In"]])
+    writer.writerow(["Revisit", data["quadrant_counts"]["Revisit"]])
+    writer.writerow([])
+    writer.writerow(["AI Solution", "Opportunities"])
+    for item in data["solution_distribution"]:
+        writer.writerow([item["name"], item["count"]])
+    writer.writerow([])
+    writer.writerow(["Rank", "Department", "Process / Activity", "Total Score", "Quadrant", "AI Recommendation", "Confidence", "Reasoning"])
+    for i, r in enumerate(data["leaderboard"]):
+        writer.writerow([
+            i + 1,
+            r["department"],
+            r["process_activity"],
+            r["total_score"],
+            r["quadrant"],
+            r["ai_recommendation"],
+            f"{r['ai_confidence']}%",
+            r.get("reasoning", ""),
+        ])
+
+
+def _csv_department(writer, data):
+    writer.writerow(["Department Summary"])
+    writer.writerow([f"Generated: {data['generated_at']}"])
+    writer.writerow([])
+    writer.writerow(["Department", "Opportunities", "Hours / Month", "Avg Score", "Quick Wins", "Top AI Solution"])
+    for d in data["department_summary"]:
+        writer.writerow([
+            d["department"],
+            d["opportunities"],
+            d["hours"],
+            d["avg_score"],
+            d["quick_wins"],
+            d["top_solution"],
+        ])
+    writer.writerow([])
+    writer.writerow(["AI Solution", "Opportunities"])
+    for item in data["solution_distribution"]:
+        writer.writerow([item["name"], item["count"]])
+
+
+def _csv_executive(writer, data):
+    writer.writerow(["Executive Summary"])
+    writer.writerow([f"Generated: {data['generated_at']}"])
+    writer.writerow([])
+    writer.writerow(["Metric", "Value"])
+    writer.writerow(["AI opportunities identified", data["report_count"]])
+    writer.writerow(["Monthly hours consumed today", data["total_hours"]])
+    writer.writerow(["Departments with opportunities", data["departments"]])
+    writer.writerow(["Quick wins ready to start", data["quadrant_counts"]["Quick Win"]])
+    writer.writerow(["Strategic initiatives", data["quadrant_counts"]["Strategic"]])
+    writer.writerow(["Avg impact score (of 3)", data["avg_impact"]])
+    writer.writerow([])
+    writer.writerow(["AI Solution", "Opportunities"])
+    for item in data["solution_distribution"]:
+        writer.writerow([item["name"], item["count"]])
+    writer.writerow([])
+    writer.writerow(["Rank", "Department", "Process / Activity", "Score", "Quadrant", "AI Recommendation", "Confidence"])
+    for i, r in enumerate(data["leaderboard"][:5]):
+        writer.writerow([
+            i + 1,
+            r["department"],
+            r["process_activity"],
+            r["total_score"],
+            r["quadrant"],
+            r["ai_recommendation"],
+            f"{r['ai_confidence']}%",
+        ])
+
+
+def _csv_roadmap(writer, data):
+    writer.writerow(["AI Adoption Roadmap"])
+    writer.writerow([f"Generated: {data['generated_at']}"])
+    writer.writerow([])
+    for phase_key, phase in data["roadmap"].items():
+        writer.writerow([f"{phase['title']} ({phase['timeframe']})"])
+        writer.writerow([phase["focus"]])
+        writer.writerow(["Process / Activity", "Department", "Score", "Quadrant", "AI Recommendation", "Confidence"])
+        for r in phase["items"]:
+            writer.writerow([
+                r["process_activity"],
+                r["department"],
+                r["total_score"],
+                r["quadrant"],
+                r["ai_recommendation"],
+                f"{r['ai_confidence']}%",
+            ])
+        writer.writerow([])
+
+
+def _csv_register(writer, data):
+    writer.writerow(["Opportunity Register"])
+    writer.writerow([f"Generated: {data['generated_at']}"])
+    writer.writerow([])
+    writer.writerow([
+        "Date", "Department", "Process / Activity", "Pain Area", "Hours",
+        "Impact", "Feasibility", "Priority", "Score", "Quadrant",
+        "Priority Level", "Status", "Owner", "Target Date", "AI Intervention",
+        "AI Recommendation", "Confidence",
+    ])
+    for r in data["register"]:
+        writer.writerow([
+            r["date"],
+            r["department"],
+            r["process_activity"],
+            r["pain_area"],
+            _fmt_hours(r["time_spent_hrs"]),
+            r["impact_score"],
+            r["feasibility_score"],
+            r["priority_score"],
+            r["total_score"],
+            r["quadrant"],
+            r["priority"],
+            r["status"],
+            r["owner"],
+            r["target_date"],
+            r["ai_intervention"],
+            r["ai_recommendation"],
+            f"{r['ai_confidence']}%",
+        ])
 
 
 def _pdf_assessment(data, styles, width):
@@ -975,4 +1143,6 @@ def export_report(report_type, fmt, records):
             "xlsx",
             _render_xlsx(report_type, records, data),
         )
+    if fmt == "csv":
+        return ("text/csv", "csv", _render_csv(report_type, records, data))
     return ("application/pdf", "pdf", _render_pdf(report_type, records, data))

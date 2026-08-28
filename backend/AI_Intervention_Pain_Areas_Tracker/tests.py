@@ -467,6 +467,14 @@ class PainAreaRecommendationTests(TestCase):
         )
         self.assertTrue(response.content[:2] == b"PK")
 
+    def test_export_csv(self):
+        self._create()
+        url = reverse("pain-area-report-export", args=["opportunity-register"])
+        response = self.client.get(url, {"file_format": "csv"})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response["Content-Type"], "text/csv")
+        self.assertIn("filename", response["Content-Disposition"])
+
     def test_export_unknown_report_404(self):
         url = reverse("pain-area-report-export", args=["does-not-exist"])
         response = self.client.get(url, {"file_format": "pdf"})

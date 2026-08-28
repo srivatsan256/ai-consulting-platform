@@ -224,9 +224,9 @@ class AIInterventionPainAreaViewSet(viewsets.ModelViewSet):
         url_name="report-export",
     )
     def export_report(self, request, report_type=None):
-        """Download a report as PDF or Excel.
+        """Download a report as PDF, Excel, or CSV.
 
-        GET /reports/<report_type>/export/?file_format=pdf|xlsx
+        GET /reports/<report_type>/export/?file_format=pdf|xlsx|csv
         """
         if report_type not in REPORT_TYPES:
             return Response(
@@ -234,9 +234,9 @@ class AIInterventionPainAreaViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_404_NOT_FOUND,
             )
         fmt = (request.query_params.get("file_format") or "pdf").lower()
-        if fmt not in ("pdf", "xlsx"):
+        if fmt not in ("pdf", "xlsx", "csv"):
             return Response(
-                {"detail": "file_format must be 'pdf' or 'xlsx'."},
+                {"detail": "file_format must be 'pdf', 'xlsx', or 'csv'."},
                 status=status.HTTP_400_BAD_REQUEST,
             )
         records = list(self.get_queryset())

@@ -619,6 +619,10 @@
   @apply bg-emerald-50 text-emerald-700 hover:bg-emerald-100;
 }
 
+.pain-report-btn.csv {
+  @apply bg-sky-50 text-sky-700 hover:bg-sky-100;
+}
+
 /* Workspace section tabs (Phases 6-10) */
 .pain-workspace-tabs {
   @apply flex items-center gap-1 flex-wrap p-1.5 bg-white rounded-xl mb-4;
